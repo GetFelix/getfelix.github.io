@@ -1561,8 +1561,19 @@ p {
   .window-bar .dots {
     display: none;
   }
+  /* The tabs scroll rather than push the copy button out of the bar. */
+  .window {
+    min-width: 0;
+  }
   .tabs {
     margin-left: 0;
+    flex: 1 1 0;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .window-bar .copy {
+    flex-shrink: 0;
   }
   .install-row {
     padding: 16px;
@@ -1578,12 +1589,6 @@ p {
 @media (max-width: 420px) {
   .hero-actions .btn {
     flex: 1 1 100%;
-  }
-  /* Four tabs and a labelled copy button don't fit a phone-width bar. */
-  .tabs {
-    min-width: 0;
-    overflow-x: auto;
-    scrollbar-width: none;
   }
   .tab {
     padding: 7px 8px;
