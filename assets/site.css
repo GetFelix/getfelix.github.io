@@ -1606,9 +1606,6 @@ p {
 .hero .lede {
   margin-top: 40px;
 }
-.release-pill.below {
-  margin: 30px 0 0;
-}
 @media (max-width: 760px) {
   .hero h1.hero-mark {
     width: 220px;
