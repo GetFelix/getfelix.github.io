@@ -25,7 +25,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" as="image" type="image/webp" imagesrcset="/assets/img/felix-logo-320.webp 320w, /assets/img/felix-logo-640.webp 640w" imagesizes="(max-width: 760px) 220px, 300px">
-<link rel="stylesheet" href="/assets/site.css?v=7a3f0f35">
+<link rel="stylesheet" href="/assets/site.css?v=dc8b184b">
 <script>
   (function () {
     var d = document.documentElement;
@@ -36,7 +36,7 @@
     } catch (e) {}
   })();
 </script>
-<script defer src="/assets/site.js?v=7a3f0f35"></script>
+<script defer src="/assets/site.js?v=dc8b184b"></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -303,7 +303,17 @@
             <p>A multiplayer drawing canvas with live cursors, rich text, history you can scrub, and per-room sign-in.</p>
             <div class="card-links">
               <a href="https://github.com/GetFelix/felix-canvas"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>GitHub</a>
-              <a href="https://github.com/GetFelix/felix-canvas#quick-start">Quick start</a>
+              <details class="card-quick">
+                <summary>Quick start</summary>
+                <div class="quick-cmd">
+<pre><code>curl -fsSL https://github.com/GetFelix/felix-canvas/releases/download/v0.2.0/felix-canvas-compose-0.2.0.tar.gz | tar xz
+cd felix-canvas-compose-0.2.0
+# change FELIX_BOOTSTRAP_TOKEN and FELIX_RAFT_PEER_TOKEN in .env first
+docker compose up -d</code></pre>
+                  <button class="icon-btn" type="button" data-copy aria-label="Copy the felix-canvas quick start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+                </div>
+                <p>Needs Docker Compose 2.20 or later. Open <code>localhost:8787</code> in two windows, sign in as <code>ana</code> and <code>ben</code>, and draw. The <a href="https://github.com/GetFelix/felix-canvas/blob/main/docs/self-hosting.md">self-hosting guide</a> covers sign-in, TLS and Kubernetes.</p>
+              </details>
             </div>
           </div>
         </article>

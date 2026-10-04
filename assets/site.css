@@ -1257,6 +1257,56 @@ p {
   font-size: 14.5px;
   font-weight: 550;
 }
+/* The quick start opens under the links, across the card. */
+.card-links {
+  flex-wrap: wrap;
+}
+.card-quick {
+  position: relative;
+  z-index: 2;
+}
+.card-quick[open] {
+  flex-basis: 100%;
+}
+.card-quick summary {
+  cursor: pointer;
+  color: var(--accent-text);
+  list-style: none;
+}
+.card-quick summary::-webkit-details-marker {
+  display: none;
+}
+.card-quick summary::after {
+  content: " \25BE";
+}
+.card-quick[open] summary::after {
+  content: " \25B4";
+}
+.quick-cmd {
+  position: relative;
+  margin-top: 12px;
+  border-radius: 10px;
+  background: var(--bg-sunken);
+  border: 1px solid var(--line);
+}
+.quick-cmd pre {
+  margin: 0;
+  padding: 12px 44px 12px 14px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+.quick-cmd .icon-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+}
+.card-quick p {
+  margin: 10px 0 0;
+  font-size: 13.5px;
+  font-weight: 400;
+}
 .card-links a {
   position: relative;
   z-index: 2;
