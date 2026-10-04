@@ -25,7 +25,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" as="image" type="image/webp" imagesrcset="/assets/img/felix-logo-320.webp 320w, /assets/img/felix-logo-640.webp 640w" imagesizes="(max-width: 760px) 220px, 300px">
-<link rel="stylesheet" href="/assets/site.css?v=abc5faba">
+<link rel="stylesheet" href="/assets/site.css?v=7712cf1b">
 <script>
   (function () {
     var d = document.documentElement;
@@ -36,7 +36,7 @@
     } catch (e) {}
   })();
 </script>
-<script defer src="/assets/site.js?v=abc5faba"></script>
+<script defer src="/assets/site.js?v=7712cf1b"></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -205,6 +205,8 @@
           <div class="tabs" role="tablist" aria-label="Example">
             <button class="tab" role="tab" id="tab-cli" aria-controls="panel-cli" aria-selected="true">felixctl</button>
             <button class="tab" role="tab" id="tab-rust" aria-controls="panel-rust" aria-selected="false" tabindex="-1">main.rs</button>
+            <button class="tab" role="tab" id="tab-py" aria-controls="panel-py" aria-selected="false" tabindex="-1">main.py</button>
+            <button class="tab" role="tab" id="tab-ts" aria-controls="panel-ts" aria-selected="false" tabindex="-1">main.ts</button>
           </div>
           <button class="copy" type="button" data-copy="panel" aria-label="Copy example">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
@@ -239,6 +241,27 @@
         <span class="tok-f">println!</span>(<span class="tok-s">"Received: {:?}"</span>, event.payload);
     }
     <span class="tok-t">Ok</span>(())
+}</code></pre>
+<pre id="panel-py" role="tabpanel" aria-labelledby="tab-py" tabindex="0" hidden><code><span class="tok-k">import</span> os
+<span class="tok-k">import</span> felix
+
+<span class="tok-k">with</span> felix.<span class="tok-t">Client</span>(
+    <span class="tok-s">"127.0.0.1:5000"</span>, tenant_id=<span class="tok-s">"acme"</span>, token=os.environ[<span class="tok-s">"FELIX_TOKEN"</span>]
+) <span class="tok-k">as</span> client:
+    <span class="tok-k">with</span> client.<span class="tok-f">subscribe</span>(<span class="tok-s">"acme"</span>, <span class="tok-s">"prod"</span>, <span class="tok-s">"events"</span>) <span class="tok-k">as</span> events:
+        client.<span class="tok-f">publish</span>(<span class="tok-s">"acme"</span>, <span class="tok-s">"prod"</span>, <span class="tok-s">"events"</span>, <span class="tok-s">b"Hello Felix"</span>)
+        <span class="tok-k">for</span> event <span class="tok-k">in</span> events:
+            <span class="tok-f">print</span>(<span class="tok-s">"Received:"</span>, event.payload)</code></pre>
+<pre id="panel-ts" role="tabpanel" aria-labelledby="tab-ts" tabindex="0" hidden><code><span class="tok-k">import</span> { <span class="tok-t">Client</span> } <span class="tok-k">from</span> <span class="tok-s">"felix-client"</span>;
+
+<span class="tok-k">const</span> client = <span class="tok-k">await</span> <span class="tok-t">Client</span>.<span class="tok-f">connect</span>(<span class="tok-s">"127.0.0.1:5000"</span>, <span class="tok-s">"acme"</span>, process.env.FELIX_TOKEN!);
+<span class="tok-k">const</span> events = <span class="tok-k">await</span> client.<span class="tok-f">subscribe</span>(<span class="tok-s">"acme"</span>, <span class="tok-s">"prod"</span>, <span class="tok-s">"events"</span>);
+<span class="tok-k">await</span> client.<span class="tok-f">publish</span>(<span class="tok-s">"acme"</span>, <span class="tok-s">"prod"</span>, <span class="tok-s">"events"</span>, <span class="tok-t">Buffer</span>.<span class="tok-f">from</span>(<span class="tok-s">"Hello Felix"</span>));
+
+<span class="tok-k">for</span> (;;) {
+  <span class="tok-k">const</span> event = <span class="tok-k">await</span> events.<span class="tok-f">nextEvent</span>();
+  <span class="tok-k">if</span> (event === <span class="tok-k">null</span>) <span class="tok-k">break</span>;
+  console.<span class="tok-f">log</span>(<span class="tok-s">"Received:"</span>, event.payload.<span class="tok-f">toString</span>());
 }</code></pre>
       </div>
     </div>
