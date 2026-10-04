@@ -248,9 +248,12 @@
   }
 })();
 
-// One log read three ways: a single playhead drives the stream, cache and
-// queue rows together. Without JS, or with reduced motion, the static
-// picture in the markup stays.
+// One log read three ways. A single playhead writes records; the stream
+// reads each as it lands, the cache keeps each key's newest value, and the
+// queue is worked by two workers whose jobs take different times. The
+// group's position only moves past a record once that record is
+// acknowledged, so it waits at the oldest unfinished job. Without JS, or
+// with reduced motion, the static picture in the markup stays.
 (() => {
   const viz = document.querySelector(".log-viz");
   if (!viz || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -260,37 +263,87 @@
   const queue = row("queue");
   const keys = cache.map((cell) => cell.textContent.trim());
   const n = stream.length;
-  const hold = 3;
-  let t = 0;
-  let timer = null;
+  // Ticks each queued job takes to finish. Uneven on purpose: record 2 is slow.
+  const cost = [1, 2, 5, 1, 1, 2, 1, 3, 1, 1];
+  const workers = 2;
+  const hold = 4;
+  let tick, head, claims, acked, done, timer;
 
-  const set = (cell, state) => {
-    cell.classList.remove("on", "read", "latest", "old", "pending", "done", "cursor");
-    if (state) cell.classList.add(state);
+  const reset = () => {
+    tick = 0;
+    head = -1;
+    claims = new Map(); // record -> { worker, left }
+    acked = new Set();
+    done = 0;
   };
 
+  const states = ["on", "read", "latest", "old", "pending", "done", "cursor", "acked", "claim", "w0", "w1", "waiting"];
+  const set = (cell, ...add) => {
+    cell.classList.remove(...states);
+    cell.classList.add(...add);
+  };
+
+  function step() {
+    if (head < n - 1) head += 1;
+
+    // Workers finish their jobs, then the free ones claim the next written record.
+    for (const [record, job] of claims) {
+      job.left -= 1;
+      if (job.left <= 0) {
+        claims.delete(record);
+        acked.add(record);
+      }
+    }
+    const busy = new Set([...claims.values()].map((job) => job.worker));
+    let next = 0;
+    while (acked.has(next) || claims.has(next)) next += 1;
+    for (let w = 0; w < workers; w += 1) {
+      if (busy.has(w)) continue;
+      while (next <= head && (acked.has(next) || claims.has(next))) next += 1;
+      if (next > head) break;
+      claims.set(next, { worker: w, left: cost[next] });
+      next += 1;
+    }
+    // The position is the oldest record not yet acknowledged.
+    while (acked.has(done)) done += 1;
+  }
+
   function draw() {
-    const head = Math.min(t, n - 1);
-    stream.forEach((cell, i) => set(cell, i === head && t < n ? "on" : i <= head ? "read" : "pending"));
+    stream.forEach((cell, i) => set(cell, i === head ? "on" : i < head ? "read" : "pending"));
     cache.forEach((cell, i) => {
       if (i > head) return set(cell, "pending");
-      const newer = keys.slice(i + 1, head + 1).includes(keys[i]);
-      set(cell, newer ? "old" : "latest");
+      set(cell, keys.slice(i + 1, head + 1).includes(keys[i]) ? "old" : "latest");
     });
-    const cursor = Math.max(0, head - 1);
-    queue.forEach((cell, i) => set(cell, i < cursor ? "done" : i === cursor ? "cursor" : "pending"));
-    t = t >= n - 1 + hold ? 0 : t + 1;
+    queue.forEach((cell, i) => {
+      if (i < done) return set(cell, "done");
+      const job = claims.get(i);
+      const marks = i === done ? ["cursor"] : [];
+      if (job) return set(cell, "claim", `w${job.worker}`, ...marks);
+      if (acked.has(i)) return set(cell, "acked", ...marks);
+      set(cell, i > head ? "pending" : "waiting", ...marks);
+    });
+  }
+
+  function frame() {
+    if (done >= n) {
+      tick += 1;
+      if (tick > hold) reset();
+    } else {
+      step();
+    }
+    draw();
   }
 
   const start = () => {
     if (timer) return;
     viz.dataset.live = "";
     draw();
-    timer = setInterval(draw, 650);
+    timer = setInterval(frame, 650);
   };
   const stop = () => {
     clearInterval(timer);
     timer = null;
   };
+  reset();
   new IntersectionObserver((entries) => (entries[0].isIntersecting ? start() : stop())).observe(viz);
 })();

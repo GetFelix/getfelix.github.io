@@ -708,6 +708,74 @@ p {
   box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
+/* Queue row: two workers claim records and finish them at different speeds.
+   The position (cursor) waits at the oldest record not yet acknowledged. */
+.log-viz {
+  --w0: hsl(14, 88%, 58%);
+  --w1: hsl(262, 72%, 66%);
+}
+.log-viz[data-live] .log-row.queue .cell.waiting {
+  color: var(--muted);
+}
+.log-viz[data-live] .log-row.queue .cell.claim {
+  color: var(--text);
+  background: color-mix(in srgb, var(--wc) 16%, var(--bg-sunken));
+  border-color: color-mix(in srgb, var(--wc) 70%, transparent);
+}
+.log-viz[data-live] .log-row.queue .cell.claim.w0 { --wc: var(--w0); }
+.log-viz[data-live] .log-row.queue .cell.claim.w1 { --wc: var(--w1); }
+.log-viz[data-live] .log-row.queue .cell.claim::before {
+  content: "";
+  position: absolute;
+  inset: auto 4px 3px 4px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--wc);
+  animation: working 0.65s linear infinite;
+}
+@keyframes working {
+  0% { opacity: 0.35; }
+  50% { opacity: 1; }
+  100% { opacity: 0.35; }
+}
+.log-viz[data-live] .log-row.queue .cell.acked {
+  color: var(--accent-text);
+  border-style: dashed;
+  border-color: color-mix(in srgb, var(--accent) 60%, transparent);
+  background: color-mix(in srgb, var(--accent) 6%, var(--bg-sunken));
+}
+.log-viz[data-live] .log-row.queue .cell.done {
+  background: color-mix(in srgb, var(--accent) 9%, var(--bg-sunken));
+  color: var(--muted);
+}
+.queue-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 2px 0 0 78px;
+  font-size: 11.5px;
+  color: var(--faint);
+}
+.queue-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.queue-legend i {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  border: 1px solid var(--line);
+  background: var(--bg-sunken);
+}
+.queue-legend .w0 { background: color-mix(in srgb, var(--w0) 30%, var(--bg-sunken)); border-color: var(--w0); }
+.queue-legend .w1 { background: color-mix(in srgb, var(--w1) 30%, var(--bg-sunken)); border-color: var(--w1); }
+.queue-legend .acked { border: 1px dashed var(--accent); }
+.queue-legend .pos { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+@media (max-width: 640px) {
+  .queue-legend { margin-left: 0; }
+}
+
 /* Offset gap viz */
 .gap-viz {
   display: flex;

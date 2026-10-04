@@ -116,7 +116,7 @@
           <div class="ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 9 4.5-9 4.5-9-4.5L12 3Z"/><path d="m3 12 9 4.5 9-4.5"/><path d="m3 16.5 9 4.5 9-4.5"/></svg></div>
           <h3>One replicated log behind streams, caches and queues</h3>
           <p>A stream reads the log forward, a cache keeps the latest value for each key, and a queue is a cursor a consumer group shares. All three use the same durability, recovery and replication.</p>
-          <div class="viz log-viz" role="img" aria-label="One log of ten records read three ways: a stream reads each record in order, a cache keeps only the latest record for each key, and a queue has a shared cursor at offset 6.">
+          <div class="viz log-viz" role="img" aria-label="One log of ten records read three ways: a stream reads each record as it is written, a cache keeps only the newest record for each key, and two queue workers take records and finish them at different speeds, while the queue position waits at the oldest record not yet finished.">
             <div class="log-row stream" aria-hidden="true">
               <span class="label">stream</span>
               <div class="cells">
@@ -134,6 +134,12 @@
               <div class="cells">
                 <span class="cell done">0</span><span class="cell done">1</span><span class="cell done">2</span><span class="cell done">3</span><span class="cell done">4</span><span class="cell done">5</span><span class="cell cursor">6</span><span class="cell">7</span><span class="cell">8</span><span class="cell">9</span>
               </div>
+            </div>
+            <div class="queue-legend" aria-hidden="true">
+              <span><i class="w0"></i>worker 1</span>
+              <span><i class="w1"></i>worker 2</span>
+              <span><i class="acked"></i>finished, waiting on an older record</span>
+              <span><i class="pos"></i>queue position</span>
             </div>
           </div>
         </article>
