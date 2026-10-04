@@ -1579,6 +1579,18 @@ p {
   .hero-actions .btn {
     flex: 1 1 100%;
   }
+  /* Four tabs and a labelled copy button don't fit a phone-width bar. */
+  .tabs {
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tab {
+    padding: 7px 8px;
+  }
+  .window-bar .copy-label {
+    display: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
