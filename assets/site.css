@@ -687,6 +687,27 @@ p {
   border-top-color: var(--accent);
 }
 
+/* Live one-log diagram: site.js moves a shared playhead across all three rows. */
+.log-viz[data-live] .log-row.stream .cell {
+  animation: none;
+}
+.log-viz[data-live] .cell {
+  transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease, opacity 0.25s ease;
+}
+.log-viz[data-live] .cell.pending {
+  opacity: 0.35;
+}
+.log-viz[data-live] .log-row.stream .cell.read {
+  background: color-mix(in srgb, var(--accent) 7%, var(--bg-sunken));
+  color: var(--muted);
+}
+.log-viz[data-live] .log-row.stream .cell.on {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent-text);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
 /* Offset gap viz */
 .gap-viz {
   display: flex;
