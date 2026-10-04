@@ -247,3 +247,50 @@
     }).observe(canvas);
   }
 })();
+
+// One log read three ways: a single playhead drives the stream, cache and
+// queue rows together. Without JS, or with reduced motion, the static
+// picture in the markup stays.
+(() => {
+  const viz = document.querySelector(".log-viz");
+  if (!viz || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const row = (name) => [...viz.querySelectorAll(`.log-row.${name} .cell`)];
+  const stream = row("stream");
+  const cache = row("cache");
+  const queue = row("queue");
+  const keys = cache.map((cell) => cell.textContent.trim());
+  const n = stream.length;
+  const hold = 3;
+  let t = 0;
+  let timer = null;
+
+  const set = (cell, state) => {
+    cell.classList.remove("on", "read", "latest", "old", "pending", "done", "cursor");
+    if (state) cell.classList.add(state);
+  };
+
+  function draw() {
+    const head = Math.min(t, n - 1);
+    stream.forEach((cell, i) => set(cell, i === head && t < n ? "on" : i <= head ? "read" : "pending"));
+    cache.forEach((cell, i) => {
+      if (i > head) return set(cell, "pending");
+      const newer = keys.slice(i + 1, head + 1).includes(keys[i]);
+      set(cell, newer ? "old" : "latest");
+    });
+    const cursor = Math.max(0, head - 1);
+    queue.forEach((cell, i) => set(cell, i < cursor ? "done" : i === cursor ? "cursor" : "pending"));
+    t = t >= n - 1 + hold ? 0 : t + 1;
+  }
+
+  const start = () => {
+    if (timer) return;
+    viz.dataset.live = "";
+    draw();
+    timer = setInterval(draw, 650);
+  };
+  const stop = () => {
+    clearInterval(timer);
+    timer = null;
+  };
+  new IntersectionObserver((entries) => (entries[0].isIntersecting ? start() : stop())).observe(viz);
+})();
