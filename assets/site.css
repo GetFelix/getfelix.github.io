@@ -1574,3 +1574,55 @@ p {
     mask-image: linear-gradient(90deg, #000 88%, transparent);
   }
 }
+
+/* Full logo in the hero. The badge is black on white in both themes, so it
+   sits on a teal glow rather than being inverted. */
+.hero h1.hero-mark {
+  width: 300px;
+  height: 287px;
+  margin: 0 auto 8px;
+  font-size: 0;
+  line-height: 0;
+  background: none;
+  color: inherit;
+  padding: 0;
+}
+.hero-mark::before {
+  inset: -90px;
+}
+.hero-mark .orbit {
+  inset: -30px;
+  width: calc(100% + 60px);
+  height: calc(100% + 60px);
+}
+.hero-mark .orbit.inner {
+  inset: -14px;
+  width: calc(100% + 28px);
+  height: calc(100% + 28px);
+}
+.hero-mark img {
+  filter: drop-shadow(0 0 1px hsla(192, 90%, 45%, 0.5)) drop-shadow(0 0 28px var(--accent-glow)) drop-shadow(0 20px 36px rgba(0, 20, 30, 0.28));
+}
+.hero .lede {
+  margin-top: 40px;
+}
+.release-pill.below {
+  margin: 30px 0 0;
+}
+@media (max-width: 760px) {
+  .hero h1.hero-mark {
+    width: 220px;
+    height: 210px;
+  }
+  .hero-mark::before {
+    inset: -60px;
+  }
+  .hero-mark .orbit {
+    inset: -22px;
+    width: calc(100% + 44px);
+    height: calc(100% + 44px);
+  }
+  .hero .lede {
+    margin-top: 32px;
+  }
+}

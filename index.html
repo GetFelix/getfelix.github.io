@@ -21,9 +21,10 @@
 <meta property="og:image" content="https://getfelix.dev/assets/img/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="The Felix cat mark beside the words: Felix, an open-source broker for streams, caches and queues, written in Rust.">
+<meta property="og:image:alt" content="The Felix logo, a cat in a round badge above the word Felix, beside the words: an open-source broker for streams, caches and queues, written in Rust.">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" as="image" type="image/webp" imagesrcset="/assets/img/felix-logo-320.webp 320w, /assets/img/felix-logo-640.webp 640w" imagesizes="(max-width: 760px) 220px, 300px">
 <link rel="stylesheet" href="/assets/site.css">
 <script>
   (function () {
@@ -71,25 +72,19 @@
   <section class="hero" aria-labelledby="hero-title">
     <canvas class="hero-bg" aria-hidden="true"></canvas>
     <div class="wrap">
-      <div class="hero-mark">
+      <h1 class="hero-mark" id="hero-title">
         <svg class="orbit" viewBox="0 0 100 100" aria-hidden="true">
-          <circle cx="50" cy="50" r="49" fill="none" stroke="currentColor" stroke-width="0.35" stroke-dasharray="0.35 2.72" opacity="0.55"/>
-          <circle cx="50" cy="50" r="49" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-dasharray="6 30 3 48 9 70 4 138" opacity="0.9"/>
+          <circle cx="50" cy="50" r="49" fill="none" stroke="currentColor" stroke-width="0.3" stroke-dasharray="0.3 2.2" opacity="0.5"/>
+          <circle cx="50" cy="50" r="49" fill="none" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" stroke-dasharray="6 30 3 48 9 70 4 138" opacity="0.85"/>
         </svg>
         <svg class="orbit inner" viewBox="0 0 100 100" aria-hidden="true">
-          <circle cx="50" cy="50" r="49.3" fill="none" stroke="currentColor" stroke-width="0.3" stroke-dasharray="14 6" opacity="0.4"/>
+          <circle cx="50" cy="50" r="49.3" fill="none" stroke="currentColor" stroke-width="0.25" stroke-dasharray="14 6" opacity="0.35"/>
         </svg>
         <picture>
-          <source srcset="/assets/img/felix-mark-320.webp" type="image/webp">
-          <img src="/assets/img/felix-mark-320.png" alt="The Felix mark: a cartoon cat in a round badge with a teal ring" width="168" height="168">
+          <source type="image/webp" srcset="/assets/img/felix-logo-320.webp 320w, /assets/img/felix-logo-640.webp 640w" sizes="(max-width: 760px) 220px, 300px">
+          <img src="/assets/img/felix-logo-320.png" srcset="/assets/img/felix-logo-320.png 320w, /assets/img/felix-logo-640.png 640w" sizes="(max-width: 760px) 220px, 300px" alt="Felix" width="300" height="287" fetchpriority="high">
         </picture>
-      </div>
-      <a class="release-pill" href="https://github.com/GetFelix/felix/releases/tag/v0.6.0-preview">
-        <span class="tag">0.6.0-preview</span>
-        Released 2 October 2026
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      </a>
-      <h1 id="hero-title">Felix</h1>
+      </h1>
       <p class="lede">An open-source broker for streams, caches and queues, written in Rust.</p>
       <div class="hero-actions">
         <a class="btn btn-primary" href="https://docs.getfelix.dev">
@@ -101,6 +96,11 @@
           GitHub
         </a>
       </div>
+      <a class="release-pill below" href="https://github.com/GetFelix/felix/releases/tag/v0.6.0-preview">
+        <span class="tag">0.6.0-preview</span>
+        Released 2 October 2026
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
     </div>
   </section>
 
@@ -317,7 +317,7 @@
           <div class="card-body">
             <div class="card-title">
               <h3><a href="https://github.com/GetFelix/felix-webhook-relay">felix-webhook-relay</a></h3>
-              <span class="status wip">Self-hosting packages in progress</span>
+              <span class="status wip">Release coming</span>
             </div>
             <p>A webhook relay that stores each webhook durably, delivers it with retries, and replays any endpoint after an outage.</p>
             <div class="card-links">
