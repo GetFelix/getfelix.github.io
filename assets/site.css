@@ -1186,6 +1186,7 @@ p {
   display: flex;
   flex-direction: column;
   flex: 1;
+  min-width: 0;
   padding: 26px 26px 24px;
 }
 .card.has-badge .card-body {
@@ -1264,9 +1265,11 @@ p {
 .card-quick {
   position: relative;
   z-index: 2;
+  min-width: 0;
+  max-width: 100%;
 }
 .card-quick[open] {
-  flex-basis: 100%;
+  flex: 1 1 100%;
 }
 .card-quick summary {
   cursor: pointer;
@@ -1289,10 +1292,12 @@ p {
   background: var(--bg-sunken);
   border: 1px solid var(--line);
 }
+/* Wrap the long download URL rather than widen the card. */
 .quick-cmd pre {
   margin: 0;
   padding: 12px 44px 12px 14px;
-  overflow-x: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
   font-family: var(--mono);
   font-size: 12.5px;
   line-height: 1.6;
