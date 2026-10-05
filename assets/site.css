@@ -565,9 +565,6 @@ p {
   color: var(--faint);
   font-size: 15px;
 }
-.why-body .why-sign::before {
-  content: "\2014\00a0";
-}
 @media (min-width: 761px) {
   .why-body .why-line br {
     display: inline;
