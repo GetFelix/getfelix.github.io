@@ -588,6 +588,16 @@ p {
   font-size: 15px;
   font-weight: 500;
 }
+/* The signature is a mask so it takes the text color in both themes. */
+.why-sign .signature {
+  display: block;
+  width: 220px;
+  max-width: 60vw;
+  aspect-ratio: 720 / 184;
+  background: var(--text);
+  -webkit-mask: url("/assets/img/signature.png") center / contain no-repeat;
+  mask: url("/assets/img/signature.png") center / contain no-repeat;
+}
 .why-sign img {
   width: 28px;
   height: 28px;
