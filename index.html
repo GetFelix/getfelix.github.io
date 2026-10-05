@@ -25,7 +25,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" as="image" type="image/webp" imagesrcset="/assets/img/felix-logo-320.webp 320w, /assets/img/felix-logo-640.webp 640w" imagesizes="(max-width: 760px) 220px, 300px">
-<link rel="stylesheet" href="/assets/site.css?v=789439cd">
+<link rel="stylesheet" href="/assets/site.css?v=6c32f24c">
 <script>
   (function () {
     var d = document.documentElement;
@@ -36,7 +36,7 @@
     } catch (e) {}
   })();
 </script>
-<script defer src="/assets/site.js?v=789439cd"></script>
+<script defer src="/assets/site.js?v=6c32f24c"></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -52,6 +52,7 @@
     </a>
     <nav class="nav" aria-label="Main">
       <a class="sec" href="#features">Features</a>
+      <a class="sec" href="#performance">Performance</a>
       <a class="sec" href="#projects">Projects</a>
       <a class="sec" href="#get-started">Get started</a>
       <a href="https://docs.getfelix.dev">Docs</a>
@@ -264,6 +265,63 @@
   console.<span class="tok-f">log</span>(<span class="tok-s">"Received:"</span>, event.payload.<span class="tok-f">toString</span>());
 }</code></pre>
       </div>
+    </div>
+  </section>
+
+  <section class="section" id="performance" aria-labelledby="perf-title">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Performance</span>
+        <h2 id="perf-title">Measured on one broker</h2>
+        <p>Preview results from Felix 0.6.0 on one 8 vCPU Azure VM with local NVMe, driven by four load generators in the same region. "Durable" means the broker fsyncs before it acks.</p>
+        <span class="perf-status">0.6.0-preview · single region · more results coming</span>
+      </div>
+
+      <div class="perf-stats">
+        <article class="stat reveal">
+          <p class="stat-value">4.1<span class="unit">GB/s</span></p>
+          <h3>Published, in memory</h3>
+          <p class="stat-note">4 KiB records in batches of 64, fire-and-forget. The broker was CPU-bound at 7.4 of 8 cores. Mean of 3 runs.</p>
+        </article>
+        <article class="stat reveal" style="--d:.06s">
+          <p class="stat-value">1.43<span class="unit">GB/s</span></p>
+          <h3>Published, durable</h3>
+          <p class="stat-note">Same workload with an fsync before each ack. 97% of what fio measured on the same NVMe array. Mean of 3 runs.</p>
+        </article>
+        <article class="stat reveal" style="--d:.12s">
+          <p class="stat-value">2.27<span class="unit">M records/s</span></p>
+          <h3>Acked, durable, small records</h3>
+          <p class="stat-note">256 B records in batches of 64, fsync before each ack. 2.27 to 2.29 million across 3 runs.</p>
+        </article>
+        <article class="stat reveal" style="--d:.18s">
+          <p class="stat-value">345<span class="unit">µs p50</span></p>
+          <h3>Durable publish to delivery</h3>
+          <p class="stat-note">One 256 B publish in flight, received by a subscriber on a second connection after the fsync. p99 445 µs. 2 runs.</p>
+        </article>
+      </div>
+
+      <figure class="perf-chart reveal" style="--d:.1s">
+        <figcaption>
+          <h3>Latency, one publish in flight</h3>
+          <p>256 B records. Ack is the publisher's round trip. Delivery is when a subscriber on another connection receives the record. The lighter end of a bar is the spread between two runs.</p>
+        </figcaption>
+        <div class="lat-group">
+          <span class="lat-mode">In memory</span>
+          <div class="lat-row" style="--lo:175;--hi:204"><span class="lat-label">ack p50</span><span class="lat-track"><i></i></span><span class="lat-val">175–204 µs</span></div>
+          <div class="lat-row" style="--lo:175;--hi:178"><span class="lat-label">delivery p50</span><span class="lat-track"><i></i></span><span class="lat-val">175–178 µs</span></div>
+          <div class="lat-row" style="--lo:213;--hi:248"><span class="lat-label">delivery p99</span><span class="lat-track"><i></i></span><span class="lat-val">213–248 µs</span></div>
+        </div>
+        <div class="lat-group">
+          <span class="lat-mode">Durable, fsync before ack</span>
+          <div class="lat-row" style="--lo:347;--hi:351"><span class="lat-label">ack p50</span><span class="lat-track"><i></i></span><span class="lat-val">347–351 µs</span></div>
+          <div class="lat-row" style="--lo:345;--hi:347"><span class="lat-label">delivery p50</span><span class="lat-track"><i></i></span><span class="lat-val">345–347 µs</span></div>
+          <div class="lat-row" style="--lo:445;--hi:445"><span class="lat-label">delivery p99</span><span class="lat-track"><i></i></span><span class="lat-val">445 µs</span></div>
+        </div>
+        <div class="lat-axis" aria-hidden="true"><span></span><span class="lat-ticks"><b style="--t:0">0</b><b style="--t:100">100</b><b style="--t:200">200</b><b style="--t:300">300</b><b style="--t:400">400</b><b style="--t:500">500 µs</b></span><span></span></div>
+        <p class="perf-foot">Replicated across three availability zones, a Quorum ack in memory took 454 to 475 µs at p50, about 280 µs more than a single broker. That ran on three 4 vCPU VMs with an earlier 0.6.0 build.</p>
+      </figure>
+
+      <p class="perf-more reveal">Performance analysis is ongoing. A full write-up with the method and every run is coming.</p>
     </div>
   </section>
 

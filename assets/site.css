@@ -1784,3 +1784,197 @@ p {
     margin-top: 32px;
   }
 }
+
+/* Performance */
+.perf-status {
+  display: inline-block;
+  margin-top: 18px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--accent-text);
+  background: var(--accent-soft);
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+}
+.perf-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+.stat {
+  min-width: 0;
+  padding: 26px 24px;
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-md);
+}
+.stat-value {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 6px;
+  font-size: clamp(36px, 4vw, 46px);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.stat-value .unit {
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--accent-text);
+}
+.stat h3 {
+  margin-top: 14px;
+  font-size: 16px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+.stat-note {
+  margin-top: 8px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.perf-chart {
+  margin: 16px 0 0;
+  padding: 28px;
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-md);
+}
+.perf-chart figcaption h3 {
+  font-size: 19px;
+  font-weight: 650;
+  letter-spacing: -0.018em;
+}
+.perf-chart figcaption p {
+  margin-top: 6px;
+  max-width: 68ch;
+  font-size: 14.5px;
+  color: var(--muted);
+}
+.lat-group {
+  margin-top: 24px;
+}
+.lat-mode {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+/* Shared by the bars and the axis so the ticks line up with the bars. */
+.lat-row,
+.lat-axis {
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr) 96px;
+  align-items: center;
+  gap: 12px;
+}
+.lat-row + .lat-row {
+  margin-top: 6px;
+}
+.lat-label,
+.lat-val {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.lat-val {
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+/* Scale is 0 to 500 µs. The solid part ends at the faster run, the tint at the slower one. */
+.lat-track {
+  position: relative;
+  height: 14px;
+  background: repeating-linear-gradient(to right, var(--line) 0 1px, transparent 1px 20%);
+}
+.lat-track i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: calc(var(--hi) / 500 * 100%);
+  border-radius: 0 4px 4px 0;
+  background: linear-gradient(to right, var(--accent) 0 calc(var(--lo) / var(--hi) * 100%), color-mix(in srgb, var(--accent) 40%, transparent) 0);
+  transform-origin: left center;
+  transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) 0.25s;
+}
+.js .perf-chart:not(.in) .lat-track i {
+  transform: scaleX(0);
+}
+.lat-axis {
+  margin-top: 10px;
+}
+.lat-ticks {
+  position: relative;
+  height: 16px;
+}
+.lat-ticks b {
+  position: absolute;
+  left: calc(var(--t) / 500 * 100%);
+  transform: translateX(-50%);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--faint);
+  white-space: nowrap;
+}
+.lat-ticks b:first-child {
+  transform: none;
+}
+.lat-ticks b:last-child {
+  transform: translateX(-100%);
+}
+.perf-foot {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  font-size: 14px;
+  color: var(--muted);
+}
+@media (max-width: 960px) {
+  .perf-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 760px) {
+  .perf-chart {
+    padding: 22px;
+  }
+}
+@media (max-width: 520px) {
+  .perf-stats {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  /* The label moves above the bar so the bar keeps most of the width. */
+  .lat-row,
+  .lat-axis {
+    grid-template-columns: minmax(0, 1fr) 80px;
+    column-gap: 10px;
+    row-gap: 4px;
+  }
+  .lat-label {
+    grid-column: 1 / -1;
+  }
+  .lat-axis > span:first-child {
+    display: none;
+  }
+  .lat-row + .lat-row {
+    margin-top: 10px;
+  }
+  .lat-val {
+    font-size: 12px;
+  }
+}
+.perf-more {
+  margin-top: 22px;
+  font-size: 15px;
+  color: var(--muted);
+}
