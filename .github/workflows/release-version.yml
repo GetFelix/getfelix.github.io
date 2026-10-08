@@ -1,0 +1,70 @@
+name: Release version
+
+# Keeps the version, release date and JSON-LD on index.html in step with the
+# newest Felix release, by opening a PR when they differ.
+
+on:
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: release-version
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Find the newest release
+        id: latest
+        run: |
+          # Prereleases count. The rolling `nightly` prerelease does not.
+          gh release list -R GetFelix/felix --exclude-drafts --limit 50 \
+            --json tagName,publishedAt \
+            --jq '[.[] | select(.tagName | test("nightly") | not)] | sort_by(.publishedAt) | last | "\(.tagName) \(.publishedAt)"' \
+            > latest.txt
+          read -r tag published < latest.txt
+          rm latest.txt
+          if [ -z "$tag" ] || [ "$tag" = "null" ]; then
+            echo "no release found" >&2
+            exit 1
+          fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "published=$published" >> "$GITHUB_OUTPUT"
+
+      - name: Update the page
+        run: python3 .github/scripts/release_version.py "${{ steps.latest.outputs.tag }}" "${{ steps.latest.outputs.published }}"
+
+      - name: Open a PR
+        env:
+          TAG: ${{ steps.latest.outputs.tag }}
+        run: |
+          if git diff --quiet; then
+            echo "The page already shows $TAG."
+            exit 0
+          fi
+          branch="release-version/$TAG"
+          # A PR for this release is already open or was closed on purpose.
+          if git ls-remote --exit-code --heads origin "$branch" > /dev/null; then
+            echo "Branch $branch already exists."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git commit -am "Point the page at Felix $TAG"
+          git push origin "$branch"
+          gh pr create --base main --head "$branch" \
+            --title "Point the page at Felix $TAG" \
+            --body "Felix $TAG is the newest release, so this updates the version, the release date and the JSON-LD on index.html.
+
+          Before merging, check the Get started section: its install commands and the sentence above them assume a pre-release (\`--pre\`, \`@preview\`)."

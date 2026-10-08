@@ -1620,6 +1620,12 @@ p {
     grid-row: 2;
   }
 }
+/* With two columns, an odd last tile would sit alone in half a row. */
+@media (min-width: 761px) and (max-width: 960px) {
+  .tile:last-child:nth-child(even) {
+    grid-column: span 2;
+  }
+}
 @media (max-width: 760px) {
   :root {
     --gutter: 16px;
