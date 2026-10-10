@@ -2056,3 +2056,659 @@ p {
   font-size: 15px;
   color: var(--muted);
 }
+
+/* How Felix is different. Without JS, or with reduced motion, every element
+   sits in its static state, which tells the whole story; site.js adds the
+   classes that run the animations. */
+.differ-fig {
+  margin: 0;
+}
+.differ-fig + .differ-fig {
+  margin-top: 64px;
+}
+.differ-fig figcaption {
+  margin-top: 18px;
+  max-width: 68ch;
+  color: var(--muted);
+  font-size: 15.5px;
+}
+.stage-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+.stage-label {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.stage-label.felix {
+  color: var(--accent-text);
+}
+.stage {
+  position: relative;
+  isolation: isolate;
+  flex: 1;
+  padding: 16px;
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+.stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 22px 22px;
+  background-position: -1px -1px;
+  -webkit-mask-image: radial-gradient(ellipse 75% 70% at 50% 50%, #000 15%, transparent 80%);
+  mask-image: radial-gradient(ellipse 75% 70% at 50% 50%, #000 15%, transparent 80%);
+  pointer-events: none;
+}
+.stage.glow {
+  border-color: color-mix(in srgb, var(--accent) 24%, var(--line));
+}
+.stage.glow::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(ellipse 60% 55% at 62% 50%, var(--accent-glow), transparent 70%);
+  opacity: 0.35;
+  pointer-events: none;
+}
+.stage svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* Stack collapse */
+.collapse {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 18px;
+}
+.collapse-arrow {
+  align-self: center;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  margin-top: 30px;
+  border-radius: 50%;
+  color: var(--accent-text);
+  background: var(--accent-soft);
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+}
+.collapse-arrow svg {
+  width: 18px;
+  height: 18px;
+}
+.sc text {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  fill: var(--text);
+}
+.sc .app rect {
+  fill: var(--bg-sunken);
+  stroke: var(--line-strong);
+}
+.sc .w0, .sc .b0 { --wc: hsl(32, 50%, 52%); }
+.sc .w1, .sc .b1 { --wc: hsl(268, 32%, 62%); }
+.sc .w2, .sc .b2 { --wc: hsl(152, 32%, 45%); }
+.sc .w3, .sc .b3 { --wc: hsl(346, 42%, 58%); }
+.sc .wire path {
+  fill: none;
+  vector-effect: non-scaling-stroke;
+  stroke: var(--wc);
+  stroke-width: 1.25;
+}
+.sc .wire circle,
+.sc .bar {
+  fill: var(--wc);
+}
+.sc .bx {
+  fill: var(--bg-sunken);
+  stroke: var(--line-strong);
+}
+.sc text.bs,
+.sc text.fs {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 400;
+  fill: var(--faint);
+}
+.sc .lock {
+  fill: none;
+  stroke: var(--faint);
+  stroke-width: 1.3;
+  stroke-linecap: round;
+}
+.sc .lock.acc {
+  stroke: var(--accent-text);
+}
+.sc .halo {
+  fill: var(--accent);
+  opacity: 0.28;
+}
+.sc .fx {
+  fill: color-mix(in srgb, var(--accent) 7%, var(--bg-raised));
+  stroke: color-mix(in srgb, var(--accent) 70%, transparent);
+}
+.sc text.ft {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.sc text.fa {
+  font-size: 12px;
+}
+.sc .lc {
+  fill: var(--accent);
+  fill-opacity: calc(0.08 + var(--i) * 0.035);
+  stroke: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+.sc .chp rect {
+  fill: var(--bg-raised);
+  stroke: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+.sc .chp text {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  fill: var(--accent-text);
+}
+.sc .sep {
+  stroke: var(--line-strong);
+}
+.sc .link {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.75;
+  stroke-dasharray: 1;
+}
+.sc .link-end {
+  fill: var(--accent);
+}
+.sc .from {
+  visibility: hidden;
+}
+.sc .wire {
+  transform-box: view-box;
+  transform-origin: 0 150px;
+}
+.sc .box,
+.sc .to {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+/* Armed: the after panel starts as a copy of the usual stack. */
+.collapse.armed .after .from {
+  visibility: visible;
+}
+.collapse.armed .after .to {
+  opacity: 0;
+  transform: scale(0.94);
+}
+.collapse.armed .after .lc,
+.collapse.armed .after .link-end {
+  opacity: 0;
+}
+.collapse.armed .after .chp {
+  opacity: 0;
+  transform: translateY(5px);
+}
+.collapse.armed .after .link {
+  stroke-dashoffset: 1;
+}
+/* Go: the wires fold into one line and the four boxes merge into the log. */
+.collapse.go .after .wire {
+  opacity: 0;
+  transform: scaleY(0);
+  transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1) calc(0.2s + var(--i) * 0.08s), opacity 0.4s ease calc(0.8s + var(--i) * 0.08s);
+}
+.collapse.go .after .box {
+  opacity: 0;
+  transform: translate(-20px, var(--dy)) scale(0.45);
+  transition: transform 1s cubic-bezier(0.7, 0, 0.25, 1) calc(0.4s + var(--i) * 0.09s), opacity 0.35s ease calc(1s + var(--i) * 0.09s);
+}
+.collapse.go .after .to {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.7s ease 1.15s, transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) 1.15s;
+}
+.collapse.go .after .halo {
+  animation: sc-pulse 2.2s ease 1.2s both;
+}
+.collapse.go .after .lc {
+  opacity: 1;
+  transition: opacity 0.3s ease calc(1.35s + var(--i) * 0.045s);
+}
+.collapse.go .after .chp {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.5s ease calc(1.6s + var(--i) * 0.09s), transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) calc(1.6s + var(--i) * 0.09s);
+}
+.collapse.go .after .link {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.8s cubic-bezier(0.65, 0, 0.35, 1) 1s;
+}
+.collapse.go .after .link-end {
+  opacity: 1;
+  transition: opacity 0.3s ease 1.7s;
+}
+@keyframes sc-pulse {
+  0% { opacity: 0; }
+  40% { opacity: 0.6; }
+  100% { opacity: 0.28; }
+}
+
+/* Slow-subscriber isolation */
+.iso-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: 18px;
+}
+.stage.mini {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 12px 14px;
+}
+.mini-cap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  font-size: 13.5px;
+  color: var(--muted);
+}
+.mini-cap svg {
+  flex-shrink: 0;
+  width: 15px;
+  height: 15px;
+  color: var(--warn);
+}
+.iso-svg .lane {
+  fill: none;
+  stroke: var(--line-strong);
+  stroke-width: 1.25;
+}
+.iso-svg .jam-tint,
+.iso-svg .cut-tint {
+  stroke: var(--warn);
+  stroke-width: 2;
+}
+.iso-svg .cap {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  fill: var(--faint);
+}
+.iso-svg .s0 {
+  stop-color: var(--accent);
+  stop-opacity: 0;
+}
+.iso-svg .s1 {
+  stop-color: var(--accent);
+  stop-opacity: 0.6;
+}
+.iso-svg .dt {
+  fill: url(#iso-tail);
+}
+.iso-svg .dh {
+  fill: var(--accent);
+  opacity: 0.16;
+}
+.iso-svg .dc {
+  fill: var(--accent);
+}
+.iso-svg .dw {
+  fill: var(--warn);
+  opacity: 0;
+}
+.iso-svg .bk {
+  fill: var(--bg-sunken);
+  stroke: var(--line-strong);
+}
+.iso-svg .meter {
+  fill: color-mix(in srgb, var(--accent) 55%, transparent);
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+.iso-svg .m-ab {
+  transform: scaleY(0.25);
+}
+.iso-svg .m-c {
+  fill: color-mix(in srgb, var(--warn) 65%, transparent);
+}
+.iso-svg .tick {
+  stroke: var(--bg-raised);
+  stroke-width: 1.5;
+}
+.iso-svg .bk-full {
+  fill: none;
+  stroke: var(--warn);
+  stroke-width: 1.5;
+}
+.iso-svg .flash {
+  fill: none;
+  stroke: var(--warn);
+  stroke-width: 1.5;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.iso-svg .cdot {
+  opacity: var(--o, 0);
+  transform: translateX(var(--x, 0px));
+  transform-box: fill-box;
+  transform-origin: 75% 50%;
+}
+.iso-svg .pc {
+  fill: var(--accent-soft);
+  stroke: var(--accent);
+  stroke-width: 1.25;
+}
+.iso-svg .ph {
+  fill: var(--accent);
+  opacity: 0.08;
+}
+.iso-svg .pi {
+  fill: var(--accent-text);
+}
+.iso-svg .sub circle {
+  fill: var(--bg-sunken);
+  stroke: color-mix(in srgb, var(--accent) 55%, transparent);
+}
+.iso-svg .sub text {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  fill: var(--text);
+}
+.iso-svg .slow circle,
+.iso-svg .slow-ring {
+  fill: none;
+  stroke: var(--warn);
+  stroke-width: 1.25;
+  stroke-dasharray: 3 3;
+}
+.iso-svg .slow text {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  fill: var(--warn);
+}
+.iso-svg .pub-warn {
+  fill: none;
+  stroke: var(--warn);
+  stroke-width: 1.5;
+}
+.iso-svg .backlog {
+  fill: var(--warn);
+}
+.iso-svg .snap {
+  transform-box: view-box;
+  transform-origin: 356px 92px;
+  transform: rotate(-9deg);
+}
+.iso-svg .cut-x {
+  fill: none;
+  stroke: var(--warn);
+  stroke-width: 1.75;
+  stroke-linecap: round;
+}
+.iso-svg .sub-cut {
+  opacity: 0.35;
+}
+.iso-svg .jam .dc {
+  fill: var(--warn);
+}
+.iso-svg .jam .dh {
+  fill: var(--warn);
+  opacity: 0.18;
+}
+.iso-svg .cap.warn {
+  fill: var(--warn);
+}
+.iso-svg .starved {
+  opacity: 0.45;
+}
+.iso-svg .sub-cut circle {
+  stroke-dasharray: 2 3;
+}
+.iso-gap {
+  display: grid;
+  gap: 10px;
+  margin-top: 8px;
+}
+.iso-gap .gap-viz span {
+  min-width: 32px;
+  height: 28px;
+  font-size: 12.5px;
+}
+.iso-gap .gap-viz .miss {
+  color: var(--warn);
+  border-color: color-mix(in srgb, var(--warn) 60%, transparent);
+  text-decoration: line-through;
+  opacity: 1;
+}
+.iso-note {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.iso-note {
+  display: grid;
+}
+.iso-note > span {
+  grid-area: 1 / 1;
+}
+.iso-note .s0,
+.iso-note .s1 {
+  opacity: 0;
+}
+.iso-note .s1,
+.iso-note b {
+  color: var(--warn);
+  font-weight: 500;
+}
+
+/* Live isolation loop. One 16 s cycle; a record leaves every 0.8 s and takes
+   2.4 s to reach its subscriber's queue. */
+.iso.live .flow {
+  animation: iso-flow 0.8s linear infinite;
+}
+.iso.live .cdot {
+  animation: iso-c 16s linear var(--d) infinite;
+}
+.iso.live .cdot.drop {
+  animation-name: iso-drop;
+}
+.iso.live .cdot .dw {
+  animation: iso-warm 16s linear var(--d) infinite;
+}
+.iso.live .flash {
+  animation: iso-flash 16s ease-out var(--d) infinite;
+}
+.iso.live .m-c {
+  animation: iso-fill 16s linear infinite;
+}
+.iso.live .bk-full {
+  animation: iso-full 16s linear infinite;
+}
+.iso.live .slow {
+  animation: iso-slow 16s linear infinite;
+}
+/* Elsewhere: the bad state holds in every frame; only these move. */
+.iso.live .jam {
+  animation: else-creep 1.6s linear infinite;
+}
+.iso.live .pub-warn,
+.iso.live .backlog {
+  animation: else-pulse 1.6s ease-in-out infinite;
+}
+.iso.live .backlog.k1 { animation-delay: -0.4s; }
+.iso.live .backlog.k2 { animation-delay: -0.8s; }
+.iso.live .cflow {
+  animation: iso-flow 0.8s linear infinite;
+}
+.iso.live .gd,
+.iso.live .s2 {
+  animation: iso-s2 16s linear infinite;
+}
+.iso.live .s0 {
+  animation: iso-s0 16s linear infinite;
+}
+.iso.live .s1 {
+  animation: iso-s1 16s linear infinite;
+}
+/* Off screen, nothing runs. */
+.iso.live:not(.play) * {
+  animation-play-state: paused !important;
+}
+
+@keyframes iso-flow {
+  to { transform: translateX(84px); }
+}
+@keyframes iso-c {
+  0% { transform: translateX(0); opacity: 0; }
+  1.5% { opacity: 1; }
+  15% { transform: translateX(252px); opacity: 1; }
+  16.5%,
+  100% { transform: translateX(256px); opacity: 0; }
+}
+@keyframes iso-drop {
+  0% { transform: translateX(0) scale(1); opacity: 0; }
+  1.5% { opacity: 1; }
+  15% { transform: translateX(252px) scale(1); opacity: 1; }
+  17% { transform: translateX(253px) scale(1.7); opacity: 0.75; }
+  19.5%,
+  100% { transform: translateX(253px) scale(2.1); opacity: 0; }
+}
+@keyframes iso-warm {
+  0%,
+  12% { opacity: 0; }
+  15%,
+  100% { opacity: 1; }
+}
+@keyframes iso-flash {
+  0% { opacity: 0.95; transform: scale(0.6); }
+  9%,
+  100% { opacity: 0; transform: scale(2.6); }
+}
+@keyframes iso-fill {
+  0%,
+  34.5% { transform: scaleY(0); }
+  35.5%,
+  39.5% { transform: scaleY(0.25); }
+  40.5%,
+  44.5% { transform: scaleY(0.5); }
+  45.5%,
+  49.5% { transform: scaleY(0.75); }
+  50.5%,
+  72.5% { transform: scaleY(1); }
+  77.5%,
+  100% { transform: scaleY(0); }
+}
+@keyframes iso-full {
+  0%,
+  49.5% { opacity: 0; }
+  50.5%,
+  72.5% { opacity: 1; }
+  74%,
+  100% { opacity: 0; }
+}
+@keyframes iso-slow {
+  0%,
+  26% { opacity: 0; }
+  28.5%,
+  72% { opacity: 1; }
+  75%,
+  100% { opacity: 0; }
+}
+/* One sentence at a time, in step with the chips: C keeps up, C slows,
+   then 41-44 dropped and the resume point, all at the first drop. */
+@keyframes iso-s0 {
+  0%,
+  26.5% { opacity: 1; }
+  28%,
+  97% { opacity: 0; }
+  98.5%,
+  100% { opacity: 1; }
+}
+@keyframes iso-s1 {
+  0%,
+  27% { opacity: 0; }
+  28.5%,
+  53.5% { opacity: 1; }
+  55%,
+  100% { opacity: 0; }
+}
+@keyframes iso-s2 {
+  0%,
+  54.5% { opacity: 0; }
+  56%,
+  96% { opacity: 1; }
+  98.5%,
+  100% { opacity: 0; }
+}
+@keyframes else-creep {
+  to { transform: translateX(14px); }
+}
+@keyframes else-pulse {
+  50% { opacity: 0.35; }
+}
+/* The nav has room for this link only on wide screens. */
+@media (max-width: 960px) {
+  .nav .sec-wide {
+    display: none;
+  }
+}
+@media (max-width: 760px) {
+  .collapse {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .collapse-arrow {
+    justify-self: center;
+    margin: 0;
+    transform: rotate(90deg);
+  }
+  .iso-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .stage {
+    padding: 12px;
+  }
+  .differ-fig + .differ-fig {
+    margin-top: 48px;
+  }
+  /* SVG text scales with the panel, so it starts larger on a phone. */
+  .sc text {
+    font-size: 15px;
+  }
+  .sc text.bs,
+  .sc text.fs {
+    font-size: 12px;
+  }
+  .sc .chp text {
+    font-size: 13px;
+  }
+  .iso-svg .cap,
+  .iso-svg .slow text {
+    font-size: 13px;
+  }
+  .iso-svg .sub text {
+    font-size: 14px;
+  }
+}
+
