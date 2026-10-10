@@ -2712,3 +2712,896 @@ p {
   }
 }
 
+
+/* Clustering. The markup carries the end of the first step, so without JS the
+   figure shows a write acknowledged by 2 of 3. site.js plays the steps by
+   adding one class per beat (a-send, a-b1, ... move, reset) to .cl-fig. */
+.cluster {
+  background: var(--bg-sunken);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.cl-fig {
+  margin: 0;
+}
+.cl-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+  gap: 18px;
+}
+.cl-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px 20px 20px;
+}
+.cl-conf {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--faint);
+}
+.cl-conf span {
+  padding: 3px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--bg-sunken) 70%, transparent);
+}
+.cl-conf b {
+  font-weight: 500;
+  color: var(--accent-text);
+}
+.cl-fig figcaption {
+  margin-top: 18px;
+  max-width: 68ch;
+  color: var(--muted);
+  font-size: 15.5px;
+}
+
+.cl-svg text {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  fill: var(--muted);
+}
+.cl-svg .shard {
+  fill: var(--faint);
+}
+.cl-svg .bname {
+  fill: var(--text);
+}
+.cl-svg .st {
+  font-size: 10.5px;
+}
+.cl-svg .client {
+  fill: var(--bg-raised);
+  stroke: var(--line-strong);
+}
+.cl-svg .client-t {
+  fill: var(--muted);
+}
+.cl-svg .link,
+.cl-svg .link-on {
+  fill: none;
+  stroke-width: 1.5;
+}
+.cl-svg .link {
+  stroke: var(--line-strong);
+}
+.cl-svg .link-on {
+  stroke: var(--accent);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.cl-svg .card-bg {
+  fill: var(--bg-raised);
+  stroke: var(--line-strong);
+}
+.cl-svg .card-down {
+  fill: none;
+  stroke: var(--warn);
+  stroke-width: 1.5;
+  stroke-dasharray: 5 5;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.cl-svg .up-dot {
+  fill: var(--ok);
+}
+.cl-svg .st-up text {
+  fill: var(--ok);
+}
+.cl-svg .st-down text {
+  fill: var(--warn);
+}
+.cl-svg .x {
+  fill: none;
+  stroke: var(--warn);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.cl-svg .st-up,
+.cl-svg .st-down,
+.cl-svg .card,
+.cl-svg .chips {
+  transition: opacity 0.4s ease;
+}
+.cl-svg .st-down {
+  opacity: 0;
+}
+.cl-svg .chip-bg {
+  fill: var(--bg-sunken);
+  stroke: var(--line);
+}
+.cl-svg .lf-on {
+  fill: var(--accent-soft);
+  stroke: var(--accent);
+  stroke-width: 1.5;
+}
+.cl-svg .lf-glow {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 5;
+  opacity: 0.16;
+}
+.cl-svg .lf-off {
+  fill: none;
+  stroke: var(--warn);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 4;
+  opacity: 0;
+}
+.cl-svg .lf-on,
+.cl-svg .lf-glow,
+.cl-svg .lf-off {
+  transition: opacity 0.4s ease;
+}
+.cl-svg .lf0 {
+  transition: transform 0.9s cubic-bezier(0.6, 0, 0.25, 1);
+}
+.cl-svg .crown {
+  fill: var(--accent-text);
+}
+.cl-svg .fol-ic {
+  fill: none;
+  stroke: var(--faint);
+  stroke-width: 1.5;
+}
+.cl-svg .r-lead text {
+  fill: var(--accent-text);
+}
+.cl-svg .r-fol text {
+  fill: var(--faint);
+}
+.cl-svg .lock {
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 1.4;
+}
+.cl-svg .r-fence text {
+  fill: var(--muted);
+}
+.cl-svg .r-lead,
+.cl-svg .r-fol,
+.cl-svg .r-fence {
+  transition: opacity 0.15s ease;
+}
+.cl-svg .q {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.cl-svg .q tspan {
+  fill: var(--accent-text);
+}
+.cl-svg .tally {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.a-b1 .qa,
+.b-b2 .qb {
+  opacity: 1;
+}
+.cl-svg .rec.old {
+  fill: color-mix(in srgb, var(--muted) 34%, transparent);
+}
+.cl-svg .slot {
+  fill: none;
+  stroke: var(--line-strong);
+  stroke-dasharray: 2.5 2.5;
+}
+.cl-svg .rec.new {
+  fill: var(--accent);
+  opacity: 0;
+  transform: scale(0.3);
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: opacity 0.3s ease, transform 0.45s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+.cl-svg .kept {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.cl-svg .pip {
+  fill: none;
+  stroke: var(--faint);
+  stroke-width: 1.4;
+}
+.cl-svg .pf {
+  fill: var(--accent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.cl-svg .ack circle {
+  fill: var(--accent);
+}
+.cl-svg .ack path {
+  fill: none;
+  stroke: var(--on-accent);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.cl-svg .ack {
+  opacity: 0;
+  transform: scale(0.4);
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+.cl-svg .mv {
+  opacity: 0;
+}
+.cl-svg .dot-h {
+  fill: var(--accent);
+  opacity: 0.25;
+}
+.cl-svg .dot-c {
+  fill: var(--accent);
+}
+.cl-svg .ack-ring {
+  fill: var(--bg-raised);
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+.cl-svg .cp-bg {
+  fill: var(--bg-raised);
+  stroke: var(--line-strong);
+}
+.cl-svg .cp-pulse {
+  fill: var(--accent-soft);
+  stroke: var(--accent);
+  opacity: 0;
+}
+.cl-svg .cp-l {
+  fill: var(--faint);
+}
+.cl-svg .cp-m {
+  fill: var(--text);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+/* State by beat. Base: shard 0 led by broker 1, nothing new written. */
+.c00 .r-fol,
+.c01 .r-lead,
+.c01 .r-fence {
+  opacity: 0;
+}
+.cl-svg .m0,
+.cl-svg .l0 {
+  opacity: 1;
+}
+.a-b1 .qa .p0,
+.a-b2 .qa .p1,
+.a-b3 .qa .p2,
+.a-b1 .qa .q1,
+.a-b2 .qa .q2,
+.a-b3 .qa .q3 {
+  opacity: 1;
+}
+.a-b2 .qa .q1,
+.a-b3 .qa .q2 {
+  opacity: 0;
+}
+.a-b1 .c00 .na,
+.a-b2 .c01 .na,
+.a-b3 .c02 .na,
+.a-ok .ta {
+  opacity: 1;
+  transform: none;
+}
+.down .k0 {
+  opacity: 0.38;
+}
+.down .k0 .card-down,
+.down .st-down {
+  opacity: 1;
+}
+.down .k0 .st-up,
+.down .l0,
+.down .c00 .r-lead,
+.down .lf0 .lf-on,
+.down .lf0 .lf-glow {
+  opacity: 0;
+}
+.down .card.k0 {
+  opacity: 1;
+}
+.down .card.k0 .card-bg,
+.down .card.k0 .bname {
+  opacity: 0.45;
+}
+.down .lf0 .lf-off {
+  opacity: 1;
+}
+.promote .lf0 {
+  transform: translateY(126px);
+}
+.promote .lf0 .lf-on,
+.promote .lf0 .lf-glow,
+.promote .c01 .r-lead,
+.promote .l1,
+.promote .m1 {
+  opacity: 1;
+}
+.promote .lf0 .lf-glow {
+  opacity: 0.16;
+}
+.promote .lf0 .lf-off,
+.promote .c01 .r-fol,
+.promote .m0,
+.promote .ta {
+  opacity: 0;
+}
+.down .qa {
+  opacity: 0;
+}
+.b-b2 .qb .p1,
+.b-b3 .qb .p2,
+.b-b1 .qb .p0,
+.b-b2 .qb .q1,
+.b-b3 .qb .q2,
+.b-b1 .qb .q3 {
+  opacity: 1;
+}
+.b-b3 .qb .q1,
+.b-b1 .qb .q2 {
+  opacity: 0;
+}
+.b-b2 .c01 .nb,
+.b-b3 .c02 .nb,
+.b-b1 .c00 .nb,
+.b-ok .tb {
+  opacity: 1;
+  transform: none;
+}
+.up .k0,
+.up .card.k0 .card-bg,
+.up .card.k0 .bname,
+.up .k0 .st-up,
+.up .c00 .r-fol,
+.up .m2 {
+  opacity: 1;
+}
+.up .k0 .card-down,
+.up .st-down,
+.up .m1 {
+  opacity: 0;
+}
+.fence .c01 .r-lead,
+.fence .m2,
+.fence .qb,
+.fence .tb {
+  opacity: 0;
+}
+.fence .c01 .r-fence,
+.fence .m3 {
+  opacity: 1;
+}
+.move .lf0 {
+  transform: none;
+}
+.move .c01 .r-fence,
+.move .c00 .r-fol,
+.move .l1 {
+  opacity: 0;
+}
+.move .c01 .r-fol,
+.move .c00 .r-lead,
+.move .l0 {
+  opacity: 1;
+}
+/* A role changes as the leader frame arrives, not as it leaves. */
+.promote:not(.fence) .c01 .r-lead,
+.promote:not(.fence) .c01 .r-fol,
+.move .c00 .r-lead,
+.move .c00 .r-fol {
+  transition-delay: 0.7s;
+}
+.reset .rec.new {
+  opacity: 0;
+  transform: scale(0.3);
+}
+.reset .tally {
+  opacity: 0;
+}
+.reset .m3 {
+  opacity: 0;
+}
+.reset .m0 {
+  opacity: 1;
+}
+
+/* Records in flight. Each runs only between the beat that sends it and the
+   beat that lands it, so a jump to a later step never replays one. */
+.a-send:not(.a-b1) .d-a,
+.a-rep:not(.a-b2) .d-a2,
+.b-send:not(.b-b2) .d-b,
+.b-rep:not(.b-b3) .d-b3,
+.up:not(.b-b1) .d-b1 {
+  animation: cl-go 0.6s cubic-bezier(0.45, 0, 0.3, 1) both;
+}
+.a-send:not(.a-b1) .d-a,
+.b-send:not(.b-b2) .d-b {
+  animation-duration: 0.7s;
+}
+.a-rep:not(.a-b3) .d-a3 {
+  animation: cl-go 2s cubic-bezier(0.45, 0, 0.3, 1) both;
+}
+.a-ack:not(.a-ok) .d-aa,
+.b-ack:not(.b-ok) .d-ba {
+  animation: cl-go 0.6s cubic-bezier(0.45, 0, 0.3, 1) both;
+}
+.promote:not(.b-send) .kept {
+  animation: cl-kept 0.75s ease-out 0.9s 2 both;
+}
+.promote:not(.b-send) .cp-pulse,
+.fence:not(.move) .cp-pulse {
+  animation: cl-pulse 1.2s ease-out both;
+}
+@keyframes cl-go {
+  0% {
+    opacity: 0;
+    transform: translate(var(--x0), var(--y0));
+  }
+  12%,
+  88% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--x1), var(--y1));
+  }
+}
+@keyframes cl-kept {
+  0% {
+    opacity: 0.9;
+    transform: scale(0.6);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.7);
+  }
+}
+@keyframes cl-pulse {
+  0% {
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.cl-jump .cl-svg *,
+.cl-jump .cl-svg *::before {
+  transition: none !important;
+}
+.cl-fig:not(.play) .cl-svg *,
+.cl-fig:not(.play) .cl-step::after {
+  animation-play-state: paused !important;
+}
+
+/* Steps */
+.cl-side {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+.cl-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.cl-step {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: var(--bg-raised);
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+.cl-step button {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 12px;
+  width: 100%;
+  padding: 13px 16px 14px 14px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.cl-step button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+  border-radius: var(--radius-sm);
+}
+.cl-step .n {
+  grid-row: span 2;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid var(--line-strong);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--faint);
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+.cl-step .t {
+  font-weight: 600;
+  font-size: 15.5px;
+  letter-spacing: -0.01em;
+  line-height: 1.4;
+  padding-top: 1px;
+}
+.cl-step .d {
+  margin-top: 4px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.cl-step:not(.is-on) .d {
+  display: none;
+}
+.cl-step:not(.is-on):hover {
+  border-color: var(--line-strong);
+}
+.cl-step.is-on {
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--line));
+  background: color-mix(in srgb, var(--accent) 5%, var(--bg-raised));
+}
+.cl-step.is-on .n {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+.cl-step::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+.cl-fig.live .cl-step.is-on::after {
+  animation: cl-prog var(--dur, 6s) linear both;
+}
+@keyframes cl-prog {
+  to {
+    transform: scaleX(1);
+  }
+}
+.cl-pause {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: var(--bg-raised);
+  color: var(--muted);
+  font: 500 13px var(--mono);
+  cursor: pointer;
+}
+.cl-pause[hidden] {
+  display: none;
+}
+.cl-pause:hover {
+  color: var(--text);
+}
+.cl-pause svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.cl-pause .i-play,
+.cl-pause[aria-pressed="true"] .i-pause {
+  display: none;
+}
+.cl-pause[aria-pressed="true"] .i-play {
+  display: block;
+}
+
+/* Guarantees */
+.gu {
+  margin-top: 72px;
+}
+.gu-title {
+  margin: 0 0 20px;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.gu code,
+.cl-step code {
+  font-family: var(--mono);
+  font-size: 0.88em;
+  color: var(--accent-text);
+}
+.gu-modes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+.gu-mode {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 24px 26px 26px;
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-md);
+}
+.gu-mode.q {
+  border-color: color-mix(in srgb, var(--accent) 30%, var(--line));
+}
+.gu-mode.q::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(ellipse 70% 60% at 100% 0%, var(--accent-glow), transparent 70%);
+  opacity: 0.3;
+  pointer-events: none;
+}
+.gu-mode header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.gu .gu-name {
+  padding: 0;
+  background: none;
+  border: 0;
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+.gu-mode.q .gu-name {
+  color: var(--accent-text);
+}
+.gu-pips {
+  display: flex;
+  gap: 6px;
+}
+.gu-pips i {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1.5px solid var(--faint);
+}
+.gu-pips i.on {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.gu-lede {
+  margin: 6px 0 18px;
+  color: var(--muted);
+}
+.gu-mode dl {
+  margin: 0;
+  display: grid;
+}
+.gu-mode dl > div {
+  display: grid;
+  grid-template-columns: 9.5em minmax(0, 1fr);
+  gap: 16px;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+.gu-mode dt {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--faint);
+  padding-top: 3px;
+}
+.gu-mode dd {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.55;
+}
+.gu-note {
+  margin: 4px 0 0;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-sunken);
+  border: 1px solid var(--line);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.gu-facts {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+.gu-fact {
+  padding: 22px 24px 24px;
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+}
+.gu-fact h4 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 12px;
+  font-size: 16px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+.gu-fact h4 svg {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: var(--accent-text);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.gu-fact ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+.gu-fact li {
+  position: relative;
+  padding-left: 16px;
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.gu-fact li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 6px;
+  height: 6px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--accent) 60%, transparent);
+}
+.gu-fact li b {
+  color: var(--text);
+  font-weight: 600;
+}
+.gu-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin: 24px 0 0;
+  font-size: 15px;
+  color: var(--muted);
+}
+.tag-partial {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 6px;
+  color: var(--warn);
+  background: var(--warn-soft);
+}
+
+@media (max-width: 1100px) {
+  .nav a[href="#clustering"] {
+    display: none;
+  }
+}
+@media (max-width: 960px) {
+  .cl-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .cl-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .cl-step:not(.is-on) .d {
+    display: block;
+  }
+  .gu-facts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 760px) {
+  .gu-modes {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .cl-steps {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .cl-step:not(.is-on) .d {
+    display: none;
+  }
+  .cl-stage {
+    padding: 12px;
+    gap: 10px;
+  }
+  .cl-conf {
+    gap: 4px;
+    font-size: 11px;
+  }
+  .cl-conf span {
+    padding: 2px 6px;
+  }
+  .gu-mode {
+    padding: 20px;
+  }
+  .gu-mode dl > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+  }
+  /* SVG text scales with the panel, so it starts larger on a phone. */
+  .cl-svg text {
+    font-size: 19px;
+    letter-spacing: 0.02em;
+  }
+  .cl-svg .st,
+  .cl-svg .cp-l,
+  .cl-svg .cp-m {
+    font-size: 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cl-fig *,
+  .cl-fig *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
