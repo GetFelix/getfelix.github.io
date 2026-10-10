@@ -347,3 +347,28 @@
   reset();
   new IntersectionObserver((entries) => (entries[0].isIntersecting ? start() : stop())).observe(viz);
 })();
+
+// How Felix is different. The stack collapses once, when it scrolls into
+// view; the isolation loop runs in CSS and is paused while off screen.
+// Without JS, or with reduced motion, both stay on their static frames.
+(() => {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) return;
+  const stack = document.querySelector(".collapse");
+  if (stack) {
+    stack.classList.add("armed");
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (!entries[0].isIntersecting) return;
+        stack.classList.add("go");
+        io.disconnect();
+      },
+      { threshold: 0.35 }
+    );
+    io.observe(stack);
+  }
+  const iso = document.querySelector(".iso");
+  if (iso) {
+    iso.classList.add("live");
+    new IntersectionObserver((entries) => iso.classList.toggle("play", entries[0].isIntersecting)).observe(iso);
+  }
+})();
