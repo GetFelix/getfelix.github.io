@@ -2470,8 +2470,21 @@ p {
 .iso-svg .sub-cut {
   opacity: 0.35;
 }
-.iso-svg .cflow {
-  opacity: 0;
+.iso-svg .jam .dc {
+  fill: var(--warn);
+}
+.iso-svg .jam .dh {
+  fill: var(--warn);
+  opacity: 0.18;
+}
+.iso-svg .cap.warn {
+  fill: var(--warn);
+}
+.iso-svg .starved {
+  opacity: 0.45;
+}
+.iso-svg .sub-cut circle {
+  stroke-dasharray: 2 3;
 }
 .iso-gap {
   display: grid;
@@ -2494,8 +2507,20 @@ p {
   font-size: 12.5px;
   color: var(--muted);
 }
-.iso-note .n1 {
+.iso-note {
+  display: grid;
+}
+.iso-note > span {
+  grid-area: 1 / 1;
+}
+.iso-note .s0,
+.iso-note .s1 {
+  opacity: 0;
+}
+.iso-note .s1,
+.iso-note b {
   color: var(--warn);
+  font-weight: 500;
 }
 
 /* Live isolation loop. One 16 s cycle; a record leaves every 0.8 s and takes
@@ -2524,39 +2549,28 @@ p {
 .iso.live .slow {
   animation: iso-slow 16s linear infinite;
 }
-.iso.live .g41 { animation: iso-g41 16s linear infinite; }
-.iso.live .g42 { animation: iso-g42 16s linear infinite; }
-.iso.live .g43 { animation: iso-g43 16s linear infinite; }
-.iso.live .g44 { animation: iso-g44 16s linear infinite; }
-.iso.live .g45 { animation: iso-g45 16s linear infinite; }
-.iso.live .n1 { animation: iso-n1 16s linear infinite; }
-.iso.live .n2 { animation: iso-n2 16s linear infinite; }
-/* Elsewhere: a 9.6 s cycle for each case. */
+/* Elsewhere: the bad state holds in every frame; only these move. */
 .iso.live .jam {
-  animation: else-jam 9.6s infinite;
+  animation: else-creep 1.6s linear infinite;
 }
-.iso.live .jam-tint,
-.iso.live .pub-warn {
-  animation: else-tint 9.6s linear infinite;
+.iso.live .pub-warn,
+.iso.live .backlog {
+  animation: else-pulse 1.6s ease-in-out infinite;
 }
-.iso.live .backlog.k0 { animation: else-bl0 9.6s linear infinite; }
-.iso.live .backlog.k1 { animation: else-bl1 9.6s linear infinite; }
-.iso.live .backlog.k2 { animation: else-bl2 9.6s linear infinite; }
-.iso.live .slow-ring {
-  animation: else-slow 9.6s linear infinite;
-}
+.iso.live .backlog.k1 { animation-delay: -0.4s; }
+.iso.live .backlog.k2 { animation-delay: -0.8s; }
 .iso.live .cflow {
-  animation: else-cflow 9.6s linear infinite;
+  animation: iso-flow 0.8s linear infinite;
 }
-.iso.live .snap {
-  animation: else-snap 9.6s infinite;
+.iso.live .gd,
+.iso.live .s2 {
+  animation: iso-s2 16s linear infinite;
 }
-.iso.live .cut-tint,
-.iso.live .cut-x {
-  animation: else-cut 9.6s linear infinite;
+.iso.live .s0 {
+  animation: iso-s0 16s linear infinite;
 }
-.iso.live .sub-cut {
-  animation: else-dim 9.6s linear infinite;
+.iso.live .s1 {
+  animation: iso-s1 16s linear infinite;
 }
 /* Off screen, nothing runs. */
 .iso.live:not(.play) * {
@@ -2622,58 +2636,43 @@ p {
   75%,
   100% { opacity: 0; }
 }
-@keyframes else-jam {
-  0% { transform: translateX(0); animation-timing-function: linear; }
-  33.3% { transform: translateX(336px); animation-timing-function: cubic-bezier(0.2, 0.6, 0.3, 1); }
-  85% { transform: translateX(410px); animation-timing-function: linear; }
-  100% { transform: translateX(420px); }
-}
-@keyframes else-tint {
+/* One sentence at a time, in step with the chips: C keeps up, C slows,
+   then 41-44 dropped and the resume point, all at the first drop. */
+@keyframes iso-s0 {
   0%,
-  30% { opacity: 0; }
-  45%,
-  88% { opacity: 1; }
-  98%,
-  100% { opacity: 0; }
-}
-@keyframes else-slow {
-  0%,
-  22% { opacity: 0; }
-  30%,
-  90% { opacity: 1; }
-  98%,
-  100% { opacity: 0; }
-}
-@keyframes else-cflow {
-  0% { transform: translateX(0); opacity: 0; }
-  4% { opacity: 1; }
-  40% { transform: translateX(403px); opacity: 1; }
-  43%,
-  100% { transform: translateX(410px); opacity: 0; }
-}
-@keyframes else-snap {
-  0%,
-  40% { transform: rotate(0); animation-timing-function: cubic-bezier(0.3, 1.6, 0.5, 1); }
-  45%,
-  90% { transform: rotate(-9deg); }
-  97%,
-  100% { transform: rotate(0); }
-}
-@keyframes else-cut {
-  0%,
-  40% { opacity: 0; }
-  43%,
-  90% { opacity: 1; }
-  97%,
-  100% { opacity: 0; }
-}
-@keyframes else-dim {
-  0%,
-  40% { opacity: 1; }
-  46%,
-  90% { opacity: 0.35; }
-  97%,
+  26.5% { opacity: 1; }
+  28%,
+  97% { opacity: 0; }
+  98.5%,
   100% { opacity: 1; }
+}
+@keyframes iso-s1 {
+  0%,
+  27% { opacity: 0; }
+  28.5%,
+  53.5% { opacity: 1; }
+  55%,
+  100% { opacity: 0; }
+}
+@keyframes iso-s2 {
+  0%,
+  54.5% { opacity: 0; }
+  56%,
+  96% { opacity: 1; }
+  98.5%,
+  100% { opacity: 0; }
+}
+@keyframes else-creep {
+  to { transform: translateX(14px); }
+}
+@keyframes else-pulse {
+  50% { opacity: 0.35; }
+}
+/* The nav has room for this link only on wide screens. */
+@media (max-width: 960px) {
+  .nav .sec-wide {
+    display: none;
+  }
 }
 @media (max-width: 760px) {
   .collapse {
@@ -2711,85 +2710,5 @@ p {
   .iso-svg .sub text {
     font-size: 14px;
   }
-}
-@keyframes iso-g41 {
-  0%,
-  54.5% { opacity: 0; transform: translateY(3px); }
-  56%,
-  96.0% { opacity: 1; transform: none; }
-  98.5%,
-  100% { opacity: 0; }
-}
-@keyframes iso-g42 {
-  0%,
-  59.5% { opacity: 0; transform: translateY(3px); }
-  61%,
-  96.0% { opacity: 1; transform: none; }
-  98.5%,
-  100% { opacity: 0; }
-}
-@keyframes iso-g43 {
-  0%,
-  64.5% { opacity: 0; transform: translateY(3px); }
-  66%,
-  96.0% { opacity: 1; transform: none; }
-  98.5%,
-  100% { opacity: 0; }
-}
-@keyframes iso-g44 {
-  0%,
-  69.5% { opacity: 0; transform: translateY(3px); }
-  71%,
-  96.0% { opacity: 1; transform: none; }
-  98.5%,
-  100% { opacity: 0; }
-}
-@keyframes iso-g45 {
-  0%,
-  77.0% { opacity: 0; transform: translateY(3px); }
-  78.5%,
-  96.0% { opacity: 1; transform: none; }
-  98.5%,
-  100% { opacity: 0; }
-}
-@keyframes iso-n1 {
-  0%,
-  54.5% { opacity: 0; }
-  56%,
-  96.0% { opacity: 1; }
-  98.5%,
-  100% { opacity: 0; }
-}
-@keyframes iso-n2 {
-  0%,
-  77.0% { opacity: 0; }
-  78.5%,
-  96.0% { opacity: 1; }
-  98.5%,
-  100% { opacity: 0; }
-}
-@keyframes else-bl0 {
-  0%,
-  44.5% { opacity: 0; }
-  46%,
-  90% { opacity: 1; }
-  97%,
-  100% { opacity: 0; }
-}
-@keyframes else-bl1 {
-  0%,
-  57.5% { opacity: 0; }
-  59%,
-  90% { opacity: 1; }
-  97%,
-  100% { opacity: 0; }
-}
-@keyframes else-bl2 {
-  0%,
-  70.5% { opacity: 0; }
-  72%,
-  90% { opacity: 1; }
-  97%,
-  100% { opacity: 0; }
 }
 
