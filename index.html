@@ -74,6 +74,7 @@
       <a class="sec" href="#why">Why</a>
       <a class="sec sec-wide" href="#different">Different</a>
       <a class="sec sec-wide" href="#clustering">Clustering</a>
+      <a class="sec sec-xl" href="#tested">Testing</a>
       <a class="sec" href="#features">Features</a>
       <a class="sec" href="#performance">Performance</a>
       <a class="sec" href="#projects">Projects</a>
@@ -266,6 +267,107 @@
         </div>
         <p class="gu-foot"><span class="tag-partial">Partial</span> The control plane decides every failover, so while it is down a dead leader is not replaced. <a class="text-link" href="https://docs.getfelix.dev/architecture/semantics/">Read the full contract<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></p>
       </div>
+    </div>
+  </section>
+
+  <section class="section tested" id="tested" aria-labelledby="tested-title">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">How Felix is tested</span>
+        <h2 id="tested-title">Checked against the faults it claims to survive</h2>
+        <p>The replication claims above rest on evidence anyone can rerun: models that search every interleaving within their bounds, a checker that drives a real cluster through faults, and storage tests that rebuild the disk a power cut could leave after each flush.</p>
+      </div>
+
+      <figure class="tt reveal" aria-labelledby="tt-cap">
+        <div class="stage glow tt-stage">
+          <div class="tt-top">
+            <div class="cl-conf" aria-label="The campaign shown"><span>campaign <b>nightly</b></span><span>faults <b>20 min</b></span><span>streams <b>Quorum</b></span><span>seed <b>new each night</b></span></div>
+            <button class="cl-pause tt-pause" type="button" aria-pressed="false" hidden><svg class="i-pause" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9M11 3.5v9"/></svg><svg class="i-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.2v9.6L12.5 8z"/></svg><span>Pause</span></button>
+          </div>
+
+          <div class="tt-lanes" role="img" aria-labelledby="tt-t">
+            <span class="visually-hidden" id="tt-t">A timeline of one illustrative night. Faults strike a three-broker cluster and its control plane one after another: broker 2 is killed, broker 3 is frozen, broker 1 is partitioned from its peers, broker 3's outgoing messages are dropped, broker 2's clock runs twenty times fast, every broker loses power at once, and the control plane crashes in the middle of a shard move. Each fault heals before the next. Below, acknowledged records keep arriving except while the partitioned leader and the powered-off cluster cannot reach a majority, where two writes end with an unknown outcome. After the last fault heals, every stream is read back and each acknowledged record is found in place: none lost or reordered.</span>
+            <span class="tt-name r1"><span>control plane</span></span>
+            <div class="tt-track r1"><div class="tt-f" data-at="76" data-to="90" style="--a:76;--b:90"><i class="tt-ring"></i><span class="tt-n">7</span><span class="tt-l"><svg viewBox="0 0 24 24"><path d="M12 3 2 20h20L12 3Z"/><path d="M12 10v4M12 17h.01"/></svg>crash mid-move</span></div></div>
+            <span class="tt-name r2">broker 1</span>
+            <div class="tt-track r2"><div class="tt-f" data-at="22" data-to="33" style="--a:22;--b:33"><i class="tt-ring"></i><span class="tt-n">3</span><span class="tt-l"><svg viewBox="0 0 24 24"><path d="M3 12h6M15 12h6M13.5 5l-3 14"/></svg>partition</span></div></div>
+            <span class="tt-name r3">broker 2</span>
+            <div class="tt-track r3"><div class="tt-f" data-at="2" data-to="10" style="--a:2;--b:10"><i class="tt-ring"></i><span class="tt-n">1</span><span class="tt-l"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M9 9l6 6M15 9l-6 6"/></svg>kill</span></div><div class="tt-f" data-at="49" data-to="59" style="--a:49;--b:59"><i class="tt-ring"></i><span class="tt-n">5</span><span class="tt-l"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>clock 20&times;</span></div></div>
+            <span class="tt-name r4">broker 3</span>
+            <div class="tt-track r4"><div class="tt-f" data-at="12" data-to="20" style="--a:12;--b:20"><i class="tt-ring"></i><span class="tt-n">2</span><span class="tt-l"><svg viewBox="0 0 24 24"><path d="M9 6v12M15 6v12"/></svg>freeze</span></div><div class="tt-f" data-at="35" data-to="47" style="--a:35;--b:47"><i class="tt-ring"></i><span class="tt-n">4</span><span class="tt-l"><svg viewBox="0 0 24 24"><path d="M3 12h9M9 8.5l3.5 3.5L9 15.5"/><path d="M16 9l5 6M21 9l-5 6"/></svg>one-way link</span></div></div>
+            <div class="tt-span"><div class="tt-f tall" data-at="61" data-to="74" style="--a:61;--b:74"><i class="tt-ring"></i><span class="tt-n">6</span><span class="tt-l"><svg viewBox="0 0 24 24"><path d="M13 3 5 14h6l-1 7 8-11h-6l1-7Z"/></svg>power loss</span><span class="tt-sub">every broker at once</span></div></div>
+            <span class="tt-name r5 ledger"><span class="long">acknowledged</span><span class="short">acked</span></span>
+            <div class="tt-track r5 tt-ledger"><i class="tt-sweep"></i><i class="tt-cell" data-at="3" style="--x:3;--i:0"><svg viewBox="0 0 12 12"><path d="M3 6.2 5 8.2 9 3.8"/></svg></i><i class="tt-cell" data-at="6.5" style="--x:6.5;--i:1"><svg viewBox="0 0 12 12"><path d="M3 6.2 5 8.2 9 3.8"/></svg></i><i class="tt-cell" data-at="10" style="--x:10;--i:2"><svg viewBox="0 0 12 12"><path d="M3 6.2 5 8.2 9 3.8"/></svg></i><i class="tt-cell" data-at="13.5" style="--x:13.5;--i:3"><svg viewBox="0 0 12 12"><path d="M3 6.2 5 8.2 9 3.8"/></svg></i><i class="tt-cell" data-at="17" style="--x:17;--i:4"><svg viewBox="0 0 12 12"><path d="M3 6.2 5 8.2 9 3.8"/></svg></i><i class="tt-cell" data-at="20.5" style="--x:20.5;--i:5"><svg viewBox="0 0 12 12"><path d="M3 6.2 5 8.2 9 3.8"/></svg></i><i class="tt-cell unk" data-at="23.5" style="--x:23.5"></i><i class="tt-cell" data-at="34.5" style="--x:34.5;--i:6"><svg viewBox="0 0 12 12"><path d="M3 6.2 5 8.2 9 3.8"/></svg></i><i class="tt-cell" data-at="38" style="--x:38;--i:7"><svg viewBox="0 0 12 12"><path d="M3 6.2 5 8.2 9 3.8"/></svg></i><i class="tt-cell" data-at="41.5" style="--x:41.5;--i:8"><svg viewBox="0 0 12 12"><path d="M3 6.2 5 8.2 9 3.8"/></svg></i><i class="tt-cell" data-at="45" style="--x:45;--i:9"><svg viewBox="0 0 12 12"><path d="M3 6.2 5 8.2 9 3.8"/></svg></i><i class="tt-cell" data-at="48.5" style="--x:48.5;--i:10"><svg viewBox="0 0 12 12"><path d="M3 6.2 5 8.2 9 3.8"/></svg></i><i class="tt-cell" data-at="52" style="--x:52;--i:11"><svg viewBox="0 0 12 12"><path d="M3 6.2 5 8.2 9 3.8"/></svg></i><i class="tt-cell" data-at="55.5" style="--x:55.5;--i:12"><svg viewBox="0 0 12 12"><path d="M3 6.2 5 8.2 9 3.8"/></svg></i><i class="tt-cell" data-at="59" style="--x:59;--i:13"><svg viewBox="0 0 12 12"><path d="M3 6.2 5 8.2 9 3.8"/></svg></i><i class="tt-cell unk" data-at="62.5" style="--x:62.5"></i><i class="tt-cell" data-at="77" style="--x:77;--i:14"><svg viewBox="0 0 12 12"><path d="M3 6.2 5 8.2 9 3.8"/></svg></i><i class="tt-cell" data-at="80.5" style="--x:80.5;--i:15"><svg viewBox="0 0 12 12"><path d="M3 6.2 5 8.2 9 3.8"/></svg></i><i class="tt-cell" data-at="84" style="--x:84;--i:16"><svg viewBox="0 0 12 12"><path d="M3 6.2 5 8.2 9 3.8"/></svg></i><i class="tt-cell" data-at="87.5" style="--x:87.5;--i:17"><svg viewBox="0 0 12 12"><path d="M3 6.2 5 8.2 9 3.8"/></svg></i><i class="tt-cell" data-at="91" style="--x:91;--i:18"><svg viewBox="0 0 12 12"><path d="M3 6.2 5 8.2 9 3.8"/></svg></i><i class="tt-cell" data-at="94.5" style="--x:94.5;--i:19"><svg viewBox="0 0 12 12"><path d="M3 6.2 5 8.2 9 3.8"/></svg></i></div>
+            <div class="tt-headbox"><i class="tt-head"></i></div>
+          </div>
+
+          <div class="tt-legend" aria-hidden="true"><span><i class="tt-cell"></i>acknowledged</span><span><i class="tt-cell unk"></i>outcome unknown: may land or not, and either is allowed</span></div>
+
+          <ol class="tt-key" aria-label="Faults, in order">
+            <li data-at="2" data-to="10"><span class="tt-n">1</span><b>kill</b> broker 2</li>
+            <li data-at="12" data-to="20"><span class="tt-n">2</span><b>freeze</b> broker 3</li>
+            <li data-at="22" data-to="33"><span class="tt-n">3</span><b>partition</b> broker 1</li>
+            <li data-at="35" data-to="47"><span class="tt-n">4</span><b>one-way link</b> broker 3</li>
+            <li data-at="49" data-to="59"><span class="tt-n">5</span><b>clock 20&times;</b> broker 2</li>
+            <li data-at="61" data-to="74"><span class="tt-n">6</span><b>power loss</b> every broker</li>
+            <li data-at="76" data-to="90"><span class="tt-n">7</span><b>crash mid-move</b> control plane</li>
+          </ol>
+
+          <div class="tt-check">
+            <div class="tt-verdict" aria-live="off">
+              <div class="tt-v tt-v-run"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10M7 21h10M8 3c0 5 8 5 8 9s-8 4-8 9M16 3c0 5-8 5-8 9s8 4 8 9"/></svg><p><b>Faults in progress.</b> Nothing is judged until every fault has healed.</p></div>
+              <div class="tt-v tt-v-read"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16M14 6l6 6-6 6"/></svg><p><b>Final read.</b> Every stream is read back from its leader and compared with each acknowledgement.</p></div>
+              <div class="tt-v tt-v-done"><span class="tt-zero">0</span><p><b>acknowledged records lost or reordered</b><span>in the final read, taken once the last fault healed</span></p></div>
+            </div>
+            <ul class="tt-rules" aria-label="Rules the checker applies, among eleven">
+              <li style="--i:0"><span class="ic" aria-hidden="true"><svg viewBox="0 0 16 16"><circle class="o" cx="8" cy="8" r="6"/><g class="k"><circle cx="8" cy="8" r="6"/><path d="M4.8 8.3 7 10.5l4.2-4.6"/></g></svg></span>No acknowledged write is missing from the final read.</li>
+              <li style="--i:1"><span class="ic" aria-hidden="true"><svg viewBox="0 0 16 16"><circle class="o" cx="8" cy="8" r="6"/><g class="k"><circle cx="8" cy="8" r="6"/><path d="M4.8 8.3 7 10.5l4.2-4.6"/></g></svg></span>A write acknowledged before another was sent sits earlier.</li>
+              <li style="--i:2"><span class="ic" aria-hidden="true"><svg viewBox="0 0 16 16"><circle class="o" cx="8" cy="8" r="6"/><g class="k"><circle cx="8" cy="8" r="6"/><path d="M4.8 8.3 7 10.5l4.2-4.6"/></g></svg></span>No value sits at two offsets.</li>
+              <li style="--i:3"><span class="ic" aria-hidden="true"><svg viewBox="0 0 16 16"><circle class="o" cx="8" cy="8" r="6"/><g class="k"><circle cx="8" cy="8" r="6"/><path d="M4.8 8.3 7 10.5l4.2-4.6"/></g></svg></span>Every read agrees with the final log where they overlap.</li>
+              <li style="--i:4"><span class="ic" aria-hidden="true"><svg viewBox="0 0 16 16"><circle class="o" cx="8" cy="8" r="6"/><g class="k"><circle cx="8" cy="8" r="6"/><path d="M4.8 8.3 7 10.5l4.2-4.6"/></g></svg></span>A write refused outright never appears.</li>
+              <li style="--i:5"><span class="ic" aria-hidden="true"><svg viewBox="0 0 16 16"><circle class="o" cx="8" cy="8" r="6"/><g class="k"><circle cx="8" cy="8" r="6"/><path d="M4.8 8.3 7 10.5l4.2-4.6"/></g></svg></span>Subscribers get offsets in order, with every record or a visible gap.</li>
+            </ul>
+          </div>
+        </div>
+        <figcaption id="tt-cap">An illustration of the nightly history campaign, not a recorded run. Each night runs 20 minutes of single faults on three brokers and 20 minutes of compound ones, such as the power loss and the control-plane crash, on four. Each uses a new seed, which a failing night prints so it can be replayed.</figcaption>
+      </figure>
+
+      <div class="ev-grid">
+        <article class="gu-fact ev reveal">
+          <h4><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="12" cy="18" r="2.5"/><path d="M7.5 8 10.8 15.8M16.5 8l-3.3 7.8M8.5 6h7"/></svg>TLA+ models</h4>
+          <p>Replication, promotion and shard moves are specified in TLA+. TLC checks every interleaving within small bounds, and random walks sample behaviours hundreds of steps long. The model found a way to lose an acknowledged <code>Quorum</code> record that the design's prose had missed, and the broker was fixed.</p>
+          <p class="ev-when"><span class="when">every code change</span><span class="when night">walks nightly</span></p>
+        </article>
+        <article class="gu-fact ev reveal" style="--d:.05s">
+          <h4><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg>History checker</h4>
+          <p>Clients write to <code>Quorum</code> streams and a <code>Quorum</code> cache on a real cluster while faults strike: kill, freeze, partition, one-way links, clock faults, failed fsyncs, shard moves, power loss of every broker and a control-plane crash mid-move. Every operation is recorded and checked against eleven rules.</p>
+          <p class="ev-when"><span class="when">every pull request</span><span class="when night">20 min nightly</span></p>
+        </article>
+        <article class="gu-fact ev reveal" style="--d:.1s">
+          <h4><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3 5 14h6l-1 7 8-11h-6l1-7Z"/></svg>Power-loss sweeps</h4>
+          <p>The storage engine runs a workload while a test layer records what each flush made durable, then rebuilds the disk a reboot could find, with unsynced writes dropped, torn or zeroed. Every record acknowledged as durable must come back, with no gap before it.</p>
+          <p class="ev-when"><span class="when">every pull request</span><span class="when night">110 seeds nightly</span></p>
+        </article>
+        <article class="gu-fact ev reveal">
+          <h4><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="5.5" rx="7.5" ry="2.8"/><path d="M4.5 5.5v13c0 1.5 3.4 2.8 7.5 2.8s7.5-1.3 7.5-2.8v-13M4.5 12c0 1.5 3.4 2.8 7.5 2.8s7.5-1.3 7.5-2.8"/></svg>Recovery rules</h4>
+          <ul>
+            <li><b>A torn tail is repaired</b>: a record a crash left unfinished is cut away.</li>
+            <li><b>Corruption anywhere else refuses to start</b>, naming the segment and byte position.</li>
+            <li><b>Indexes are rebuilt</b> from their segments, never trusted.</li>
+          </ul>
+        </article>
+        <article class="gu-fact ev reveal" style="--d:.05s">
+          <h4><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M3.5 6l1.2 1.2L7 5M3.5 12l1.2 1.2L7 11M3.5 18l1.2 1.2L7 17"/></svg>Client conformance</h4>
+          <p>A catalogue of scenarios every client must pass, with the Rust client as the reference. CI checks the Python and TypeScript clients against it and drives the C interface against the same fixture. A cluster suite checks that a client can't tell one broker from three.</p>
+          <p class="ev-when"><span class="when">every code change</span></p>
+        </article>
+        <article class="gu-fact ev reveal" style="--d:.1s">
+          <h4><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>Fuzzed decoders</h4>
+          <p>The decoders for wire frames, Kafka requests and record batches, and the on-disk records, indexes and recovery state are fuzzed. A short run gates each pull request, and a nightly campaign keeps building its corpus.</p>
+          <p class="ev-when"><span class="when">every pull request</span><span class="when night">nightly</span></p>
+        </article>
+      </div>
+      <p class="gu-foot reveal"><a class="text-link" href="https://docs.getfelix.dev/architecture/testing/">How Felix is tested, in full<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></p>
     </div>
   </section>
 
@@ -660,6 +762,103 @@ docker compose up -d</code></pre>
           </div>
         </article>
       </div>
+    </div>
+  </section>
+
+  <section class="section fit" id="fit" aria-labelledby="fit-title">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Fit</span>
+        <h2 id="fit-title">When to use Felix, and when not to</h2>
+        <p>Felix is young. This is where it fits today, and where it doesn't yet.</p>
+      </div>
+
+      <div class="fit-cols">
+        <article class="fit-col good reveal" aria-labelledby="fit-good">
+          <header><span class="fit-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5 10 17.5 19 7"/></svg></span><h3 id="fit-good">Good fit</h3></header>
+          <ul class="fit-list">
+            <li><b>Live collaboration and fanout to many clients.</b> A publish is encoded once however many subscribers it reaches, and a slow subscriber falls behind on its own. Browsers connect through <a href="https://github.com/GetFelix/felix-gateway">felix-gateway</a>.</li>
+            <li><b>Streams with state beside them.</b> Caches with keyed watches, counters and consumer groups sit on the same log as the stream, behind one client and one set of grants.</li>
+            <li><b>Multi-tenant products.</b> Every operation is scoped to a tenant and namespace, and tokens are narrowed to the actions and resources a tenant was granted.</li>
+            <li><b>Per-stream choices.</b> Each stream picks in memory or durable, and <code>Leader</code> or <code>Quorum</code> acknowledgement, so one cluster can carry both throwaway and must-keep data.</li>
+          </ul>
+        </article>
+        <article class="fit-col later reveal" style="--d:.06s" aria-labelledby="fit-later">
+          <header><span class="fit-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></span><h3 id="fit-later">Not yet</h3></header>
+          <ul class="fit-list">
+            <li><b>You need the Kafka ecosystem.</b> Felix serves Kafka producers and consumers that assign their own partitions, but has no consumer groups or transactions over the Kafka protocol, so Kafka Connect, Kafka Streams and ksqlDB don't run.</li>
+            <li><b>You need proven scale.</b> Published performance is from one broker. Replicated, multi-node results are still to come.</li>
+            <li><b>You need Go or C#.</b> Clients ship for Rust, Python and TypeScript. Go and C# are not started.</li>
+            <li><b>You need a 1.0 stability promise.</b> Felix is pre-1.0, and its API, wire protocol and semantics can change between releases.</li>
+          </ul>
+        </article>
+      </div>
+      <p class="gu-foot reveal"><a class="text-link" href="https://docs.getfelix.dev/getting-started/what-felix-is-for/#4-workload-fit">Workload by workload<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></p>
+    </div>
+  </section>
+
+  <section class="section status-sec" id="status" aria-labelledby="status-title">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Status</span>
+        <h2 id="status-title">What works today, and what's next</h2>
+        <p>Felix is pre-1.0, so the API can change between previews. The latest is <!--release:felix:version-->0.6.0-preview.5<!--/release:felix:version-->. The marks follow the status table in the docs.</p>
+      </div>
+
+      <p class="st-key reveal"><span class="st-k"><span class="st-tag today"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4 6.5 11.4 12.5 4.8"/></svg>Today</span> implemented and tested</span> <span class="st-k"><span class="st-tag partial"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8h9"/></svg>Partial</span> real, but incomplete</span></p>
+
+      <div class="st-grid">
+        <article class="st-card reveal">
+          <h3>Streams and delivery</h3>
+          <ul>
+            <li><span class="st-tag today"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4 6.5 11.4 12.5 4.8"/></svg>Today</span><span class="st-n">Publish and subscribe with high fanout</span></li>
+            <li><span class="st-tag today"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4 6.5 11.4 12.5 4.8"/></svg>Today</span><span class="st-n">Slow-consumer isolation</span></li>
+            <li><span class="st-tag today"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4 6.5 11.4 12.5 4.8"/></svg>Today</span><span class="st-n">Durable streams</span></li>
+            <li><span class="st-tag today"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4 6.5 11.4 12.5 4.8"/></svg>Today</span><span class="st-n">Resumable subscriptions</span></li>
+            <li><span class="st-tag today"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4 6.5 11.4 12.5 4.8"/></svg>Today</span><span class="st-n">Idempotent producers</span></li>
+          </ul>
+        </article>
+        <article class="st-card reveal" style="--d:.05s">
+          <h3>State beside the stream</h3>
+          <ul>
+            <li><span class="st-tag today"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4 6.5 11.4 12.5 4.8"/></svg>Today</span><span class="st-n">Key/value cache with TTL</span></li>
+            <li><span class="st-tag today"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4 6.5 11.4 12.5 4.8"/></svg>Today</span><span class="st-n">Keyed cache watch and counters</span></li>
+            <li><span class="st-tag partial"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8h9"/></svg>Partial</span><span class="st-n">Consumer groups<span class="st-why">A group serves one shard</span></span></li>
+            <li><span class="st-tag partial"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8h9"/></svg>Partial</span><span class="st-n">Log-backed cache<span class="st-why">The key index is held whole in memory</span></span></li>
+            <li><span class="st-tag partial"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8h9"/></svg>Partial</span><span class="st-n">Atomic event and state commits<span class="st-why">A re-sent commit may land twice</span></span></li>
+          </ul>
+        </article>
+        <article class="st-card reveal">
+          <h3>Clustering</h3>
+          <ul>
+            <li><span class="st-tag today"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4 6.5 11.4 12.5 4.8"/></svg>Today</span><span class="st-n">Sharding and <code>Quorum</code> acknowledgement</span></li>
+            <li><span class="st-tag today"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4 6.5 11.4 12.5 4.8"/></svg>Today</span><span class="st-n">Leader failover</span></li>
+            <li><span class="st-tag today"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4 6.5 11.4 12.5 4.8"/></svg>Today</span><span class="st-n">Online rebalancing</span></li>
+            <li><span class="st-tag today"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4 6.5 11.4 12.5 4.8"/></svg>Today</span><span class="st-n">Replication factor restore</span></li>
+            <li><span class="st-tag partial"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8h9"/></svg>Partial</span><span class="st-n">Multi-node clustering<span class="st-why">The control plane decides every failover</span></span></li>
+          </ul>
+        </article>
+        <article class="st-card reveal" style="--d:.05s">
+          <h3>Access and operations</h3>
+          <ul>
+            <li><span class="st-tag today"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4 6.5 11.4 12.5 4.8"/></svg>Today</span><span class="st-n">Tenants and token-based authorization</span></li>
+            <li><span class="st-tag today"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4 6.5 11.4 12.5 4.8"/></svg>Today</span><span class="st-n">Kafka producers and consumers</span></li>
+            <li><span class="st-tag partial"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8h9"/></svg>Partial</span><span class="st-n">Per-tenant quotas<span class="st-why">Publish rate and connections only</span></span></li>
+            <li><span class="st-tag partial"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8h9"/></svg>Partial</span><span class="st-n">Tiered storage<span class="st-why">Offload only, nothing reads it back yet</span></span></li>
+            <li><span class="st-tag partial"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8h9"/></svg>Partial</span><span class="st-n">Clients beyond Rust<span class="st-why">Python and TypeScript ship</span></span></li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="st-road reveal" aria-labelledby="st-road-title">
+        <h3 class="gu-title" id="st-road-title">What's next</h3>
+        <ol>
+          <li class="now"><span class="st-dot" aria-hidden="true"></span><span class="st-ver">0.6 <em>now, in preview</em></span><p>Moving shards between brokers without downtime, backed by cluster-scale numbers for replicated streams.</p></li>
+          <li><span class="st-dot" aria-hidden="true"></span><span class="st-ver">0.7 <em>next</em></span><p>Memory held to a byte budget: subscriber queues, QUIC receive windows and the cache key index. Gateways that act for their users.</p></li>
+          <li><span class="st-dot" aria-hidden="true"></span><span class="st-ver">1.0 <em>later</em></span><p>A stability promise, backed by a long-running public workload on Felix.</p></li>
+        </ol>
+      </div>
+      <p class="gu-foot reveal"><a class="text-link" href="https://docs.getfelix.dev/getting-started/what-felix-is-for/">The full status table<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="text-link" href="https://github.com/GetFelix/felix/milestones">Milestones on GitHub<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></p>
     </div>
   </section>
 

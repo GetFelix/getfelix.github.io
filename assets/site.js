@@ -472,3 +472,91 @@
   }
   setMode();
 })();
+
+// How Felix is tested. One 21 s night: a playhead crosses the lanes and each
+// fault or record shows once it passes that element's data-at; then the faults
+// heal, the final read sweeps the ledger and the verdict comes in. The clock
+// runs only while the figure is on screen, the tab is visible and the reader
+// hasn't paused it. With reduced motion the markup's end-of-night frame stays.
+(() => {
+  const fig = document.querySelector(".tt");
+  if (!fig || !("IntersectionObserver" in window)) return;
+  const RUN = 13000;
+  const READ = 13700;
+  const VERDICT = 15900;
+  const FADE = 20400;
+  const CYCLE = 21000;
+  const marks = [...fig.querySelectorAll("[data-at]")];
+  const box = fig.querySelector(".tt-headbox");
+  const head = fig.querySelector(".tt-head");
+  const pause = fig.querySelector(".tt-pause");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)");
+  let t = 0;
+  let last = 0;
+  let raf = 0;
+  let visible = false;
+  let held = false;
+
+  function render() {
+    const p = Math.min(t / RUN, 1) * 100;
+    for (const el of marks) {
+      el.classList.toggle("hit", p >= +el.dataset.at);
+      if (el.dataset.to) el.classList.toggle("done", p >= +el.dataset.to);
+    }
+    head.style.transform = "translateX(" + (p / 100) * box.clientWidth + "px)";
+    fig.classList.toggle("heal", t >= RUN);
+    fig.classList.toggle("read", t >= READ);
+    fig.classList.toggle("verdict", t >= VERDICT);
+    fig.classList.toggle("fade", t >= FADE);
+  }
+  function tick(now) {
+    t += Math.min(now - last, 100);
+    last = now;
+    if (t >= CYCLE) {
+      t = 0;
+      fig.classList.add("jump");
+      render();
+      fig.getBoundingClientRect();
+      fig.classList.remove("jump");
+    } else {
+      render();
+    }
+    raf = requestAnimationFrame(tick);
+  }
+  function sync() {
+    const run = visible && !held && !document.hidden && !reduce.matches;
+    fig.classList.toggle("play", run);
+    if (run && !raf) {
+      last = performance.now();
+      raf = requestAnimationFrame(tick);
+    } else if (!run && raf) {
+      cancelAnimationFrame(raf);
+      raf = 0;
+    }
+  }
+  function setMode() {
+    pause.hidden = reduce.matches;
+    fig.classList.toggle("live", !reduce.matches);
+    if (reduce.matches) {
+      fig.classList.remove("heal", "read", "verdict", "fade");
+      for (const el of marks) el.classList.remove("hit", "done");
+    } else {
+      t = 0;
+      render();
+    }
+    sync();
+  }
+  pause.addEventListener("click", () => {
+    held = !held;
+    pause.setAttribute("aria-pressed", String(held));
+    pause.querySelector("span").textContent = held ? "Play" : "Pause";
+    sync();
+  });
+  reduce.addEventListener("change", setMode);
+  document.addEventListener("visibilitychange", sync);
+  new IntersectionObserver((entries) => {
+    visible = entries[0].isIntersecting;
+    sync();
+  }, { threshold: 0.25 }).observe(fig);
+  setMode();
+})();
