@@ -21,6 +21,10 @@ time wins, prereleases included and any tag containing "nightly" excluded.
 between a prerelease and a stable release, because the Get started install
 commands are written for one or the other and need a person to change them.
 
+Before moving a repo whose markers sit inside a release download URL, the asset
+that URL would name must exist on the new release. If it does not, that repo is
+left alone, the other repos are still updated, and the run exits 1.
+
 When GITHUB_OUTPUT is set, writes changed=true|false and held=<felix tag or empty>.
 """
 
@@ -81,6 +85,30 @@ def is_prerelease(version, releases):
     return "-" in version
 
 
+def release_assets(repo, tag):
+    out = subprocess.run(
+        ["gh", "release", "view", tag, "-R", "%s/%s" % (ORG, repo), "--json", "assets",
+         "--jq", ".assets[].name"],
+        check=True, capture_output=True, text=True,
+    ).stdout
+    return set(out.split())
+
+
+def render(html, repo, v):
+    return MARKER.sub(
+        lambda m: m.group(1) + v[m.group(3)] + m.group(5) if m.group(2) == repo else m.group(0),
+        html,
+    )
+
+
+def downloads(html, repo):
+    """(tag, asset name) for every release download URL of repo on the page."""
+    plain = MARKER.sub(lambda m: m.group(4), html)
+    pattern = r"https://github\.com/%s/%s/releases/download/([^/\s\"<]+)/([^\s\"<|]+)" % (
+        ORG, re.escape(repo))
+    return set(re.findall(pattern, plain))
+
+
 def update(hold_felix_channel):
     html = PAGE.read_text(encoding="utf-8")
     repos = sorted({m.group(2) for m in MARKER.finditer(html)} | {m.group(2) for m in LINK.finditer(html)})
@@ -103,6 +131,19 @@ def update(hold_felix_channel):
             held = v["tag"]
             continue
         wanted[repo] = v
+
+    # A download URL that would point at an asset the release lacks keeps the
+    # whole repo on its old release, so the version and the download never disagree.
+    missing = []
+    for repo in sorted(wanted):
+        before = downloads(html, repo)
+        after = downloads(render(html, repo, wanted[repo]), repo)
+        for tag, name in sorted(after - before):
+            if name not in release_assets(repo, tag):
+                missing.append("%s %s has no asset %s; left %s on its current release"
+                               % (repo, tag, name, repo))
+                del wanted[repo]
+                break
 
     changes = []
 
@@ -151,6 +192,9 @@ def update(hold_felix_channel):
     if out:
         with open(out, "a", encoding="utf-8") as f:
             f.write("changed=%s\nheld=%s\n" % ("true" if changes else "false", held))
+
+    if missing:
+        sys.exit("\n".join(missing))
 
 
 def check():
