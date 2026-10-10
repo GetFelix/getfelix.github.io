@@ -222,9 +222,9 @@
             <dl>
               <div><dt>Acknowledged</dt><dd>When the leader has queued the record, or written it with <code>ack_on_commit</code>.</dd></div>
               <div><dt>Leader lost</dt><dd>Records it had not yet shipped are lost. Replication lag bounds that window and is exported as a metric.</dd></div>
-              <div><dt>Failover</dt><dd>Once the leader's lease lapses: at least 15 s plus a 3.75 s margin with the defaults.</dd></div>
+              <div><dt>Failover</dt><dd>Roughly 13 to 26 s after a crash with the defaults. A broker stopped gracefully hands its shards to followers first.</dd></div>
             </dl>
-            <p class="gu-note">Closing that window would take a majority round on every write, which is what <code>Quorum</code> does.</p>
+            <p class="gu-note">Closing the loss window would take a majority round on every write, which is what <code>Quorum</code> does.</p>
           </article>
           <article class="gu-mode q">
             <header><code class="gu-name">Quorum</code><span class="gu-pips" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i></span></header>
