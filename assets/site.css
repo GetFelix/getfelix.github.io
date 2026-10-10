@@ -2847,20 +2847,12 @@ p {
   stroke-width: 5;
   opacity: 0.16;
 }
-.cl-svg .lf-off {
-  fill: none;
-  stroke: var(--warn);
-  stroke-width: 1.5;
-  stroke-dasharray: 4 4;
-  opacity: 0;
-}
 .cl-svg .lf-on,
-.cl-svg .lf-glow,
-.cl-svg .lf-off {
+.cl-svg .lf-glow {
   transition: opacity 0.4s ease;
 }
 .cl-svg .lf0 {
-  transition: transform 0.9s cubic-bezier(0.6, 0, 0.25, 1);
+  transition: transform 0.9s cubic-bezier(0.6, 0, 0.25, 1), opacity 0.4s ease;
 }
 .cl-svg .crown {
   fill: var(--accent-text);
@@ -2884,10 +2876,20 @@ p {
 .cl-svg .r-fence text {
   fill: var(--muted);
 }
+.cl-svg .r-off text {
+  fill: var(--warn);
+}
+.cl-svg .r-off path {
+  fill: none;
+  stroke: var(--warn);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
 .cl-svg .r-lead,
 .cl-svg .r-fol,
-.cl-svg .r-fence {
-  transition: opacity 0.15s ease;
+.cl-svg .r-fence,
+.cl-svg .r-off {
+  transition: opacity 0.2s ease;
 }
 .cl-svg .q {
   opacity: 0;
@@ -2985,11 +2987,17 @@ p {
 .cl-svg .cp-m {
   fill: var(--text);
   opacity: 0;
-  transition: opacity 0.35s ease;
+  transition: opacity 0.2s ease;
 }
 
-/* State by beat. Base: shard 0 led by broker 1, nothing new written. */
+/* State by beat. Base: shard 0 led by broker 1, nothing new written. Rules
+   run in beat order. Text that appears waits 0.2 s (--in) for the text it
+   replaces to fade, so no frame shows two strings on top of each other. */
+.cl-fig {
+  --in: 0.2s;
+}
 .c00 .r-fol,
+.c00 .r-off,
 .c01 .r-lead,
 .c01 .r-fence {
   opacity: 0;
@@ -3001,15 +3009,6 @@ p {
 .a-b1 .qa .p0,
 .a-b2 .qa .p1,
 .a-b3 .qa .p2,
-.a-b1 .qa .q1,
-.a-b2 .qa .q2,
-.a-b3 .qa .q3 {
-  opacity: 1;
-}
-.a-b2 .qa .q1,
-.a-b3 .qa .q2 {
-  opacity: 0;
-}
 .a-b1 .c00 .na,
 .a-b2 .c01 .na,
 .a-b3 .c02 .na,
@@ -3017,19 +3016,22 @@ p {
   opacity: 1;
   transform: none;
 }
+.a-b1 .qa .q1,
+.a-b2 .qa .q2,
+.a-b3 .qa .q3 {
+  opacity: 1;
+  transition-delay: var(--in);
+}
+.a-b2 .qa .q1,
+.a-b3 .qa .q2 {
+  opacity: 0;
+  transition-delay: 0s;
+}
+
+/* Broker 1 fails. Shard 0 has no leader: the frame fades out and moves to
+   broker 2 while hidden, ready for the promotion. */
 .down .k0 {
   opacity: 0.38;
-}
-.down .k0 .card-down,
-.down .st-down {
-  opacity: 1;
-}
-.down .k0 .st-up,
-.down .l0,
-.down .c00 .r-lead,
-.down .lf0 .lf-on,
-.down .lf0 .lf-glow {
-  opacity: 0;
 }
 .down .card.k0 {
   opacity: 1;
@@ -3038,43 +3040,46 @@ p {
 .down .card.k0 .bname {
   opacity: 0.45;
 }
-.down .lf0 .lf-off {
+.down .k0 .card-down,
+.down .st-down {
   opacity: 1;
 }
-.promote .lf0 {
+.down .k0 .st-up,
+.down .ta,
+.down .l0,
+.down .lf0,
+.down .qa,
+.down .c00 .r-lead {
+  opacity: 0;
+  transition-delay: 0s;
+}
+.down .lf0 {
   transform: translateY(126px);
 }
-.promote .lf0 .lf-on,
-.promote .lf0 .lf-glow,
-.promote .c01 .r-lead,
-.promote .l1,
-.promote .m1 {
+.down .c00 .r-off {
+  opacity: 1;
+  transition-delay: var(--in);
+}
+
+/* Broker 2's copy is promoted: frame, role, client line and caption together. */
+.promote .m0,
+.promote .ta,
+.promote .c01 .r-fol {
+  opacity: 0;
+  transition-delay: 0s;
+}
+.promote .lf0,
+.promote .l1 {
   opacity: 1;
 }
-.promote .lf0 .lf-glow {
-  opacity: 0.16;
-}
-.promote .lf0 .lf-off,
-.promote .c01 .r-fol,
-.promote .m0,
-.promote .ta {
-  opacity: 0;
-}
-.down .qa {
-  opacity: 0;
+.promote .m1,
+.promote .c01 .r-lead {
+  opacity: 1;
+  transition-delay: var(--in);
 }
 .b-b2 .qb .p1,
 .b-b3 .qb .p2,
 .b-b1 .qb .p0,
-.b-b2 .qb .q1,
-.b-b3 .qb .q2,
-.b-b1 .qb .q3 {
-  opacity: 1;
-}
-.b-b3 .qb .q1,
-.b-b1 .qb .q2 {
-  opacity: 0;
-}
 .b-b2 .c01 .nb,
 .b-b3 .c02 .nb,
 .b-b1 .c00 .nb,
@@ -3082,61 +3087,79 @@ p {
   opacity: 1;
   transform: none;
 }
+.b-b2 .qb .q1,
+.b-b3 .qb .q2,
+.b-b1 .qb .q3 {
+  opacity: 1;
+  transition-delay: var(--in);
+}
+.b-b3 .qb .q1,
+.b-b1 .qb .q2 {
+  opacity: 0;
+  transition-delay: 0s;
+}
+
+/* Broker 1 rejoins as a follower. */
 .up .k0,
 .up .card.k0 .card-bg,
 .up .card.k0 .bname,
-.up .k0 .st-up,
-.up .c00 .r-fol,
-.up .m2 {
+.up .k0 .st-up {
   opacity: 1;
 }
 .up .k0 .card-down,
 .up .st-down,
-.up .m1 {
+.up .m1,
+.up .c00 .r-off {
   opacity: 0;
+  transition-delay: 0s;
 }
-.fence .c01 .r-lead,
+.up .m2,
+.up .c00 .r-fol {
+  opacity: 1;
+  transition-delay: var(--in);
+}
+
+/* Broker 2 is fenced for the move. */
 .fence .m2,
 .fence .qb,
-.fence .tb {
+.fence .tb,
+.fence .c01 .r-lead {
   opacity: 0;
+  transition-delay: 0s;
 }
-.fence .c01 .r-fence,
-.fence .m3 {
+.fence .m3,
+.fence .c01 .r-fence {
   opacity: 1;
+  transition-delay: var(--in);
 }
+
+/* The frame travels; roles and the client line change once it lands. */
 .move .lf0 {
   transform: none;
 }
-.move .c01 .r-fence,
-.move .c00 .r-fol,
-.move .l1 {
+.moved .l1,
+.moved .m3,
+.moved .c01 .r-fence,
+.moved .c00 .r-fol {
   opacity: 0;
+  transition-delay: 0s;
 }
-.move .c01 .r-fol,
-.move .c00 .r-lead,
-.move .l0 {
+.moved .l0 {
   opacity: 1;
 }
-/* A role changes as the leader frame arrives, not as it leaves. */
-.promote:not(.fence) .c01 .r-lead,
-.promote:not(.fence) .c01 .r-fol,
-.move .c00 .r-lead,
-.move .c00 .r-fol {
-  transition-delay: 0.7s;
+.moved .m0,
+.moved .c01 .r-fol,
+.moved .c00 .r-lead {
+  opacity: 1;
+  transition-delay: var(--in);
 }
+
 .reset .rec.new {
   opacity: 0;
   transform: scale(0.3);
 }
 .reset .tally {
   opacity: 0;
-}
-.reset .m3 {
-  opacity: 0;
-}
-.reset .m0 {
-  opacity: 1;
 }
 
 /* Records in flight. Each runs only between the beat that sends it and the
