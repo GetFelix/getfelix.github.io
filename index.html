@@ -95,9 +95,9 @@
   <section class="hero" aria-labelledby="hero-title">
     <canvas class="hero-bg" aria-hidden="true"></canvas>
     <div class="wrap">
-      <a class="release-pill" data-felix-release href="https://github.com/GetFelix/felix/releases/tag/v0.6.0-preview.4">
-        <span class="tag"><!--felix:version-->0.6.0-preview.4<!--/felix:version--></span>
-        Released <!--felix:date-->10 October 2026<!--/felix:date-->
+      <a class="release-pill" data-release="felix" href="https://github.com/GetFelix/felix/releases/tag/v0.6.0-preview.4">
+        <span class="tag"><!--release:felix:version-->0.6.0-preview.4<!--/release:felix:version--></span>
+        Released <!--release:felix:date-->10 October 2026<!--/release:felix:date-->
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </a>
       <h1 class="hero-mark" id="hero-title">
@@ -475,7 +475,7 @@
           <div class="card-body">
             <div class="card-title">
               <h3><a href="https://github.com/GetFelix/felix-canvas">felix-canvas</a></h3>
-              <span class="status ok">0.2.0</span>
+              <span class="status ok"><!--release:felix-canvas:version-->0.2.0<!--/release:felix-canvas:version--></span>
             </div>
             <p>A multiplayer drawing canvas with live cursors, rich text, history you can scrub, and per-room sign-in.</p>
             <div class="card-links">
@@ -484,8 +484,8 @@
               <details class="card-quick">
                 <summary>Quick start</summary>
                 <div class="quick-cmd">
-<pre><code>curl -fsSL https://github.com/GetFelix/felix-canvas/releases/download/v0.2.0/felix-canvas-compose-0.2.0.tar.gz | tar xz
-cd felix-canvas-compose-0.2.0
+<pre><code>curl -fsSL https://github.com/GetFelix/felix-canvas/releases/download/<!--release:felix-canvas:tag-->v0.2.0<!--/release:felix-canvas:tag-->/felix-canvas-compose-<!--release:felix-canvas:version-->0.2.0<!--/release:felix-canvas:version-->.tar.gz | tar xz
+cd felix-canvas-compose-<!--release:felix-canvas:version-->0.2.0<!--/release:felix-canvas:version-->
 # change FELIX_BOOTSTRAP_TOKEN and FELIX_RAFT_PEER_TOKEN in .env first
 docker compose up -d</code></pre>
                   <button class="icon-btn" type="button" data-copy aria-label="Copy the felix-canvas quick start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
@@ -535,7 +535,7 @@ docker compose up -d</code></pre>
           <div class="card-body">
             <div class="card-title">
               <h3><a href="https://github.com/GetFelix/felix-webhook-relay">felix-webhook-relay</a></h3>
-              <span class="status ok">0.1.0</span>
+              <span class="status ok"><!--release:felix-webhook-relay:version-->0.1.0<!--/release:felix-webhook-relay:version--></span>
             </div>
             <p>A webhook relay that stores each webhook durably, delivers it with retries, and replays any endpoint after an outage.</p>
             <div class="card-links">
@@ -566,7 +566,7 @@ docker compose up -d</code></pre>
           <div class="card-body">
             <div class="card-title">
               <h3><a href="https://github.com/GetFelix/felix-gateway">felix-gateway</a></h3>
-              <span class="status ok">0.2.0</span>
+              <span class="status ok"><!--release:felix-gateway:version-->0.3.0<!--/release:felix-gateway:version--></span>
             </div>
             <p>A WebSocket gateway between browsers and Felix, with sign-in narrowed to one room or match.</p>
             <div class="card-links">
@@ -584,13 +584,13 @@ docker compose up -d</code></pre>
       <div class="section-head center reveal">
         <span class="eyebrow">Install</span>
         <h2 id="start-title">Get started</h2>
-        <p><!--felix:version-->0.6.0-preview.4<!--/felix:version--> is a pre-release, so each package manager needs it asked for by name.</p>
+        <p><!--release:felix:version-->0.6.0-preview.4<!--/release:felix:version--> is a pre-release, so each package manager needs it asked for by name.</p>
       </div>
 
       <div class="install reveal">
         <div class="install-row">
           <div class="install-name"><span class="ficon mono-ic" aria-hidden="true">rs</span><span>Rust client<small>crates.io</small></span></div>
-          <div class="cmd"><code>cargo add felix-client@<!--felix:version-->0.6.0-preview.4<!--/felix:version--></code><button class="icon-btn" type="button" data-copy aria-label="Copy the Rust install command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
+          <div class="cmd"><code>cargo add felix-client@<!--release:felix:version-->0.6.0-preview.4<!--/release:felix:version--></code><button class="icon-btn" type="button" data-copy aria-label="Copy the Rust install command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
           <a href="https://docs.getfelix.dev/clients/rust/">Docs <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span class="visually-hidden"> for the Rust client</span></a>
         </div>
         <div class="install-row">
@@ -605,7 +605,7 @@ docker compose up -d</code></pre>
         </div>
         <div class="install-row">
           <div class="install-name"><span class="ficon mono-ic" aria-hidden="true">oci</span><span>Broker and control plane<small>Container images</small></span></div>
-          <div class="cmd"><code>docker pull ghcr.io/getfelix/felix-broker:<!--felix:version-->0.6.0-preview.4<!--/felix:version--></code><button class="icon-btn" type="button" data-copy aria-label="Copy the docker pull command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
+          <div class="cmd"><code>docker pull ghcr.io/getfelix/felix-broker:<!--release:felix:version-->0.6.0-preview.4<!--/release:felix:version--></code><button class="icon-btn" type="button" data-copy aria-label="Copy the docker pull command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
           <a href="https://docs.getfelix.dev/deployment/docker-compose/">Docs <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span class="visually-hidden"> for the container images</span></a>
         </div>
         <div class="install-row">
