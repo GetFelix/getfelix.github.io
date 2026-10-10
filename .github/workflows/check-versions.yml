@@ -1,0 +1,20 @@
+name: Check versions
+
+# Fails when a version in the hero or a project card is typed in by hand
+# instead of sitting inside a release marker, since the release-versions
+# workflow would never update it.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/release_versions.py --check
