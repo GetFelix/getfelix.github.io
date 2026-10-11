@@ -1,0 +1,1850 @@
+/* The guarantees page: clustering, testing and status. Loaded after site.css. */
+
+.g-intro {
+  padding-bottom: 40px;
+}
+.g-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 28px;
+  font-size: 15px;
+  font-weight: 600;
+}
+.g-back svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.15s ease;
+}
+.g-back:hover svg {
+  transform: translateX(-3px);
+}
+.g-intro h1 {
+  font-size: clamp(38px, 5.6vw, 60px);
+  font-weight: 750;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+.g-intro .section-head {
+  max-width: 720px;
+  margin-bottom: 32px;
+}
+.g-toc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.g-toc a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 16px 9px 10px;
+  border-radius: 999px;
+  background: var(--bg-raised);
+  border: 1px solid var(--line-strong);
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 550;
+}
+.g-toc a:hover {
+  border-color: var(--accent);
+  text-decoration: none;
+}
+.g-toc .n {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.g-cta {
+  max-width: 640px;
+  margin: 0 auto;
+  text-align: center;
+}
+.g-cta p {
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 18px;
+}
+.g-cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+/* Clustering. The markup carries the end of the first step, so without JS the
+   figure shows a write acknowledged by 2 of 3. site.js plays the steps by
+   adding one class per beat (a-send, a-b1, ... move, reset) to .cl-fig. */
+.cluster {
+  background: var(--bg-sunken);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.cl-fig {
+  margin: 0;
+}
+.cl-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+  gap: 18px;
+}
+.cl-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px 20px 20px;
+}
+.cl-conf {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--faint);
+}
+.cl-conf span {
+  padding: 3px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--bg-sunken) 70%, transparent);
+}
+.cl-conf b {
+  font-weight: 500;
+  color: var(--accent-text);
+}
+.cl-fig figcaption {
+  margin-top: 18px;
+  max-width: 68ch;
+  color: var(--muted);
+  font-size: 15.5px;
+}
+
+.cl-svg text {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  fill: var(--muted);
+}
+.cl-svg .shard {
+  fill: var(--faint);
+}
+.cl-svg .bname {
+  fill: var(--text);
+}
+.cl-svg .st {
+  font-size: 10.5px;
+}
+.cl-svg .client {
+  fill: var(--bg-raised);
+  stroke: var(--line-strong);
+}
+.cl-svg .client-t {
+  fill: var(--muted);
+}
+.cl-svg .link,
+.cl-svg .link-on {
+  fill: none;
+  stroke-width: 1.5;
+}
+.cl-svg .link {
+  stroke: var(--line-strong);
+}
+.cl-svg .link-on {
+  stroke: var(--accent);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.cl-svg .card-bg {
+  fill: var(--bg-raised);
+  stroke: var(--line-strong);
+}
+.cl-svg .card-down {
+  fill: none;
+  stroke: var(--warn);
+  stroke-width: 1.5;
+  stroke-dasharray: 5 5;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.cl-svg .up-dot {
+  fill: var(--ok);
+}
+.cl-svg .st-up text {
+  fill: var(--ok);
+}
+.cl-svg .st-down text {
+  fill: var(--warn);
+}
+.cl-svg .x {
+  fill: none;
+  stroke: var(--warn);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.cl-svg .st-up,
+.cl-svg .st-down,
+.cl-svg .card,
+.cl-svg .chips {
+  transition: opacity 0.4s ease;
+}
+.cl-svg .st-down {
+  opacity: 0;
+}
+.cl-svg .chip-bg {
+  fill: var(--bg-sunken);
+  stroke: var(--line);
+}
+.cl-svg .lf-on {
+  fill: var(--accent-soft);
+  stroke: var(--accent);
+  stroke-width: 1.5;
+}
+.cl-svg .lf-glow {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 5;
+  opacity: 0.16;
+}
+.cl-svg .lf-on,
+.cl-svg .lf-glow {
+  transition: opacity 0.4s ease;
+}
+.cl-svg .lf0 {
+  transition: transform 0.9s cubic-bezier(0.6, 0, 0.25, 1), opacity 0.4s ease;
+}
+.cl-svg .crown {
+  fill: var(--accent-text);
+}
+.cl-svg .fol-ic {
+  fill: none;
+  stroke: var(--faint);
+  stroke-width: 1.5;
+}
+.cl-svg .r-lead text {
+  fill: var(--accent-text);
+}
+.cl-svg .r-fol text {
+  fill: var(--faint);
+}
+.cl-svg .lock {
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 1.4;
+}
+.cl-svg .r-fence text {
+  fill: var(--muted);
+}
+.cl-svg .r-off text {
+  fill: var(--warn);
+}
+.cl-svg .r-off path {
+  fill: none;
+  stroke: var(--warn);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+.cl-svg .r-lead,
+.cl-svg .r-fol,
+.cl-svg .r-fence,
+.cl-svg .r-off {
+  transition: opacity 0.2s ease;
+}
+.cl-svg .q {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.cl-svg .q tspan {
+  fill: var(--accent-text);
+}
+.cl-svg .tally {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.a-b1 .qa,
+.b-b2 .qb {
+  opacity: 1;
+}
+.cl-svg .rec.old {
+  fill: color-mix(in srgb, var(--muted) 34%, transparent);
+}
+.cl-svg .slot {
+  fill: none;
+  stroke: var(--line-strong);
+  stroke-dasharray: 2.5 2.5;
+}
+.cl-svg .rec.new {
+  fill: var(--accent);
+  opacity: 0;
+  transform: scale(0.3);
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: opacity 0.3s ease, transform 0.45s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+.cl-svg .kept {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.cl-svg .pip {
+  fill: none;
+  stroke: var(--faint);
+  stroke-width: 1.4;
+}
+.cl-svg .pf {
+  fill: var(--accent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.cl-svg .ack circle {
+  fill: var(--accent);
+}
+.cl-svg .ack path {
+  fill: none;
+  stroke: var(--on-accent);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.cl-svg .ack {
+  opacity: 0;
+  transform: scale(0.4);
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+.cl-svg .mv {
+  opacity: 0;
+}
+.cl-svg .dot-h {
+  fill: var(--accent);
+  opacity: 0.25;
+}
+.cl-svg .dot-c {
+  fill: var(--accent);
+}
+.cl-svg .ack-ring {
+  fill: var(--bg-raised);
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+.cl-svg .cp-bg {
+  fill: var(--bg-raised);
+  stroke: var(--line-strong);
+}
+.cl-svg .cp-pulse {
+  fill: var(--accent-soft);
+  stroke: var(--accent);
+  opacity: 0;
+}
+.cl-svg .cp-l {
+  fill: var(--faint);
+}
+.cl-svg .cp-m {
+  fill: var(--text);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+/* State by beat. Base: shard 0 led by broker 1, nothing new written. Rules
+   run in beat order. Text that appears waits 0.2 s (--in) for the text it
+   replaces to fade, so no frame shows two strings on top of each other. */
+.cl-fig {
+  --in: 0.2s;
+}
+.c00 .r-fol,
+.c00 .r-off,
+.c01 .r-lead,
+.c01 .r-fence {
+  opacity: 0;
+}
+.cl-svg .m0,
+.cl-svg .l0 {
+  opacity: 1;
+}
+.a-b1 .qa .p0,
+.a-b2 .qa .p1,
+.a-b3 .qa .p2,
+.a-b1 .c00 .na,
+.a-b2 .c01 .na,
+.a-b3 .c02 .na,
+.a-ok .ta {
+  opacity: 1;
+  transform: none;
+}
+.a-b1 .qa .q1,
+.a-b2 .qa .q2,
+.a-b3 .qa .q3 {
+  opacity: 1;
+  transition-delay: var(--in);
+}
+.a-b2 .qa .q1,
+.a-b3 .qa .q2 {
+  opacity: 0;
+  transition-delay: 0s;
+}
+
+/* Broker 1 fails. Shard 0 has no leader: the frame fades out and moves to
+   broker 2 while hidden, ready for the promotion. */
+.down .k0 {
+  opacity: 0.38;
+}
+.down .card.k0 {
+  opacity: 1;
+}
+.down .card.k0 .card-bg,
+.down .card.k0 .bname {
+  opacity: 0.45;
+}
+.down .k0 .card-down,
+.down .st-down {
+  opacity: 1;
+}
+.down .k0 .st-up,
+.down .ta,
+.down .l0,
+.down .lf0,
+.down .qa,
+.down .c00 .r-lead {
+  opacity: 0;
+  transition-delay: 0s;
+}
+.down .lf0 {
+  transform: translateY(126px);
+}
+.down .c00 .r-off {
+  opacity: 1;
+  transition-delay: var(--in);
+}
+
+/* Broker 2's copy is promoted: frame, role, client line and caption together. */
+.promote .m0,
+.promote .ta,
+.promote .c01 .r-fol {
+  opacity: 0;
+  transition-delay: 0s;
+}
+.promote .lf0,
+.promote .l1 {
+  opacity: 1;
+}
+.promote .m1,
+.promote .c01 .r-lead {
+  opacity: 1;
+  transition-delay: var(--in);
+}
+.b-b2 .qb .p1,
+.b-b3 .qb .p2,
+.b-b1 .qb .p0,
+.b-b2 .c01 .nb,
+.b-b3 .c02 .nb,
+.b-b1 .c00 .nb,
+.b-ok .tb {
+  opacity: 1;
+  transform: none;
+}
+.b-b2 .qb .q1,
+.b-b3 .qb .q2,
+.b-b1 .qb .q3 {
+  opacity: 1;
+  transition-delay: var(--in);
+}
+.b-b3 .qb .q1,
+.b-b1 .qb .q2 {
+  opacity: 0;
+  transition-delay: 0s;
+}
+
+/* Broker 1 rejoins as a follower. */
+.up .k0,
+.up .card.k0 .card-bg,
+.up .card.k0 .bname,
+.up .k0 .st-up {
+  opacity: 1;
+}
+.up .k0 .card-down,
+.up .st-down,
+.up .m1,
+.up .c00 .r-off {
+  opacity: 0;
+  transition-delay: 0s;
+}
+.up .m2,
+.up .c00 .r-fol {
+  opacity: 1;
+  transition-delay: var(--in);
+}
+
+/* Broker 2 is fenced for the move. */
+.fence .m2,
+.fence .qb,
+.fence .tb,
+.fence .c01 .r-lead {
+  opacity: 0;
+  transition-delay: 0s;
+}
+.fence .m3,
+.fence .c01 .r-fence {
+  opacity: 1;
+  transition-delay: var(--in);
+}
+
+/* The frame travels; roles and the client line change once it lands. */
+.move .lf0 {
+  transform: none;
+}
+.moved .l1,
+.moved .m3,
+.moved .c01 .r-fence,
+.moved .c00 .r-fol {
+  opacity: 0;
+  transition-delay: 0s;
+}
+.moved .l0 {
+  opacity: 1;
+}
+.moved .m0,
+.moved .c01 .r-fol,
+.moved .c00 .r-lead {
+  opacity: 1;
+  transition-delay: var(--in);
+}
+
+.reset .rec.new {
+  opacity: 0;
+  transform: scale(0.3);
+}
+.reset .tally {
+  opacity: 0;
+}
+
+/* Records in flight. Each runs only between the beat that sends it and the
+   beat that lands it, so a jump to a later step never replays one. */
+.a-send:not(.a-b1) .d-a,
+.a-rep:not(.a-b2) .d-a2,
+.b-send:not(.b-b2) .d-b,
+.b-rep:not(.b-b3) .d-b3,
+.up:not(.b-b1) .d-b1 {
+  animation: cl-go 0.6s cubic-bezier(0.45, 0, 0.3, 1) both;
+}
+.a-send:not(.a-b1) .d-a,
+.b-send:not(.b-b2) .d-b {
+  animation-duration: 0.7s;
+}
+.a-rep:not(.a-b3) .d-a3 {
+  animation: cl-go 2s cubic-bezier(0.45, 0, 0.3, 1) both;
+}
+.a-ack:not(.a-ok) .d-aa,
+.b-ack:not(.b-ok) .d-ba {
+  animation: cl-go 0.6s cubic-bezier(0.45, 0, 0.3, 1) both;
+}
+.promote:not(.b-send) .kept {
+  animation: cl-kept 0.75s ease-out 0.9s 2 both;
+}
+.promote:not(.b-send) .cp-pulse,
+.fence:not(.move) .cp-pulse {
+  animation: cl-pulse 1.2s ease-out both;
+}
+@keyframes cl-go {
+  0% {
+    opacity: 0;
+    transform: translate(var(--x0), var(--y0));
+  }
+  12%,
+  88% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--x1), var(--y1));
+  }
+}
+@keyframes cl-kept {
+  0% {
+    opacity: 0.9;
+    transform: scale(0.6);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.7);
+  }
+}
+@keyframes cl-pulse {
+  0% {
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.cl-jump .cl-svg *,
+.cl-jump .cl-svg *::before {
+  transition: none !important;
+}
+.cl-fig:not(.play) .cl-svg *,
+.cl-fig:not(.play) .cl-step::after {
+  animation-play-state: paused !important;
+}
+
+/* Steps */
+.cl-side {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+.cl-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.cl-step {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: var(--bg-raised);
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+.cl-step button {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 12px;
+  width: 100%;
+  padding: 13px 16px 14px 14px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.cl-step button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+  border-radius: var(--radius-sm);
+}
+.cl-step .n {
+  grid-row: span 2;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid var(--line-strong);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--faint);
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+.cl-step .t {
+  font-weight: 600;
+  font-size: 15.5px;
+  letter-spacing: -0.01em;
+  line-height: 1.4;
+  padding-top: 1px;
+}
+.cl-step .d {
+  margin-top: 4px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.cl-step:not(.is-on) .d {
+  display: none;
+}
+.cl-step:not(.is-on):hover {
+  border-color: var(--line-strong);
+}
+.cl-step.is-on {
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--line));
+  background: color-mix(in srgb, var(--accent) 5%, var(--bg-raised));
+}
+.cl-step.is-on .n {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+.cl-step::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+.cl-fig.live .cl-step.is-on::after {
+  animation: cl-prog var(--dur, 6s) linear both;
+}
+@keyframes cl-prog {
+  to {
+    transform: scaleX(1);
+  }
+}
+.cl-pause {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: var(--bg-raised);
+  color: var(--muted);
+  font: 500 13px var(--mono);
+  cursor: pointer;
+}
+.cl-pause[hidden] {
+  display: none;
+}
+.cl-pause:hover {
+  color: var(--text);
+}
+.cl-pause svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.cl-pause .i-play,
+.cl-pause[aria-pressed="true"] .i-pause {
+  display: none;
+}
+.cl-pause[aria-pressed="true"] .i-play {
+  display: block;
+}
+
+/* Guarantees */
+.gu {
+  margin-top: 72px;
+}
+.gu-title {
+  margin: 0 0 20px;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.gu code,
+.cl-step code {
+  font-family: var(--mono);
+  font-size: 0.88em;
+  color: var(--accent-text);
+}
+.gu-modes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+.gu-mode {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 24px 26px 26px;
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-md);
+}
+.gu-mode.q {
+  border-color: color-mix(in srgb, var(--accent) 30%, var(--line));
+}
+.gu-mode.q::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(ellipse 70% 60% at 100% 0%, var(--accent-glow), transparent 70%);
+  opacity: 0.3;
+  pointer-events: none;
+}
+.gu-mode header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.gu .gu-name {
+  padding: 0;
+  background: none;
+  border: 0;
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+.gu-mode.q .gu-name {
+  color: var(--accent-text);
+}
+.gu-pips {
+  display: flex;
+  gap: 6px;
+}
+.gu-pips i {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1.5px solid var(--faint);
+}
+.gu-pips i.on {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.gu-lede {
+  margin: 6px 0 18px;
+  color: var(--muted);
+}
+.gu-mode dl {
+  margin: 0;
+  display: grid;
+}
+.gu-mode dl > div {
+  display: grid;
+  grid-template-columns: 9.5em minmax(0, 1fr);
+  gap: 16px;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+.gu-mode dt {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--faint);
+  padding-top: 3px;
+}
+.gu-mode dd {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.55;
+}
+.gu-note {
+  margin: 4px 0 0;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-sunken);
+  border: 1px solid var(--line);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.gu-facts {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+.gu-fact {
+  padding: 22px 24px 24px;
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+}
+.gu-fact h4 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 12px;
+  font-size: 16px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+.gu-fact h4 svg {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: var(--accent-text);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.gu-fact ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+.gu-fact li {
+  position: relative;
+  padding-left: 16px;
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.gu-fact li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 6px;
+  height: 6px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--accent) 60%, transparent);
+}
+.gu-fact li b {
+  color: var(--text);
+  font-weight: 600;
+}
+.gu-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin: 24px 0 0;
+  font-size: 15px;
+  color: var(--muted);
+}
+.tag-partial {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 6px;
+  color: var(--warn);
+  background: var(--warn-soft);
+}
+
+@media (max-width: 1100px) {
+  .nav a[href="#clustering"] {
+    display: none;
+  }
+}
+@media (max-width: 960px) {
+  .cl-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .cl-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .cl-step:not(.is-on) .d {
+    display: block;
+  }
+  .gu-facts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 760px) {
+  .gu-modes {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .cl-steps {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .cl-step:not(.is-on) .d {
+    display: none;
+  }
+  .cl-stage {
+    padding: 12px;
+    gap: 10px;
+  }
+  .cl-conf {
+    gap: 4px;
+    font-size: 11px;
+  }
+  .cl-conf span {
+    padding: 2px 6px;
+  }
+  .gu-mode {
+    padding: 20px;
+  }
+  .gu-mode dl > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+  }
+  /* SVG text scales with the panel, so it starts larger on a phone. */
+  .cl-svg text {
+    font-size: 19px;
+    letter-spacing: 0.02em;
+  }
+  .cl-svg .st,
+  .cl-svg .cp-l,
+  .cl-svg .cp-m {
+    font-size: 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cl-fig *,
+  .cl-fig *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+
+/* How Felix is tested. The markup is the end of the night: every fault healed,
+   every acknowledged record checked, the verdict in. site.js adds .live and
+   moves a playhead; a fault or record shows once the playhead passes its
+   data-at, and the phase classes (heal, read, verdict, fade) run the check. */
+.tt {
+  margin: 0;
+}
+.tt figcaption {
+  margin-top: 18px;
+  max-width: 68ch;
+  color: var(--muted);
+  font-size: 15.5px;
+}
+.tt-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 18px 20px 20px;
+}
+.tt-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.tt-top .cl-pause {
+  align-self: center;
+  flex-shrink: 0;
+}
+
+.tt-lanes {
+  position: relative;
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  grid-template-rows: repeat(4, 38px) 38px;
+  column-gap: 12px;
+  row-gap: 8px;
+}
+.tt-lanes .r1 { grid-row: 1; }
+.tt-lanes .r2 { grid-row: 2; }
+.tt-lanes .r3 { grid-row: 3; }
+.tt-lanes .r4 { grid-row: 4; }
+.tt-lanes .r5 { grid-row: 5; }
+.tt-name {
+  grid-column: 1;
+  align-self: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.tt-name.ledger {
+  color: var(--accent-text);
+}
+.tt-name .short {
+  display: none;
+}
+.tt-track {
+  grid-column: 2;
+  position: relative;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--bg-sunken) 70%, transparent);
+}
+/* A broker's heartbeat: a quiet line through the lane. */
+.tt-track::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 50%;
+  height: 1px;
+  background: color-mix(in srgb, var(--accent) 30%, transparent);
+}
+.tt-ledger {
+  overflow: hidden;
+  border-color: color-mix(in srgb, var(--accent) 22%, var(--line));
+}
+.tt-ledger::before {
+  display: none;
+}
+.tt-lanes .r5 {
+  margin-top: 0;
+}
+.tt-span {
+  grid-column: 2;
+  grid-row: 2 / span 3;
+  position: relative;
+  pointer-events: none;
+}
+
+/* A fault. The dashed base is its healed mark; .tt-f::after is the strike,
+   shown while it is in effect. */
+.tt-f {
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  left: calc(var(--a) * 1%);
+  width: calc((var(--b) - var(--a)) * 1%);
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  border-radius: 6px;
+  border: 1px dashed color-mix(in srgb, var(--warn) 55%, transparent);
+  background: color-mix(in srgb, var(--warn) 7%, var(--bg-raised));
+  color: var(--warn);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  z-index: 1;
+}
+.tt-f.tall {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 2px;
+  padding-top: 8px;
+}
+.tt-sub {
+  padding-left: 19px;
+  font-size: 11px;
+  color: var(--muted);
+  white-space: normal;
+}
+.tt-f::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 6px;
+  border: 1px solid var(--warn);
+  background: var(--warn-soft);
+  box-shadow: 0 0 18px -4px color-mix(in srgb, var(--warn) 60%, transparent);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.tt-f > * {
+  position: relative;
+  z-index: 1;
+}
+.tt-l {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.tt-l svg,
+.tt-key svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.tt-n {
+  display: none;
+  place-items: center;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  font-size: 10.5px;
+  line-height: 1;
+}
+.tt-ring {
+  position: absolute;
+  left: -9px;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  margin-top: -9px;
+  border-radius: 50%;
+  border: 2px solid var(--warn);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* The record ledger. */
+.tt-cell {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--x) * 1%);
+  width: 14px;
+  height: 14px;
+  margin-top: -7px;
+  border-radius: 4px;
+  background: var(--accent);
+  box-shadow: 0 0 10px -2px var(--accent-glow);
+}
+.tt-cell.unk {
+  background: transparent;
+  border: 1.5px dashed var(--faint);
+  box-shadow: none;
+}
+.tt-cell svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: var(--on-accent);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.tt-sweep {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+}
+.tt-sweep::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 40px;
+  margin-left: -40px;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--ok) 30%, transparent));
+  border-right: 2px solid var(--ok);
+}
+.tt-headbox {
+  grid-column: 2;
+  grid-row: 1 / -1;
+  position: relative;
+  pointer-events: none;
+  z-index: 3;
+  display: none;
+}
+.tt-head {
+  position: absolute;
+  top: -6px;
+  bottom: -6px;
+  left: -1px;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent-glow);
+  transition: opacity 0.4s ease;
+}
+.tt-head::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -4px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.tt-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin-top: -6px;
+  padding-left: 124px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.tt-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.tt-legend .tt-cell {
+  position: static;
+  margin: 0;
+  width: 11px;
+  height: 11px;
+  border-radius: 3px;
+}
+.tt-key {
+  display: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 16px;
+  font-size: 13.5px;
+  color: var(--muted);
+}
+.tt-key li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: opacity 0.4s ease;
+}
+.tt-key .tt-n {
+  display: grid;
+  flex-shrink: 0;
+  color: var(--warn);
+}
+.tt-key b {
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* The check: the verdict, and the rules that make it. */
+.tt-check {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+  gap: 18px 28px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+.tt-verdict {
+  display: grid;
+  align-items: center;
+}
+.tt-v {
+  grid-area: 1 / 1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: opacity 0.3s ease;
+}
+.tt-v p {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.tt-v p b {
+  color: var(--text);
+  font-weight: 600;
+}
+.tt-v svg {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  fill: none;
+  stroke: var(--accent-text);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.tt-v-run,
+.tt-v-read {
+  opacity: 0;
+}
+.tt-zero {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--ok) 45%, transparent);
+  background: var(--ok-soft);
+  color: var(--ok);
+  font-size: 38px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+.tt-v-done p b {
+  display: block;
+  font-size: 16px;
+}
+.tt-v-done p span {
+  font-size: 13.5px;
+}
+.tt-rules {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 22px;
+  align-content: center;
+}
+.tt-rules li {
+  display: flex;
+  gap: 10px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+.tt-rules .ic {
+  position: relative;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin-top: 1px;
+}
+.tt-rules svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.tt-rules .o {
+  stroke: var(--faint);
+}
+.tt-rules .k {
+  stroke: var(--ok);
+  stroke-width: 1.9;
+}
+.tt-rules .k circle {
+  fill: var(--ok-soft);
+  stroke-width: 1.6;
+}
+.tt-rules .k {
+  transition: opacity 0.35s ease;
+  transition-delay: calc(var(--i, 0) * 0.12s);
+}
+
+/* Live: hidden until the playhead reaches it. */
+.tt.live .tt-headbox {
+  display: block;
+}
+.tt.live .tt-f {
+  opacity: 0;
+  transform: scaleX(0.9);
+  transform-origin: left center;
+  transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.tt.live .tt-f.hit {
+  opacity: 1;
+  transform: none;
+}
+.tt.live .tt-f.hit:not(.done)::after {
+  opacity: 1;
+}
+.tt.live .tt-f.hit .tt-ring {
+  animation: tt-strike 0.9s ease-out both;
+}
+.tt.live .tt-cell {
+  opacity: 0;
+  transform: scale(0.4);
+  transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+.tt.live .tt-cell.hit {
+  opacity: 1;
+  transform: none;
+}
+.tt.live .tt-cell svg {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  transition-delay: calc(var(--i, 0) * 0.06s);
+}
+.tt.live.read .tt-cell svg {
+  opacity: 1;
+}
+.tt.live .tt-key li {
+  opacity: 0.4;
+}
+.tt.live .tt-key li.hit {
+  opacity: 1;
+}
+.tt.live .tt-rules .k {
+  opacity: 0;
+}
+.tt.live.read .tt-rules .k {
+  opacity: 1;
+}
+.tt.live .tt-v-done {
+  opacity: 0;
+}
+/* One state at a time: the old one fades out before the new one fades in. */
+.tt.live:not(.heal) .tt-v-run,
+.tt.live.read:not(.verdict) .tt-v-read,
+.tt.live.verdict:not(.fade) .tt-v-done {
+  opacity: 1;
+  transition-delay: 0.35s;
+}
+.tt.live.verdict .tt-v-done .tt-zero {
+  animation: tt-pop 0.6s cubic-bezier(0.3, 1.5, 0.5, 1) both;
+}
+.tt.live.heal .tt-head {
+  opacity: 0;
+}
+.tt.live.read .tt-sweep {
+  opacity: 1;
+  transform: translateX(100%);
+  transition: transform 1.8s cubic-bezier(0.45, 0, 0.3, 1), opacity 0.3s ease;
+}
+.tt.live.verdict .tt-sweep {
+  opacity: 0;
+}
+/* The end of a loop: the night's marks fade before the next one starts. */
+.tt.live.fade .tt-f,
+.tt.live.fade .tt-cell,
+.tt.live.fade .tt-v-done {
+  opacity: 0;
+  transition-delay: 0s;
+}
+.tt.live.fade .tt-rules .k {
+  opacity: 0;
+  transition-delay: 0s;
+}
+.tt.jump * {
+  transition: none !important;
+}
+.tt.live:not(.play) * {
+  animation-play-state: paused !important;
+}
+@keyframes tt-strike {
+  0% { transform: scale(0.4); opacity: 1; }
+  100% { transform: scale(2.6); opacity: 0; }
+}
+@keyframes tt-pop {
+  0% { transform: scale(0.6); opacity: 0; }
+  100% { transform: none; opacity: 1; }
+}
+
+/* Evidence */
+.ev-grid {
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+.ev {
+  display: flex;
+  flex-direction: column;
+}
+.ev p {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.ev code,
+.st-card code {
+  font-family: var(--mono);
+  font-size: 0.88em;
+  color: var(--accent-text);
+}
+.ev-when {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: auto !important;
+  padding-top: 16px;
+}
+.when {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+  background: var(--accent-soft);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--accent-text);
+}
+.when.night {
+  border-color: var(--line-strong);
+  background: transparent;
+  color: var(--muted);
+}
+.when.night::before {
+  content: "";
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  box-shadow: inset -3px -1px 0 0 currentColor;
+  transform: rotate(-20deg);
+}
+#tested h2,
+#status h2 {
+  text-wrap: balance;
+}
+.tested .gu-foot {
+  margin-top: 8px;
+}
+
+/* Status */
+.status-sec {
+  background: var(--bg-sunken);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.st-key {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  margin: -24px 0 20px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.st-k {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 14px;
+  white-space: nowrap;
+}
+.st-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  padding: 2px 8px 2px 6px;
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.5;
+}
+.st-tag svg {
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.st-tag.today {
+  color: var(--ok);
+  background: var(--ok-soft);
+}
+.st-tag.partial {
+  color: var(--warn);
+  background: var(--warn-soft);
+}
+.st-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+.st-card {
+  padding: 22px 22px 24px;
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+}
+.st-card h3 {
+  margin: 0 0 14px;
+  font-size: 16px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+.st-card ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 12px;
+}
+.st-card li {
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+  font-size: 14.5px;
+  line-height: 1.45;
+}
+.st-card li .st-tag {
+  justify-self: start;
+}
+.st-why {
+  display: block;
+  margin-top: 2px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.st-road {
+  margin-top: 40px;
+}
+.st-road ol {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+/* The line the three stops sit on. */
+.st-road ol::before {
+  content: "";
+  position: absolute;
+  left: 7px;
+  right: 0;
+  top: 7px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent) 0 18%, var(--line-strong) 34%);
+}
+.st-road li {
+  position: relative;
+  padding-top: 30px;
+}
+.st-dot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid var(--faint);
+  background: var(--bg-sunken);
+}
+.st-road .now .st-dot {
+  border-color: var(--accent);
+  background: var(--accent);
+  box-shadow: 0 0 0 5px var(--accent-soft), 0 0 16px var(--accent-glow);
+}
+.st-ver {
+  display: block;
+  font-family: var(--mono);
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+.st-road .now .st-ver {
+  color: var(--accent-text);
+}
+.st-ver em {
+  margin-left: 6px;
+  font-style: normal;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.st-road p {
+  margin: 6px 0 0;
+  max-width: 34ch;
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+@media (max-width: 960px) {
+  /* Too narrow for names in the lanes: numbered, with a key below. */
+  .tt-l {
+    display: none;
+  }
+  .tt-f .tt-n {
+    display: grid;
+  }
+  .tt-f {
+    justify-content: center;
+    padding: 0;
+  }
+  .tt-f.tall {
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+  .tt-sub {
+    display: none;
+  }
+  .tt-key {
+    display: grid;
+  }
+  .tt-check {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ev-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 760px) {
+  .tt-stage {
+    padding: 12px;
+    gap: 14px;
+  }
+  .tt-top {
+    align-items: flex-start;
+  }
+  .tt-lanes {
+    grid-template-columns: 62px minmax(0, 1fr);
+    grid-template-rows: repeat(5, 34px);
+    column-gap: 8px;
+    row-gap: 6px;
+  }
+  .tt-name {
+    font-size: 10.5px;
+    letter-spacing: 0.03em;
+  }
+  .tt-name .long {
+    display: none;
+  }
+  .tt-name .short {
+    display: inline;
+  }
+  .tt-f {
+    top: 4px;
+    bottom: 4px;
+  }
+  .tt-cell {
+    width: 7px;
+    height: 7px;
+    margin-top: -3.5px;
+    border-radius: 2px;
+  }
+  .tt-cell svg {
+    display: none;
+  }
+  .tt-legend {
+    padding-left: 0;
+    margin-top: -4px;
+  }
+  .tt-key {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .tt-rules {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ev-grid,
+  .st-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .st-key {
+    margin-top: -16px;
+  }
+  .st-road ol {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 22px;
+  }
+  .st-road ol::before {
+    left: 7px;
+    right: auto;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    height: auto;
+    background: linear-gradient(180deg, var(--accent) 0 18%, var(--line-strong) 34%);
+  }
+  .st-road li {
+    padding: 0 0 0 32px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tt *,
+  .tt *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+.tt.live .tt-legend .tt-cell {
+  opacity: 1;
+  transform: none;
+}
