@@ -583,6 +583,11 @@ p {
   font-size: 15px;
   color: var(--muted);
 }
+/* .text-link's top margin is for a link on its own line; in this row it would
+   push the link below the text. */
+.gu-foot .text-link {
+  margin-top: 0;
+}
 
 /* Small static figures: page intros and the home page teasers. */
 .tz-svg text {
