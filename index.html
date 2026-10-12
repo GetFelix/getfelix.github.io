@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Felix</title>
-<meta name="description" content="Felix is an open-source broker for streams, caches and queues, written in Rust. This is its home, and the home of the projects built on it.">
+<meta name="description" content="Felix is an open-source, distributed platform for streams, caches, queues and counters, all on one replicated log. Written in Rust. This is its home, and the home of the projects built on it.">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#f6f8fa" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#070a0e" media="(prefers-color-scheme: dark)">
@@ -16,17 +16,17 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Felix">
 <meta property="og:title" content="Felix">
-<meta property="og:description" content="An open-source broker for streams, caches and queues, written in Rust.">
+<meta property="og:description" content="Felix is an open-source, distributed platform for streams, caches, queues and counters, all on one replicated log. Written in Rust.">
 <meta property="og:url" content="https://getfelix.dev/">
 <meta property="og:image" content="https://getfelix.dev/assets/img/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="The Felix logo, a cat in a round badge above the word Felix, beside the words: an open-source broker for streams, caches and queues, written in Rust.">
+<meta property="og:image:alt" content="The Felix logo, a cat in a round badge above the word Felix, beside the headline: One system for your events, state and work. Below it: An open-source, distributed platform for streams, caches, queues and counters, all on one replicated log. Written in Rust. getfelix.dev">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" as="image" type="image/webp" imagesrcset="/assets/img/felix-logo-320.webp 320w, /assets/img/felix-logo-640.webp 640w" imagesizes="(max-width: 760px) 220px, 300px">
+<link rel="preload" as="image" type="image/webp" imagesrcset="/assets/img/felix-logo-320.webp 320w, /assets/img/felix-logo-640.webp 640w" imagesizes="(max-width: 760px) 156px, 196px">
 <link rel="stylesheet" href="/assets/site.css?v=6ce2b6bb">
-<link rel="stylesheet" href="/assets/home.css?v=ace3d611">
+<link rel="stylesheet" href="/assets/home.css?v=8adae23d">
 <script>
   // Sections that moved to their own pages keep their old links working.
   (function () {
@@ -53,7 +53,7 @@
     "SoftwareSourceCode"
   ],
   "name": "Felix",
-  "description": "Felix is an open-source broker for streams, caches and queues, written in Rust.",
+  "description": "Felix is an open-source, distributed platform for streams, caches, queues and counters, all on one replicated log. Written in Rust.",
   "url": "https://getfelix.dev/",
   "codeRepository": "https://github.com/GetFelix/felix",
   "programmingLanguage": "Rust",
@@ -114,7 +114,7 @@
         Released <!--release:felix:date-->12 October 2026<!--/release:felix:date-->
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </a>
-      <h1 class="hero-mark" id="hero-title">
+      <div class="hero-mark">
         <svg class="orbit" viewBox="0 0 100 100" aria-hidden="true">
           <circle cx="50" cy="50" r="49" fill="none" stroke="currentColor" stroke-width="0.3" stroke-dasharray="0.3 2.2" opacity="0.5"/>
           <circle cx="50" cy="50" r="49" fill="none" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" stroke-dasharray="6 30 3 48 9 70 4 138" opacity="0.85"/>
@@ -123,11 +123,12 @@
           <circle cx="50" cy="50" r="49.3" fill="none" stroke="currentColor" stroke-width="0.25" stroke-dasharray="14 6" opacity="0.35"/>
         </svg>
         <picture>
-          <source type="image/webp" srcset="/assets/img/felix-logo-320.webp 320w, /assets/img/felix-logo-640.webp 640w" sizes="(max-width: 760px) 220px, 300px">
-          <img src="/assets/img/felix-logo-320.png" srcset="/assets/img/felix-logo-320.png 320w, /assets/img/felix-logo-640.png 640w" sizes="(max-width: 760px) 220px, 300px" alt="Felix" width="300" height="287" fetchpriority="high">
+          <source type="image/webp" srcset="/assets/img/felix-logo-320.webp 320w, /assets/img/felix-logo-640.webp 640w" sizes="(max-width: 760px) 156px, 196px">
+          <img src="/assets/img/felix-logo-320.png" srcset="/assets/img/felix-logo-320.png 320w, /assets/img/felix-logo-640.png 640w" sizes="(max-width: 760px) 156px, 196px" alt="Felix" width="300" height="287" fetchpriority="high">
         </picture>
-      </h1>
-      <p class="lede">An open-source broker for streams, caches and queues, written in Rust.</p>
+      </div>
+      <h1 class="hero-title" id="hero-title"><span class="accent">One system</span> for your events, state and&nbsp;work.</h1>
+      <p class="lede">Felix is an open-source, distributed platform for streams, caches, queues and counters, all on one replicated log. Written in Rust.</p>
       <div class="hero-actions">
         <a class="btn btn-primary" href="https://docs.getfelix.dev">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h13v16H6.5A2.5 2.5 0 0 0 4 21.5v-2Z"/><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H19"/></svg>
