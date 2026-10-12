@@ -24,7 +24,7 @@
 <meta property="og:image:alt" content="The Felix cat mark beside the words: Felix, an open-source broker for streams, caches and queues, written in Rust.">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/site.css?v=55a7abe9">
+<link rel="stylesheet" href="/assets/site.css?v=6ce2b6bb">
 <script>
   (function () {
     var d = document.documentElement;
@@ -35,7 +35,7 @@
     } catch (e) {}
   })();
 </script>
-<script defer src="/assets/site.js?v=26d9fe72"></script>
+<script defer src="/assets/site.js?v=27c2637c"></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -50,12 +50,19 @@
       Felix
     </a>
     <nav class="nav" aria-label="Main">
-      <a class="sec" href="/#features">Features</a>
-      <a class="sec" href="/#projects">Projects</a>
-      <a class="sec" href="/#get-started">Get started</a>
-      <a href="https://docs.getfelix.dev">Docs</a>
+      <button class="icon-btn nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Menu">
+        <svg class="open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        <svg class="shut" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="/features.html"><span class="nav-l">Features</span><span class="nav-hint">What Felix does</span></a></li>
+        <li><a href="/guarantees.html"><span class="nav-l">Guarantees</span><span class="nav-hint">Replication, failover and testing</span></a></li>
+        <li><a href="/performance.html"><span class="nav-l">Performance</span><span class="nav-hint">Throughput and latency</span></a></li>
+        <li><a href="/status.html"><span class="nav-l">Status</span><span class="nav-hint">What works today, and what's next</span></a></li>
+        <li><a href="https://docs.getfelix.dev"><span class="nav-l">Docs<svg class="ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></span><span class="nav-hint">docs.getfelix.dev</span></a></li>
+      </ul>
       <span class="sep" aria-hidden="true"></span>
-      <a class="icon-btn" href="https://github.com/GetFelix" aria-label="GetFelix on GitHub">
+      <a class="icon-btn gh" href="https://github.com/GetFelix" aria-label="GetFelix on GitHub">
         <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
       </a>
       <button class="icon-btn theme-toggle" type="button" aria-label="Switch theme">
@@ -93,22 +100,34 @@
         </a>
         <p>The broker, control plane and felixctl are <span class="nowrap">AGPL-3.0</span>. The wire protocol and the client libraries are <span class="nowrap">Apache-2.0</span>.</p>
       </div>
+      <nav aria-labelledby="f-site">
+        <h2 id="f-site">Site</h2>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/features.html">Features</a></li>
+          <li><a href="/guarantees.html">Guarantees</a></li>
+          <li><a href="/performance.html">Performance</a></li>
+          <li><a href="/status.html">Status</a></li>
+          <li><a href="https://docs.getfelix.dev">Docs</a></li>
+          <li><a href="https://github.com/GetFelix">GitHub</a></li>
+        </ul>
+      </nav>
       <nav aria-labelledby="f-project">
         <h2 id="f-project">Project</h2>
         <ul>
-          <li><a href="https://github.com/GetFelix">GitHub organization</a></li>
           <li><a href="https://github.com/GetFelix/felix">Source code</a></li>
           <li><a href="https://github.com/GetFelix/felix/releases">Releases</a></li>
+          <li><a href="https://github.com/GetFelix/felix/milestones">Milestones</a></li>
           <li><a href="https://github.com/GetFelix/felix/blob/main/LICENSING.md">Licensing</a></li>
         </ul>
       </nav>
       <nav aria-labelledby="f-docs">
         <h2 id="f-docs">Docs</h2>
         <ul>
-          <li><a href="https://docs.getfelix.dev">Documentation</a></li>
           <li><a href="https://docs.getfelix.dev/getting-started/quickstart/">Quickstart</a></li>
           <li><a href="https://docs.getfelix.dev/getting-started/what-felix-is-for/">What works today</a></li>
           <li><a href="https://docs.getfelix.dev/architecture/semantics/">Delivery semantics</a></li>
+          <li><a href="https://docs.getfelix.dev/architecture/testing/">How Felix is tested</a></li>
         </ul>
       </nav>
     </div>

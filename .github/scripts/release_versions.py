@@ -199,6 +199,11 @@ def update(hold_felix_channel):
 
 def check():
     html = PAGE.read_text(encoding="utf-8")
+    problems = []
+    # Only index.html is rewritten, so a marker on another page would go stale.
+    for other in sorted(PAGE.parent.glob("*.html")):
+        if other != PAGE and (MARKER.search(other.read_text(encoding="utf-8")) or "data-release=" in other.read_text(encoding="utf-8")):
+            problems.append("%s: has a release marker, but only %s is updated" % (other.name, PAGE.name))
     regions = []
     hero = re.search(r'<section class="hero".*?</section>', html, re.S)
     projects = re.search(r'<section[^>]*\bid="projects".*?</section>', html, re.S)
@@ -207,7 +212,6 @@ def check():
     regions.append(("hero", hero.group(0)))
     regions += [("project card", c) for c in re.findall(r"<article\b.*?</article>", projects.group(0), re.S)]
 
-    problems = []
     for name, text in regions:
         text = MARKER.sub("", text)
         text = LINK.sub(lambda m: m.group(1) + m.group(4), text)

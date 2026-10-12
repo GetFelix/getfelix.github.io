@@ -1,5 +1,7 @@
 """Fail if a link between the site's pages, or an ARIA reference, points at a
-file or id that doesn't exist.
+file or id that doesn't exist, or if a page's header or footer differs from the
+others'. The pages have no build step, so the shared header and footer are
+copied into each one; only aria-current may differ.
 
 Usage: check_links.py
 """
@@ -35,8 +37,40 @@ for name, html in pages.items():
                 if ref not in ids[name]:
                     problems.append("%s: %s names missing id %s" % (name, attr, ref))
 
+shared = {}
+for name, html in pages.items():
+    for part in ("header", "footer"):
+        m = re.search(r'<%s class="site-%s">.*?</%s>' % (part, part, part), html, re.S)
+        if not m:
+            problems.append("%s: no site %s" % (name, part))
+            continue
+        block = m.group(0)
+        current = block.count('aria-current="page"')
+        if part == "header" and current != (0 if name == "404.html" else 1):
+            problems.append("%s: the header marks %d links as the current page" % (name, current))
+        block = block.replace(' aria-current="page"', "")
+        first = shared.setdefault(part, (name, block))
+        if block != first[1]:
+            problems.append("%s: the %s differs from %s's" % (name, part, first[0]))
+
+# Every page is in the nav's sitemap counterpart: the footer links them all.
+footer = shared.get("footer", ("", ""))[1]
+for name in pages:
+    if name == "404.html":
+        continue
+    href = "/" if name == "index.html" else "/" + name
+    if 'href="%s"' % href not in footer:
+        problems.append("footer does not link %s" % name)
+sitemap = (ROOT / "sitemap.xml").read_text(encoding="utf-8")
+for name in pages:
+    if name == "404.html":
+        continue
+    loc = "https://getfelix.dev/" + ("" if name == "index.html" else name)
+    if "<loc>%s</loc>" % loc not in sitemap:
+        problems.append("sitemap.xml does not list %s" % loc)
+
 for p in problems:
     print(p)
 if problems:
     sys.exit(1)
-print("Every internal link and ARIA reference resolves on %d pages." % len(pages))
+print("Every internal link and ARIA reference resolves, and the header and footer match, on %d pages." % len(pages))
