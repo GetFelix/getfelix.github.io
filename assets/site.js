@@ -72,23 +72,31 @@
     var setOpen = function (open, refocus) {
       nav.classList.toggle("open", open);
       menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
-      if (open) {
+      if (open && refocus) {
         var first = nav.querySelector(".nav-links a");
         if (first) first.focus();
-      } else if (refocus) {
+      } else if (!open && refocus) {
         menuBtn.focus();
       }
     };
-    menuBtn.addEventListener("click", function () {
-      setOpen(!nav.classList.contains("open"), false);
+    // Only a keyboard open (detail 0) moves focus into the menu. On a tap,
+    // focus left on a link is blurred by the next tap, which would close the
+    // menu before that tap's click lands.
+    menuBtn.addEventListener("click", function (e) {
+      setOpen(!nav.classList.contains("open"), e.detail === 0);
     });
     nav.addEventListener("keydown", function (e) {
       if (e.key === "Escape" && nav.classList.contains("open")) setOpen(false, true);
     });
+    // Close when keyboard focus moves elsewhere. Mobile Safari blurs with no
+    // relatedTarget on any tap, so a null target is not "left the menu".
     nav.addEventListener("focusout", function (e) {
-      if (nav.classList.contains("open") && !nav.contains(e.relatedTarget)) setOpen(false, false);
+      if (nav.classList.contains("open") && e.relatedTarget && !nav.contains(e.relatedTarget)) {
+        setOpen(false, false);
+      }
     });
-    document.addEventListener("click", function (e) {
+    // pointerdown, not click: Safari fires no click for taps on plain page areas.
+    document.addEventListener("pointerdown", function (e) {
       if (nav.classList.contains("open") && !nav.contains(e.target)) setOpen(false, false);
     });
     nav.querySelectorAll(".nav-links a").forEach(function (a) {
