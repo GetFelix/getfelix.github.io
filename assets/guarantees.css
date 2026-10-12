@@ -1,86 +1,7 @@
-/* The guarantees page: clustering, testing and status. Loaded after site.css. */
-
-.g-intro {
-  padding-bottom: 40px;
-}
-.g-back {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 28px;
-  font-size: 15px;
-  font-weight: 600;
-}
-.g-back svg {
-  width: 16px;
-  height: 16px;
-  transition: transform 0.15s ease;
-}
-.g-back:hover svg {
-  transform: translateX(-3px);
-}
-.g-intro h1 {
-  font-size: clamp(38px, 5.6vw, 60px);
-  font-weight: 750;
-  letter-spacing: -0.04em;
-  text-wrap: balance;
-}
-.g-intro .section-head {
-  max-width: 720px;
-  margin-bottom: 32px;
-}
-.g-toc {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-.g-toc a {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 16px 9px 10px;
-  border-radius: 999px;
-  background: var(--bg-raised);
-  border: 1px solid var(--line-strong);
-  color: var(--text);
-  font-size: 15px;
-  font-weight: 550;
-}
-.g-toc a:hover {
-  border-color: var(--accent);
-  text-decoration: none;
-}
-.g-toc .n {
-  display: inline-grid;
-  place-items: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: var(--accent-soft);
-  color: var(--accent-text);
-  font-family: var(--mono);
-  font-size: 12px;
-}
-.g-cta {
-  max-width: 640px;
-  margin: 0 auto;
-  text-align: center;
-}
-.g-cta p {
-  margin-top: 14px;
-  color: var(--muted);
-  font-size: 18px;
-}
-.g-cta-actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 28px;
-}
+/* guarantees.html: clustering and testing. Loaded after site.css. */
 
 /* Clustering. The markup carries the end of the first step, so without JS the
-   figure shows a write acknowledged by 2 of 3. site.js plays the steps by
+   figure shows a write acknowledged by 2 of 3. guarantees.js plays the steps by
    adding one class per beat (a-send, a-b1, ... move, reset) to .cl-fig. */
 .cluster {
   background: var(--bg-sunken);
@@ -350,7 +271,8 @@
 .cl-svg .cp-l {
   fill: var(--faint);
 }
-.cl-svg .cp-m {
+.cl-svg .cp-m,
+.cp-html .cp-m {
   fill: var(--text);
   opacity: 0;
   transition: opacity 0.2s ease;
@@ -369,7 +291,8 @@
   opacity: 0;
 }
 .cl-svg .m0,
-.cl-svg .l0 {
+.cl-svg .l0,
+.cp-html .m0 {
   opacity: 1;
 }
 .a-b1 .qa .p0,
@@ -739,12 +662,6 @@
 .gu {
   margin-top: 72px;
 }
-.gu-title {
-  margin: 0 0 20px;
-  font-size: 22px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
 .gu code,
 .cl-step code {
   font-family: var(--mono);
@@ -908,15 +825,6 @@
   color: var(--text);
   font-weight: 600;
 }
-.gu-foot {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px 14px;
-  margin: 24px 0 0;
-  font-size: 15px;
-  color: var(--muted);
-}
 .tag-partial {
   font-family: var(--mono);
   font-size: 11.5px;
@@ -929,11 +837,6 @@
   background: var(--warn-soft);
 }
 
-@media (max-width: 1100px) {
-  .nav a[href="#clustering"] {
-    display: none;
-  }
-}
 @media (max-width: 960px) {
   .cl-grid {
     grid-template-columns: minmax(0, 1fr);
@@ -997,7 +900,7 @@
 
 
 /* How Felix is tested. The markup is the end of the night: every fault healed,
-   every acknowledged record checked, the verdict in. site.js adds .live and
+   every acknowledged record checked, the verdict in. guarantees.js adds .live and
    moves a playhead; a fault or record shows once the playhead passes its
    data-at, and the phase classes (heal, read, verdict, fade) run the check. */
 .tt {
@@ -1527,8 +1430,7 @@
   line-height: 1.55;
   color: var(--muted);
 }
-.ev code,
-.st-card code {
+.ev code {
   font-family: var(--mono);
   font-size: 0.88em;
   color: var(--accent-text);
@@ -1567,175 +1469,9 @@
   transform: rotate(-20deg);
 }
 #tested h2,
-#status h2 {
-  text-wrap: balance;
-}
 .tested .gu-foot {
   margin-top: 8px;
 }
-
-/* Status */
-.status-sec {
-  background: var(--bg-sunken);
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-}
-.st-key {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px 10px;
-  margin: -24px 0 20px;
-  font-size: 14px;
-  color: var(--muted);
-}
-.st-k {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-right: 14px;
-  white-space: nowrap;
-}
-.st-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  flex-shrink: 0;
-  padding: 2px 8px 2px 6px;
-  border-radius: 6px;
-  font-family: var(--mono);
-  font-size: 11.5px;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  line-height: 1.5;
-}
-.st-tag svg {
-  width: 12px;
-  height: 12px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2.2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.st-tag.today {
-  color: var(--ok);
-  background: var(--ok-soft);
-}
-.st-tag.partial {
-  color: var(--warn);
-  background: var(--warn-soft);
-}
-.st-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
-}
-.st-card {
-  padding: 22px 22px 24px;
-  border-radius: var(--radius);
-  background: var(--bg-raised);
-  border: 1px solid var(--line);
-}
-.st-card h3 {
-  margin: 0 0 14px;
-  font-size: 16px;
-  font-weight: 650;
-  letter-spacing: -0.01em;
-}
-.st-card ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  gap: 12px;
-}
-.st-card li {
-  display: grid;
-  grid-template-columns: 84px minmax(0, 1fr);
-  align-items: start;
-  gap: 10px;
-  font-size: 14.5px;
-  line-height: 1.45;
-}
-.st-card li .st-tag {
-  justify-self: start;
-}
-.st-why {
-  display: block;
-  margin-top: 2px;
-  font-size: 13px;
-  color: var(--muted);
-}
-.st-road {
-  margin-top: 40px;
-}
-.st-road ol {
-  position: relative;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
-}
-/* The line the three stops sit on. */
-.st-road ol::before {
-  content: "";
-  position: absolute;
-  left: 7px;
-  right: 0;
-  top: 7px;
-  height: 2px;
-  background: linear-gradient(90deg, var(--accent) 0 18%, var(--line-strong) 34%);
-}
-.st-road li {
-  position: relative;
-  padding-top: 30px;
-}
-.st-dot {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  border: 2px solid var(--faint);
-  background: var(--bg-sunken);
-}
-.st-road .now .st-dot {
-  border-color: var(--accent);
-  background: var(--accent);
-  box-shadow: 0 0 0 5px var(--accent-soft), 0 0 16px var(--accent-glow);
-}
-.st-ver {
-  display: block;
-  font-family: var(--mono);
-  font-size: 22px;
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  color: var(--text);
-}
-.st-road .now .st-ver {
-  color: var(--accent-text);
-}
-.st-ver em {
-  margin-left: 6px;
-  font-style: normal;
-  font-size: 12px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--faint);
-}
-.st-road p {
-  margin: 6px 0 0;
-  max-width: 34ch;
-  font-size: 14.5px;
-  line-height: 1.55;
-  color: var(--muted);
-}
-
 @media (max-width: 960px) {
   /* Too narrow for names in the lanes: numbered, with a key below. */
   .tt-l {
@@ -1813,28 +1549,8 @@
   .tt-rules {
     grid-template-columns: minmax(0, 1fr);
   }
-  .ev-grid,
-  .st-grid {
+  .ev-grid {
     grid-template-columns: minmax(0, 1fr);
-  }
-  .st-key {
-    margin-top: -16px;
-  }
-  .st-road ol {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 22px;
-  }
-  .st-road ol::before {
-    left: 7px;
-    right: auto;
-    top: 8px;
-    bottom: 8px;
-    width: 2px;
-    height: auto;
-    background: linear-gradient(180deg, var(--accent) 0 18%, var(--line-strong) 34%);
-  }
-  .st-road li {
-    padding: 0 0 0 32px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1847,4 +1563,50 @@
 .tt.live .tt-legend .tt-cell {
   opacity: 1;
   transform: none;
+}
+
+/* Phones: the control-plane line leaves the SVG so it stays legible. */
+.cp-html {
+  display: none;
+}
+@media (max-width: 520px) {
+  .cl-svg .cp {
+    display: none;
+  }
+  .cp-html {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 4px 0 0;
+    padding: 9px 12px;
+    border-radius: 10px;
+    background: var(--bg-raised);
+    border: 1px solid var(--line-strong);
+    font-family: var(--mono);
+    font-size: 12.5px;
+  }
+  .cp-k {
+    flex: none;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+  .cp-ms {
+    display: grid;
+    min-width: 0;
+  }
+  .cp-html .cp-m {
+    grid-area: 1 / 1;
+    color: var(--text);
+  }
+}
+@media (max-width: 420px) {
+  .cl-svg text {
+    font-size: 20.5px;
+    letter-spacing: 0;
+  }
+  .cl-svg .st {
+    font-size: 20.5px;
+  }
 }

@@ -25,7 +25,16 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" as="image" type="image/webp" imagesrcset="/assets/img/felix-logo-320.webp 320w, /assets/img/felix-logo-640.webp 640w" imagesizes="(max-width: 760px) 220px, 300px">
-<link rel="stylesheet" href="/assets/site.css?v=55a7abe9">
+<link rel="stylesheet" href="/assets/site.css?v=6ce2b6bb">
+<link rel="stylesheet" href="/assets/home.css?v=c891179d">
+<script>
+  // Sections that moved to their own pages keep their old links working.
+  (function () {
+    var moved = { features: "/features.html#features", performance: "/performance.html#performance", clustering: "/guarantees.html#clustering", tested: "/guarantees.html#tested", guarantees: "/guarantees.html", status: "/status.html#status", fit: "/status.html#fit" };
+    var to = moved[location.hash.slice(1)];
+    if (to) location.replace(to);
+  })();
+</script>
 <script>
   (function () {
     var d = document.documentElement;
@@ -56,14 +65,15 @@
   "softwareVersion": "0.6.0-preview.6"
 }
 </script>
-<script defer src="/assets/site.js?v=26d9fe72"></script>
+<script defer src="/assets/site.js?v=27c2637c"></script>
+<script defer src="/assets/home.js?v=af3a6f9b"></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 
 <header class="site-header">
   <div class="wrap">
-    <a class="brand" href="/" aria-label="Felix home">
+    <a class="brand" href="/" aria-label="Felix home" aria-current="page">
       <picture>
         <source srcset="/assets/img/felix-mark-96.webp" type="image/webp">
         <img src="/assets/img/felix-mark-96.png" alt="" width="30" height="30">
@@ -71,16 +81,19 @@
       Felix
     </a>
     <nav class="nav" aria-label="Main">
-      <a class="sec" href="#why">Why</a>
-      <a class="sec sec-wide" href="#different">Different</a>
-      <a class="sec" href="#features">Features</a>
-      <a class="sec" href="guarantees.html">Guarantees</a>
-      <a class="sec" href="#performance">Performance</a>
-      <a class="sec" href="#projects">Projects</a>
-      <a class="sec" href="#get-started">Get started</a>
-      <a href="https://docs.getfelix.dev">Docs</a>
+      <button class="icon-btn nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Menu">
+        <svg class="open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        <svg class="shut" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="/features.html"><span class="nav-l">Features</span><span class="nav-hint">What Felix does</span></a></li>
+        <li><a href="/guarantees.html"><span class="nav-l">Guarantees</span><span class="nav-hint">Replication, failover and testing</span></a></li>
+        <li><a href="/performance.html"><span class="nav-l">Performance</span><span class="nav-hint">Throughput and latency</span></a></li>
+        <li><a href="/status.html"><span class="nav-l">Status</span><span class="nav-hint">What works today, and what's next</span></a></li>
+        <li><a href="https://docs.getfelix.dev"><span class="nav-l">Docs<svg class="ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></span><span class="nav-hint">docs.getfelix.dev</span></a></li>
+      </ul>
       <span class="sep" aria-hidden="true"></span>
-      <a class="icon-btn" href="https://github.com/GetFelix" aria-label="GetFelix on GitHub">
+      <a class="icon-btn gh" href="https://github.com/GetFelix" aria-label="GetFelix on GitHub">
         <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
       </a>
       <button class="icon-btn theme-toggle" type="button" aria-label="Switch theme">
@@ -152,12 +165,12 @@
         <div class="collapse">
           <div class="stage-col">
             <span class="stage-label">The usual stack</span>
-            <div class="stage"><svg class="sc" viewBox="0 0 440 300" role="img" aria-labelledby="sc-a-t"><title id="sc-a-t">The usual stack: an app wired separately to an event log, a key-value store, a work queue and a fanout service, each with its own auth and its own client connection.</title><g class="app"><rect x="16" y="122" width="76" height="56" rx="10"/><text x="54" y="155" text-anchor="middle">app</text></g><g class="wire w0"><path d="M92 138C164 138 164 40 236 40"/><circle cx="92" cy="138" r="2.5"/><circle cx="236" cy="40" r="2.5"/></g><g class="wire w1"><path d="M92 146C164 146 164 112 236 112"/><circle cx="92" cy="146" r="2.5"/><circle cx="236" cy="112" r="2.5"/></g><g class="wire w2"><path d="M92 154C164 154 164 184 236 184"/><circle cx="92" cy="154" r="2.5"/><circle cx="236" cy="184" r="2.5"/></g><g class="wire w3"><path d="M92 162C164 162 164 256 236 256"/><circle cx="92" cy="162" r="2.5"/><circle cx="236" cy="256" r="2.5"/></g><g class="box b0"><rect class="bx" x="236" y="14" width="188" height="52" rx="9"/><rect class="bar" x="236" y="26" width="3" height="28" rx="1.5"/><text class="bl" x="252" y="37">event log</text><text class="bs" x="252" y="54">own auth, own client</text><g class="lock" transform="translate(402 33)"><rect x="0" y="5" width="10" height="8" rx="1.5"/><path d="M2.5 5V3.5a2.5 2.5 0 0 1 5 0V5"/></g></g><g class="box b1"><rect class="bx" x="236" y="86" width="188" height="52" rx="9"/><rect class="bar" x="236" y="98" width="3" height="28" rx="1.5"/><text class="bl" x="252" y="109">key-value store</text><text class="bs" x="252" y="126">own auth, own client</text><g class="lock" transform="translate(402 105)"><rect x="0" y="5" width="10" height="8" rx="1.5"/><path d="M2.5 5V3.5a2.5 2.5 0 0 1 5 0V5"/></g></g><g class="box b2"><rect class="bx" x="236" y="158" width="188" height="52" rx="9"/><rect class="bar" x="236" y="170" width="3" height="28" rx="1.5"/><text class="bl" x="252" y="181">work queue</text><text class="bs" x="252" y="198">own auth, own client</text><g class="lock" transform="translate(402 177)"><rect x="0" y="5" width="10" height="8" rx="1.5"/><path d="M2.5 5V3.5a2.5 2.5 0 0 1 5 0V5"/></g></g><g class="box b3"><rect class="bx" x="236" y="230" width="188" height="52" rx="9"/><rect class="bar" x="236" y="242" width="3" height="28" rx="1.5"/><text class="bl" x="252" y="253">fanout service</text><text class="bs" x="252" y="270">own auth, own client</text><g class="lock" transform="translate(402 249)"><rect x="0" y="5" width="10" height="8" rx="1.5"/><path d="M2.5 5V3.5a2.5 2.5 0 0 1 5 0V5"/></g></g></svg></div>
+            <div class="stage"><svg class="sc" viewBox="0 0 440 300" role="img" aria-labelledby="sc-a-t"><title id="sc-a-t">The usual stack: an app wired separately to an event log, a key-value store, a work queue and a fanout service, each with its own auth and its own client connection.</title><g class="app"><rect x="16" y="122" width="76" height="56" rx="10"/><text x="54" y="155" text-anchor="middle">app</text></g><g class="wire w0"><path d="M92 138C164 138 164 40 236 40"/><circle cx="92" cy="138" r="2.5"/><circle cx="236" cy="40" r="2.5"/></g><g class="wire w1"><path d="M92 146C164 146 164 112 236 112"/><circle cx="92" cy="146" r="2.5"/><circle cx="236" cy="112" r="2.5"/></g><g class="wire w2"><path d="M92 154C164 154 164 184 236 184"/><circle cx="92" cy="154" r="2.5"/><circle cx="236" cy="184" r="2.5"/></g><g class="wire w3"><path d="M92 162C164 162 164 256 236 256"/><circle cx="92" cy="162" r="2.5"/><circle cx="236" cy="256" r="2.5"/></g><g class="box b0"><rect class="bx" x="236" y="14" width="188" height="52" rx="9"/><rect class="bar" x="236" y="26" width="3" height="28" rx="1.5"/><text class="bl" x="252" y="37">event log</text><text class="bs" x="252" y="54">own auth, own client</text><g class="lock" transform="translate(402 33)"><rect x="0" y="5" width="10" height="8" rx="1.5"/><path d="M2.5 5V3.5a2.5 2.5 0 0 1 5 0V5"/></g></g><g class="box b1"><rect class="bx" x="236" y="86" width="188" height="52" rx="9"/><rect class="bar" x="236" y="98" width="3" height="28" rx="1.5"/><text class="bl" x="252" y="109">key-value store</text><text class="bs" x="252" y="126">own auth, own client</text><g class="lock" transform="translate(402 105)"><rect x="0" y="5" width="10" height="8" rx="1.5"/><path d="M2.5 5V3.5a2.5 2.5 0 0 1 5 0V5"/></g></g><g class="box b2"><rect class="bx" x="236" y="158" width="188" height="52" rx="9"/><rect class="bar" x="236" y="170" width="3" height="28" rx="1.5"/><text class="bl" x="252" y="181">work queue</text><text class="bs" x="252" y="198">own auth, own client</text><g class="lock" transform="translate(402 177)"><rect x="0" y="5" width="10" height="8" rx="1.5"/><path d="M2.5 5V3.5a2.5 2.5 0 0 1 5 0V5"/></g></g><g class="box b3"><rect class="bx" x="236" y="230" width="188" height="52" rx="9"/><rect class="bar" x="236" y="242" width="3" height="28" rx="1.5"/><text class="bl" x="252" y="253">fanout service</text><text class="bs" x="252" y="270">own auth, own client</text><g class="lock" transform="translate(402 249)"><rect x="0" y="5" width="10" height="8" rx="1.5"/><path d="M2.5 5V3.5a2.5 2.5 0 0 1 5 0V5"/></g></g></svg><svg class="sc sc-phone" viewBox="0 0 300 248" role="img" aria-labelledby="sc-a-pt"><title id="sc-a-pt">The usual stack: an app wired separately to an event log, a key-value store, a work queue and a fanout service, each with its own auth and its own client connection.</title><g class="app"><rect x="110" y="2" width="80" height="40" rx="10"/><text x="150" y="27" text-anchor="middle">app</text></g><g class="wire w0"><path d="M150 42C150 58 72 52 72 72"/><circle cx="72" cy="72" r="2.5"/></g><g class="wire w1"><path d="M150 42C150 58 228 52 228 72"/><circle cx="228" cy="72" r="2.5"/></g><g class="wire w2"><path d="M150 42V150C150 162 72 156 72 168"/><circle cx="72" cy="168" r="2.5"/></g><g class="wire w3"><path d="M150 42V150C150 162 228 156 228 168"/><circle cx="228" cy="168" r="2.5"/></g><g class="box b0"><rect class="bx" x="0" y="72" width="144" height="76" rx="9"/><rect class="bar" x="0" y="86" width="3" height="48" rx="1.5"/><text class="bl" x="14" y="100">event log</text><text class="bs" x="14" y="120">own auth,</text><text class="bs" x="14" y="136">own client</text><g class="lock" transform="translate(122 122)"><rect x="0" y="5" width="10" height="8" rx="1.5"/><path d="M2.5 5V3.5a2.5 2.5 0 0 1 5 0V5"/></g></g><g class="box b1"><rect class="bx" x="156" y="72" width="144" height="76" rx="9"/><rect class="bar" x="156" y="86" width="3" height="48" rx="1.5"/><text class="bl" x="170" y="100">key-value store</text><text class="bs" x="170" y="120">own auth,</text><text class="bs" x="170" y="136">own client</text><g class="lock" transform="translate(278 122)"><rect x="0" y="5" width="10" height="8" rx="1.5"/><path d="M2.5 5V3.5a2.5 2.5 0 0 1 5 0V5"/></g></g><g class="box b2"><rect class="bx" x="0" y="168" width="144" height="76" rx="9"/><rect class="bar" x="0" y="182" width="3" height="48" rx="1.5"/><text class="bl" x="14" y="196">work queue</text><text class="bs" x="14" y="216">own auth,</text><text class="bs" x="14" y="232">own client</text><g class="lock" transform="translate(122 218)"><rect x="0" y="5" width="10" height="8" rx="1.5"/><path d="M2.5 5V3.5a2.5 2.5 0 0 1 5 0V5"/></g></g><g class="box b3"><rect class="bx" x="156" y="168" width="144" height="76" rx="9"/><rect class="bar" x="156" y="182" width="3" height="48" rx="1.5"/><text class="bl" x="170" y="196">fanout service</text><text class="bs" x="170" y="216">own auth,</text><text class="bs" x="170" y="232">own client</text><g class="lock" transform="translate(278 218)"><rect x="0" y="5" width="10" height="8" rx="1.5"/><path d="M2.5 5V3.5a2.5 2.5 0 0 1 5 0V5"/></g></g></svg></div>
           </div>
           <div class="collapse-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
           <div class="stage-col">
             <span class="stage-label felix">Felix</span>
-            <div class="stage glow"><svg class="sc after" viewBox="0 0 440 300" role="img" aria-labelledby="sc-b-t"><title id="sc-b-t">Felix: the same app with one connection to one replicated log that serves streams, caches, queues and counters behind one access model of tenants, namespaces and grants.</title><defs><filter id="sc-blur" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="14"/></filter></defs><g class="from" aria-hidden="true"><g class="wire w0" style="--i:0"><path d="M92 138C164 138 164 40 236 40"/><circle cx="92" cy="138" r="2.5"/><circle cx="236" cy="40" r="2.5"/></g><g class="wire w1" style="--i:1"><path d="M92 146C164 146 164 112 236 112"/><circle cx="92" cy="146" r="2.5"/><circle cx="236" cy="112" r="2.5"/></g><g class="wire w2" style="--i:2"><path d="M92 154C164 154 164 184 236 184"/><circle cx="92" cy="154" r="2.5"/><circle cx="236" cy="184" r="2.5"/></g><g class="wire w3" style="--i:3"><path d="M92 162C164 162 164 256 236 256"/><circle cx="92" cy="162" r="2.5"/><circle cx="236" cy="256" r="2.5"/></g><g class="box b0" style="--i:0;--dy:110px"><rect class="bx" x="236" y="14" width="188" height="52" rx="9"/><rect class="bar" x="236" y="26" width="3" height="28" rx="1.5"/><text class="bl" x="252" y="37">event log</text><text class="bs" x="252" y="54">own auth, own client</text><g class="lock" transform="translate(402 33)"><rect x="0" y="5" width="10" height="8" rx="1.5"/><path d="M2.5 5V3.5a2.5 2.5 0 0 1 5 0V5"/></g></g><g class="box b1" style="--i:1;--dy:38px"><rect class="bx" x="236" y="86" width="188" height="52" rx="9"/><rect class="bar" x="236" y="98" width="3" height="28" rx="1.5"/><text class="bl" x="252" y="109">key-value store</text><text class="bs" x="252" y="126">own auth, own client</text><g class="lock" transform="translate(402 105)"><rect x="0" y="5" width="10" height="8" rx="1.5"/><path d="M2.5 5V3.5a2.5 2.5 0 0 1 5 0V5"/></g></g><g class="box b2" style="--i:2;--dy:-34px"><rect class="bx" x="236" y="158" width="188" height="52" rx="9"/><rect class="bar" x="236" y="170" width="3" height="28" rx="1.5"/><text class="bl" x="252" y="181">work queue</text><text class="bs" x="252" y="198">own auth, own client</text><g class="lock" transform="translate(402 177)"><rect x="0" y="5" width="10" height="8" rx="1.5"/><path d="M2.5 5V3.5a2.5 2.5 0 0 1 5 0V5"/></g></g><g class="box b3" style="--i:3;--dy:-106px"><rect class="bx" x="236" y="230" width="188" height="52" rx="9"/><rect class="bar" x="236" y="242" width="3" height="28" rx="1.5"/><text class="bl" x="252" y="253">fanout service</text><text class="bs" x="252" y="270">own auth, own client</text><g class="lock" transform="translate(402 249)"><rect x="0" y="5" width="10" height="8" rx="1.5"/><path d="M2.5 5V3.5a2.5 2.5 0 0 1 5 0V5"/></g></g></g><g class="to"><rect class="halo" x="196" y="50" width="228" height="200" rx="16" filter="url(#sc-blur)"/><rect class="fx" x="196" y="50" width="228" height="200" rx="16"/><text class="ft" x="214" y="77">Felix</text><text class="fs" x="406" y="77" text-anchor="end">one replicated log</text><rect class="lc" style="--i:0" x="214" y="90" width="14" height="14" rx="3"/><rect class="lc" style="--i:1" x="230.5" y="90" width="14" height="14" rx="3"/><rect class="lc" style="--i:2" x="247" y="90" width="14" height="14" rx="3"/><rect class="lc" style="--i:3" x="263.5" y="90" width="14" height="14" rx="3"/><rect class="lc" style="--i:4" x="280" y="90" width="14" height="14" rx="3"/><rect class="lc" style="--i:5" x="296.5" y="90" width="14" height="14" rx="3"/><rect class="lc" style="--i:6" x="313" y="90" width="14" height="14" rx="3"/><rect class="lc" style="--i:7" x="329.5" y="90" width="14" height="14" rx="3"/><rect class="lc" style="--i:8" x="346" y="90" width="14" height="14" rx="3"/><rect class="lc" style="--i:9" x="362.5" y="90" width="14" height="14" rx="3"/><rect class="lc" style="--i:10" x="379" y="90" width="14" height="14" rx="3"/><rect class="lc" style="--i:11" x="395.5" y="90" width="14" height="14" rx="3"/><g class="chp" style="--i:0"><rect x="214" y="118" width="94" height="24" rx="7"/><text x="261" y="134" text-anchor="middle">streams</text></g><g class="chp" style="--i:1"><rect x="316" y="118" width="94" height="24" rx="7"/><text x="363" y="134" text-anchor="middle">caches</text></g><g class="chp" style="--i:2"><rect x="214" y="150" width="94" height="24" rx="7"/><text x="261" y="166" text-anchor="middle">queues</text></g><g class="chp" style="--i:3"><rect x="316" y="150" width="94" height="24" rx="7"/><text x="363" y="166" text-anchor="middle">counters</text></g><path class="sep" d="M214 190H406"/><g class="lock acc" transform="translate(214 199)"><rect x="0" y="5" width="10" height="8" rx="1.5"/><path d="M2.5 5V3.5a2.5 2.5 0 0 1 5 0V5"/></g><text class="fa" x="232" y="211">one access model</text><text class="fs" x="214" y="232">tenants, namespaces, grants</text></g><path class="link" pathLength="1" d="M92 150H196"/><circle class="link-end" cx="92" cy="150" r="2.5"/><circle class="link-end" cx="196" cy="150" r="2.5"/><g class="app"><rect x="16" y="122" width="76" height="56" rx="10"/><text x="54" y="155" text-anchor="middle">app</text></g></svg></div>
+            <div class="stage glow"><svg class="sc after" viewBox="0 0 440 300" role="img" aria-labelledby="sc-b-t"><title id="sc-b-t">Felix: the same app with one connection to one replicated log that serves streams, caches, queues and counters behind one access model of tenants, namespaces and grants.</title><defs><filter id="sc-blur" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="14"/></filter></defs><g class="from" aria-hidden="true"><g class="wire w0" style="--i:0"><path d="M92 138C164 138 164 40 236 40"/><circle cx="92" cy="138" r="2.5"/><circle cx="236" cy="40" r="2.5"/></g><g class="wire w1" style="--i:1"><path d="M92 146C164 146 164 112 236 112"/><circle cx="92" cy="146" r="2.5"/><circle cx="236" cy="112" r="2.5"/></g><g class="wire w2" style="--i:2"><path d="M92 154C164 154 164 184 236 184"/><circle cx="92" cy="154" r="2.5"/><circle cx="236" cy="184" r="2.5"/></g><g class="wire w3" style="--i:3"><path d="M92 162C164 162 164 256 236 256"/><circle cx="92" cy="162" r="2.5"/><circle cx="236" cy="256" r="2.5"/></g><g class="box b0" style="--i:0;--dy:110px"><rect class="bx" x="236" y="14" width="188" height="52" rx="9"/><rect class="bar" x="236" y="26" width="3" height="28" rx="1.5"/><text class="bl" x="252" y="37">event log</text><text class="bs" x="252" y="54">own auth, own client</text><g class="lock" transform="translate(402 33)"><rect x="0" y="5" width="10" height="8" rx="1.5"/><path d="M2.5 5V3.5a2.5 2.5 0 0 1 5 0V5"/></g></g><g class="box b1" style="--i:1;--dy:38px"><rect class="bx" x="236" y="86" width="188" height="52" rx="9"/><rect class="bar" x="236" y="98" width="3" height="28" rx="1.5"/><text class="bl" x="252" y="109">key-value store</text><text class="bs" x="252" y="126">own auth, own client</text><g class="lock" transform="translate(402 105)"><rect x="0" y="5" width="10" height="8" rx="1.5"/><path d="M2.5 5V3.5a2.5 2.5 0 0 1 5 0V5"/></g></g><g class="box b2" style="--i:2;--dy:-34px"><rect class="bx" x="236" y="158" width="188" height="52" rx="9"/><rect class="bar" x="236" y="170" width="3" height="28" rx="1.5"/><text class="bl" x="252" y="181">work queue</text><text class="bs" x="252" y="198">own auth, own client</text><g class="lock" transform="translate(402 177)"><rect x="0" y="5" width="10" height="8" rx="1.5"/><path d="M2.5 5V3.5a2.5 2.5 0 0 1 5 0V5"/></g></g><g class="box b3" style="--i:3;--dy:-106px"><rect class="bx" x="236" y="230" width="188" height="52" rx="9"/><rect class="bar" x="236" y="242" width="3" height="28" rx="1.5"/><text class="bl" x="252" y="253">fanout service</text><text class="bs" x="252" y="270">own auth, own client</text><g class="lock" transform="translate(402 249)"><rect x="0" y="5" width="10" height="8" rx="1.5"/><path d="M2.5 5V3.5a2.5 2.5 0 0 1 5 0V5"/></g></g></g><g class="to"><rect class="halo" x="196" y="50" width="228" height="200" rx="16" filter="url(#sc-blur)"/><rect class="fx" x="196" y="50" width="228" height="200" rx="16"/><text class="ft" x="214" y="77">Felix</text><text class="fs" x="406" y="77" text-anchor="end">one replicated log</text><rect class="lc" style="--i:0" x="214" y="90" width="14" height="14" rx="3"/><rect class="lc" style="--i:1" x="230.5" y="90" width="14" height="14" rx="3"/><rect class="lc" style="--i:2" x="247" y="90" width="14" height="14" rx="3"/><rect class="lc" style="--i:3" x="263.5" y="90" width="14" height="14" rx="3"/><rect class="lc" style="--i:4" x="280" y="90" width="14" height="14" rx="3"/><rect class="lc" style="--i:5" x="296.5" y="90" width="14" height="14" rx="3"/><rect class="lc" style="--i:6" x="313" y="90" width="14" height="14" rx="3"/><rect class="lc" style="--i:7" x="329.5" y="90" width="14" height="14" rx="3"/><rect class="lc" style="--i:8" x="346" y="90" width="14" height="14" rx="3"/><rect class="lc" style="--i:9" x="362.5" y="90" width="14" height="14" rx="3"/><rect class="lc" style="--i:10" x="379" y="90" width="14" height="14" rx="3"/><rect class="lc" style="--i:11" x="395.5" y="90" width="14" height="14" rx="3"/><g class="chp" style="--i:0"><rect x="214" y="118" width="94" height="24" rx="7"/><text x="261" y="134" text-anchor="middle">streams</text></g><g class="chp" style="--i:1"><rect x="316" y="118" width="94" height="24" rx="7"/><text x="363" y="134" text-anchor="middle">caches</text></g><g class="chp" style="--i:2"><rect x="214" y="150" width="94" height="24" rx="7"/><text x="261" y="166" text-anchor="middle">queues</text></g><g class="chp" style="--i:3"><rect x="316" y="150" width="94" height="24" rx="7"/><text x="363" y="166" text-anchor="middle">counters</text></g><path class="sep" d="M214 190H406"/><g class="lock acc" transform="translate(214 199)"><rect x="0" y="5" width="10" height="8" rx="1.5"/><path d="M2.5 5V3.5a2.5 2.5 0 0 1 5 0V5"/></g><text class="fa" x="232" y="211">one access model</text><text class="fs" x="214" y="232">tenants, namespaces, grants</text></g><path class="link" pathLength="1" d="M92 150H196"/><circle class="link-end" cx="92" cy="150" r="2.5"/><circle class="link-end" cx="196" cy="150" r="2.5"/><g class="app"><rect x="16" y="122" width="76" height="56" rx="10"/><text x="54" y="155" text-anchor="middle">app</text></g></svg><svg class="sc sc-phone" viewBox="0 0 300 268" role="img" aria-labelledby="sc-b-pt"><title id="sc-b-pt">Felix: the same app with one connection to one replicated log that serves streams, caches, queues and counters behind one access model of tenants, namespaces and grants.</title><path class="link" pathLength="1" d="M150 42V68"/><circle class="link-end" cx="150" cy="42" r="2.5"/><circle class="link-end" cx="150" cy="68" r="2.5"/><g class="app"><rect x="110" y="2" width="80" height="40" rx="10"/><text x="150" y="27" text-anchor="middle">app</text></g><g class="to"><rect class="fx" x="1" y="68" width="298" height="198" rx="14"/><text class="ft" x="16" y="94">Felix</text><text class="fs" x="284" y="94" text-anchor="end">one replicated log</text><rect class="lc" style="--i:0" x="16.0" y="104" width="19" height="14" rx="3"/><rect class="lc" style="--i:1" x="38.6" y="104" width="19" height="14" rx="3"/><rect class="lc" style="--i:2" x="61.2" y="104" width="19" height="14" rx="3"/><rect class="lc" style="--i:3" x="83.8" y="104" width="19" height="14" rx="3"/><rect class="lc" style="--i:4" x="106.4" y="104" width="19" height="14" rx="3"/><rect class="lc" style="--i:5" x="129.0" y="104" width="19" height="14" rx="3"/><rect class="lc" style="--i:6" x="151.6" y="104" width="19" height="14" rx="3"/><rect class="lc" style="--i:7" x="174.2" y="104" width="19" height="14" rx="3"/><rect class="lc" style="--i:8" x="196.8" y="104" width="19" height="14" rx="3"/><rect class="lc" style="--i:9" x="219.4" y="104" width="19" height="14" rx="3"/><rect class="lc" style="--i:10" x="242.0" y="104" width="19" height="14" rx="3"/><rect class="lc" style="--i:11" x="264.6" y="104" width="19" height="14" rx="3"/><g class="chp"><rect x="16" y="130" width="130" height="26" rx="7"/><text x="81" y="147.5" text-anchor="middle">streams</text></g><g class="chp"><rect x="154" y="130" width="130" height="26" rx="7"/><text x="219" y="147.5" text-anchor="middle">caches</text></g><g class="chp"><rect x="16" y="162" width="130" height="26" rx="7"/><text x="81" y="179.5" text-anchor="middle">queues</text></g><g class="chp"><rect x="154" y="162" width="130" height="26" rx="7"/><text x="219" y="179.5" text-anchor="middle">counters</text></g><path class="sep" d="M16 204H284"/><g class="lock acc" transform="translate(16 212)"><rect x="0" y="5" width="10" height="8" rx="1.5"/><path d="M2.5 5V3.5a2.5 2.5 0 0 1 5 0V5"/></g><text class="fa" x="34" y="224">one access model</text><text class="fs" x="16" y="248">tenants, namespaces, grants</text></g></svg></div>
           </div>
         </div>
         <figcaption>Four systems to run, secure and keep consistent, or one log with tenants, namespaces and grants.</figcaption>
@@ -181,88 +194,11 @@
             </div>
           </div>
         </div>
-        <figcaption>Every subscriber has its own bounded queue, so the publisher and the other subscribers never wait on C. When C falls behind, it is told the first offset it missed and resumes from there.</figcaption>
+        <figcaption>Every subscriber has its own bounded queue. Under the default overflow policy, the publisher and the other subscribers never wait on C. When C falls behind, it is told the first offset it missed and resumes from there.</figcaption>
       </figure>
     </div>
   </section>
 
-  <section class="section" id="features" aria-labelledby="features-title">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <span class="eyebrow">Features</span>
-        <h2 id="features-title">What Felix does</h2>
-      </div>
-
-      <div class="bento">
-        <article class="tile wide reveal">
-          <div class="ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 9 4.5-9 4.5-9-4.5L12 3Z"/><path d="m3 12 9 4.5 9-4.5"/><path d="m3 16.5 9 4.5 9-4.5"/></svg></div>
-          <h3>One replicated log behind streams, caches and queues</h3>
-          <p>A stream reads the log forward, a cache keeps the latest value for each key, and a queue is a cursor a consumer group shares. All three use the same durability, recovery and replication.</p>
-          <div class="viz log-viz" role="img" aria-label="One log of ten records read three ways: a stream reads each record as it is written, a cache keeps only the newest record for each key, and two queue workers take records and finish them at different speeds, while the queue position waits at the oldest record not yet finished.">
-            <div class="log-row stream" aria-hidden="true">
-              <span class="label">stream</span>
-              <div class="cells">
-                <span class="cell" style="--i:0">0</span><span class="cell" style="--i:1">1</span><span class="cell" style="--i:2">2</span><span class="cell" style="--i:3">3</span><span class="cell" style="--i:4">4</span><span class="cell" style="--i:5">5</span><span class="cell" style="--i:6">6</span><span class="cell" style="--i:7">7</span><span class="cell" style="--i:8">8</span><span class="cell" style="--i:9">9</span>
-              </div>
-            </div>
-            <div class="log-row cache" aria-hidden="true">
-              <span class="label">cache</span>
-              <div class="cells">
-                <span class="cell k old">a</span><span class="cell k old">b</span><span class="cell k old">a</span><span class="cell k old">c</span><span class="cell k latest">b</span><span class="cell k old">a</span><span class="cell k old">c</span><span class="cell k latest">d</span><span class="cell k latest">a</span><span class="cell k latest">c</span>
-              </div>
-            </div>
-            <div class="log-row queue" aria-hidden="true">
-              <span class="label">queue</span>
-              <div class="cells">
-                <span class="cell done">0</span><span class="cell done">1</span><span class="cell done">2</span><span class="cell done">3</span><span class="cell done">4</span><span class="cell done">5</span><span class="cell cursor">6</span><span class="cell">7</span><span class="cell">8</span><span class="cell">9</span>
-              </div>
-            </div>
-            <div class="queue-legend" aria-hidden="true">
-              <span><i class="w0"></i>worker 1</span>
-              <span><i class="w1"></i>worker 2</span>
-              <span><i class="acked"></i>finished, waiting on an older record</span>
-              <span><i class="pos"></i>queue position</span>
-            </div>
-          </div>
-        </article>
-
-        <article class="tile reveal" style="--d:.08s">
-          <div class="ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
-          <h3>Conditional publish</h3>
-          <p>A publish can name the offset it expects to start at. When two writers race for one offset, exactly one succeeds, and the refused one writes nothing.</p>
-        </article>
-
-        <article class="tile reveal">
-          <div class="ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="m10.8 12.2 9.2-9.2"/><path d="m17 6 3 3"/><path d="m14.5 8.5 2 2"/></svg></div>
-          <h3>Fine-grained access</h3>
-          <p>Grants go down to one cache key or key prefix, and exchanged tokens can be narrowed by action and resource. One Rust client can act for many users, each request checked against its own token and each user held to their own limits. A gateway can trade a user's token for a delegated one that names it as the actor.</p>
-        </article>
-
-        <article class="tile reveal" style="--d:.08s">
-          <div class="ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
-          <h3>Range reads and record times</h3>
-          <p>Read a bounded slice of a durable stream without subscribing. Each durable record keeps its append time, and a client can find the first record at or after a time.</p>
-        </article>
-
-        <article class="tile reveal" style="--d:.16s">
-          <div class="ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></div>
-          <h3>Look inside a cluster</h3>
-          <p><code>felixctl inspect</code> asks each broker what it holds: a shard's leader, lease and follower lag, or every subscription with its queue depth and drops. <code>felix-broker inspect segments</code> checks a data directory offline and says what startup would do with it.</p>
-        </article>
-
-        <article class="tile full reveal">
-          <div class="ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10"/><path d="m14 4 3 3-3 3"/><path d="M17 17H7"/><path d="m10 14-3 3 3 3"/></svg></div>
-          <h3>Kafka clients</h3>
-          <p>Kafka producers, and consumers that assign their own partitions, work against durable streams: each stream is a topic and each shard a partition. Kafka consumer groups and transactions are not supported.</p>
-          <div class="viz chips" aria-hidden="true"><span class="chip">stream = topic</span><span class="chip">shard = partition</span><span class="chip">producers</span><span class="chip">assigned consumers</span></div>
-        </article>
-      </div>
-
-      <a class="text-link reveal" href="https://docs.getfelix.dev/getting-started/what-felix-is-for/">See what's implemented
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      </a>
-    </div>
-  </section>
 
   <section class="section" id="code" aria-labelledby="code-title">
     <div class="wrap code-grid">
@@ -343,90 +279,50 @@
     </div>
   </section>
 
-  <section class="section teasers" id="guarantees" aria-labelledby="teasers-title">
+  <section class="section teasers" id="explore" aria-labelledby="teasers-title">
     <div class="wrap">
       <div class="section-head reveal">
-        <span class="eyebrow">Guarantees</span>
-        <h2 id="teasers-title">Replicated, and tested against failure</h2>
+        <span class="eyebrow">Go deeper</span>
+        <h2 id="teasers-title">Features, guarantees and numbers</h2>
       </div>
 
       <div class="teaser-grid">
         <article class="teaser reveal">
           <div class="stage glow teaser-fig">
+            <svg class="tz-svg" viewBox="0 0 320 146" role="img" aria-labelledby="tz-f-t"><title id="tz-f-t">One log read three ways: a stream reads every record in order, a cache keeps only the newest value for each key, and a queue has finished records 0 to 4 and waits at record 5.</title><text class="tz-b" x="0" y="30">stream</text><text class="tz-b" x="0" y="78">cache</text><text class="tz-b" x="0" y="126">queue</text><rect class="tz-lead" x="72" y="10" width="26" height="30" rx="6"/><text class="tz-lt" x="85" y="30" text-anchor="middle">0</text><rect class="tz-lead" x="103" y="10" width="26" height="30" rx="6"/><text class="tz-lt" x="116" y="30" text-anchor="middle">1</text><rect class="tz-lead" x="134" y="10" width="26" height="30" rx="6"/><text class="tz-lt" x="147" y="30" text-anchor="middle">2</text><rect class="tz-lead" x="165" y="10" width="26" height="30" rx="6"/><text class="tz-lt" x="178" y="30" text-anchor="middle">3</text><rect class="tz-lead" x="196" y="10" width="26" height="30" rx="6"/><text class="tz-lt" x="209" y="30" text-anchor="middle">4</text><rect class="tz-lead" x="227" y="10" width="26" height="30" rx="6"/><text class="tz-lt" x="240" y="30" text-anchor="middle">5</text><rect class="tz-lead" x="258" y="10" width="26" height="30" rx="6"/><text class="tz-lt" x="271" y="30" text-anchor="middle">6</text><rect class="tz-lead" x="289" y="10" width="26" height="30" rx="6"/><text class="tz-lt" x="302" y="30" text-anchor="middle">7</text><g opacity="0.45"><rect class="tz-fol" x="72" y="58" width="26" height="30" rx="6"/><text class="tz-ft" x="85" y="78" text-anchor="middle">a</text></g><g opacity="0.45"><rect class="tz-fol" x="103" y="58" width="26" height="30" rx="6"/><text class="tz-ft" x="116" y="78" text-anchor="middle">b</text></g><g opacity="0.45"><rect class="tz-fol" x="134" y="58" width="26" height="30" rx="6"/><text class="tz-ft" x="147" y="78" text-anchor="middle">a</text></g><g opacity="0.45"><rect class="tz-fol" x="165" y="58" width="26" height="30" rx="6"/><text class="tz-ft" x="178" y="78" text-anchor="middle">c</text></g><g><rect class="tz-lead" x="196" y="58" width="26" height="30" rx="6"/><text class="tz-lt" x="209" y="78" text-anchor="middle">b</text></g><g><rect class="tz-lead" x="227" y="58" width="26" height="30" rx="6"/><text class="tz-lt" x="240" y="78" text-anchor="middle">a</text></g><g><rect class="tz-lead" x="258" y="58" width="26" height="30" rx="6"/><text class="tz-lt" x="271" y="78" text-anchor="middle">d</text></g><g><rect class="tz-lead" x="289" y="58" width="26" height="30" rx="6"/><text class="tz-lt" x="302" y="78" text-anchor="middle">c</text></g><rect class="tz-fol" x="72" y="106" width="26" height="30" rx="6"/><path class="tz-tick" d="M80 121l3.5 3.5 7-7.5"/><rect class="tz-fol" x="103" y="106" width="26" height="30" rx="6"/><path class="tz-tick" d="M111 121l3.5 3.5 7-7.5"/><rect class="tz-fol" x="134" y="106" width="26" height="30" rx="6"/><path class="tz-tick" d="M142 121l3.5 3.5 7-7.5"/><rect class="tz-fol" x="165" y="106" width="26" height="30" rx="6"/><path class="tz-tick" d="M173 121l3.5 3.5 7-7.5"/><rect class="tz-fol" x="196" y="106" width="26" height="30" rx="6"/><path class="tz-tick" d="M204 121l3.5 3.5 7-7.5"/><rect class="tz-lead" x="227" y="106" width="26" height="30" rx="6" stroke-width="2.5"/><text class="tz-lt" x="240" y="126" text-anchor="middle">5</text><path class="tz-pos" d="M235 100h10l-5 5z"/><rect class="tz-fol" x="258" y="106" width="26" height="30" rx="6"/><text class="tz-ft" x="271" y="126" text-anchor="middle">6</text><rect class="tz-fol" x="289" y="106" width="26" height="30" rx="6"/><text class="tz-ft" x="302" y="126" text-anchor="middle">7</text></svg>
+          </div>
+          <h3>One log, many ways to use it</h3>
+          <p>Streams, caches and queues on one replicated log, with conditional publish, range reads, fine-grained access and Kafka clients.</p>
+          <a class="text-link" href="/features.html">What Felix does<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </article>
+        <article class="teaser reveal" style="--d:.08s">
+          <div class="stage glow teaser-fig">
             <svg class="tz-svg" viewBox="0 0 320 148" role="img" aria-labelledby="tz-c-t"><title id="tz-c-t">Three brokers and three shards. Each broker leads one shard and follows the other two, so every shard has a copy on each broker.</title><text class="tz-h" x="125" y="12" text-anchor="middle">shard 0</text><text class="tz-h" x="201" y="12" text-anchor="middle">shard 1</text><text class="tz-h" x="277" y="12" text-anchor="middle">shard 2</text><text class="tz-b" x="0" y="43">broker 1</text><text class="tz-b" x="0" y="87">broker 2</text><text class="tz-b" x="0" y="131">broker 3</text><rect class="tz-lead" x="90" y="22" width="70" height="32" rx="8"/><text class="tz-lt" x="125" y="42" text-anchor="middle">leader</text><rect class="tz-fol" x="166" y="22" width="70" height="32" rx="8"/><text class="tz-ft" x="201" y="42" text-anchor="middle">follower</text><rect class="tz-fol" x="242" y="22" width="70" height="32" rx="8"/><text class="tz-ft" x="277" y="42" text-anchor="middle">follower</text><rect class="tz-fol" x="90" y="66" width="70" height="32" rx="8"/><text class="tz-ft" x="125" y="86" text-anchor="middle">follower</text><rect class="tz-lead" x="166" y="66" width="70" height="32" rx="8"/><text class="tz-lt" x="201" y="86" text-anchor="middle">leader</text><rect class="tz-fol" x="242" y="66" width="70" height="32" rx="8"/><text class="tz-ft" x="277" y="86" text-anchor="middle">follower</text><rect class="tz-fol" x="90" y="110" width="70" height="32" rx="8"/><text class="tz-ft" x="125" y="130" text-anchor="middle">follower</text><rect class="tz-fol" x="166" y="110" width="70" height="32" rx="8"/><text class="tz-ft" x="201" y="130" text-anchor="middle">follower</text><rect class="tz-lead" x="242" y="110" width="70" height="32" rx="8"/><text class="tz-lt" x="277" y="130" text-anchor="middle">leader</text></svg>
           </div>
           <h3>Shards, replicas and failover</h3>
           <p>A <code>Quorum</code> write is acknowledged once a majority of the replica set holds it, and only a replica holding every acknowledged record can be promoted.</p>
-          <a class="text-link" href="guarantees.html#clustering">How replication and failover work<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <a class="text-link" href="/guarantees.html#clustering">How replication and failover work<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
         </article>
-        <article class="teaser reveal" style="--d:.08s">
+        <article class="teaser reveal">
           <div class="stage glow teaser-fig">
             <svg class="tz-svg" viewBox="0 0 320 148" role="img" aria-labelledby="tz-t-t"><title id="tz-t-t">An illustrative test night: broker 1 is partitioned, broker 2 is killed and broker 3 is frozen while acknowledged records accumulate; each one is checked in the final read.</title><text class="tz-b" x="0" y="20">broker 1</text><text class="tz-b" x="0" y="54">broker 2</text><text class="tz-b" x="0" y="88">broker 3</text><text class="tz-b" x="0" y="130">acked</text><path class="tz-hb" d="M72 16H316M72 50H316M72 84H316"/><rect class="tz-fault" x="180" y="6" width="74" height="20" rx="10"/><text class="tz-flt" x="217" y="20" text-anchor="middle">partition</text><rect class="tz-fault" x="88" y="40" width="54" height="20" rx="10"/><text class="tz-flt" x="115" y="54" text-anchor="middle">kill</text><rect class="tz-fault" x="140" y="74" width="64" height="20" rx="10"/><text class="tz-flt" x="172" y="88" text-anchor="middle">freeze</text><g class="tz-ok"><rect x="76" y="114" width="22" height="22" rx="6"/><rect x="106" y="114" width="22" height="22" rx="6"/><rect x="136" y="114" width="22" height="22" rx="6"/><rect x="166" y="114" width="22" height="22" rx="6"/><rect x="196" y="114" width="22" height="22" rx="6"/><rect x="226" y="114" width="22" height="22" rx="6"/><rect x="256" y="114" width="22" height="22" rx="6"/><rect x="286" y="114" width="22" height="22" rx="6"/><path d="M81 125.5l4 4 8-8.5M111 125.5l4 4 8-8.5M141 125.5l4 4 8-8.5M171 125.5l4 4 8-8.5M201 125.5l4 4 8-8.5M231 125.5l4 4 8-8.5M261 125.5l4 4 8-8.5M291 125.5l4 4 8-8.5"/></g></svg>
           </div>
           <h3>Checked against the faults it claims to survive</h3>
           <p>TLA+ models, a history checker that drives a real cluster through faults, power-loss sweeps of the storage engine, client conformance and fuzzed decoders.</p>
-          <a class="text-link" href="guarantees.html#tested">How we test it<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <a class="text-link" href="/guarantees.html#tested">How we test it<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </article>
+        <article class="teaser reveal" style="--d:.08s">
+          <div class="stage glow teaser-fig">
+            <div class="tz-stats" role="img" aria-labelledby="tz-p-t"><span class="visually-hidden" id="tz-p-t">Measured on one broker: 4.1 GB/s published in memory, 1.43 GB/s durable, and 345 microseconds at p50 from a durable publish to delivery.</span><div class="tz-stat" aria-hidden="true"><span class="tz-num">4.1<small>GB/s</small></span><span class="tz-cap">published, in memory</span></div><div class="tz-stat" aria-hidden="true"><span class="tz-num">1.43<small>GB/s</small></span><span class="tz-cap">published, durable</span></div><div class="tz-stat wide" aria-hidden="true"><span class="tz-num">345<small>µs p50</small></span><span class="tz-cap">durable publish to delivery</span><span class="tz-bar"><i></i></span></div></div>
+          </div>
+          <h3>Measured on one broker</h3>
+          <p>Preview results from Felix 0.6.0 on one 8 vCPU Azure VM with local NVMe. Replicated, multi-node results are coming.</p>
+          <a class="text-link" href="/performance.html">Throughput and latency<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
         </article>
       </div>
     </div>
   </section>
 
-  <section class="section" id="performance" aria-labelledby="perf-title">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <span class="eyebrow">Performance</span>
-        <h2 id="perf-title">Measured on one broker</h2>
-        <p>Preview results from Felix 0.6.0 on one 8 vCPU Azure VM with local NVMe, driven by four load generators in the same region. "Durable" means the broker fsyncs before it acks. These are single-broker numbers, and replicated multi-node results are coming.</p>
-        <span class="perf-status">0.6.0-preview · single region · more results coming</span>
-      </div>
-
-      <div class="perf-stats">
-        <article class="stat reveal">
-          <p class="stat-value">4.1<span class="unit">GB/s</span></p>
-          <h3>Published, in memory</h3>
-          <p class="stat-note">4 KiB records in batches of 64, fire-and-forget. The broker was CPU-bound at 7.4 of 8 cores. Mean of 3 runs.</p>
-        </article>
-        <article class="stat reveal" style="--d:.06s">
-          <p class="stat-value">1.43<span class="unit">GB/s</span></p>
-          <h3>Published, durable</h3>
-          <p class="stat-note">Same workload with an fsync before each ack. 97% of what fio measured on the same NVMe array. Mean of 3 runs.</p>
-        </article>
-        <article class="stat reveal" style="--d:.12s">
-          <p class="stat-value">2.27<span class="unit">M records/s</span></p>
-          <h3>Acked, durable, small records</h3>
-          <p class="stat-note">256 B records in batches of 64, fsync before each ack. 2.27 to 2.29 million across 3 runs.</p>
-        </article>
-        <article class="stat reveal" style="--d:.18s">
-          <p class="stat-value">345<span class="unit">µs p50</span></p>
-          <h3>Durable publish to delivery</h3>
-          <p class="stat-note">One 256 B publish in flight, received by a subscriber on a second connection after the fsync. p99 445 µs. 2 runs.</p>
-        </article>
-      </div>
-
-      <figure class="perf-chart reveal" style="--d:.1s">
-        <figcaption>
-          <h3>Latency, one publish in flight</h3>
-          <p>256 B records. Ack is the publisher's round trip. Delivery is when a subscriber on another connection receives the record. The lighter end of a bar is the spread between two runs.</p>
-        </figcaption>
-        <div class="lat-group">
-          <span class="lat-mode">In memory</span>
-          <div class="lat-row" style="--lo:175;--hi:204"><span class="lat-label">ack p50</span><span class="lat-track"><i></i></span><span class="lat-val">175–204 µs</span></div>
-          <div class="lat-row" style="--lo:175;--hi:178"><span class="lat-label">delivery p50</span><span class="lat-track"><i></i></span><span class="lat-val">175–178 µs</span></div>
-          <div class="lat-row" style="--lo:213;--hi:248"><span class="lat-label">delivery p99</span><span class="lat-track"><i></i></span><span class="lat-val">213–248 µs</span></div>
-        </div>
-        <div class="lat-group">
-          <span class="lat-mode">Durable, fsync before ack</span>
-          <div class="lat-row" style="--lo:347;--hi:351"><span class="lat-label">ack p50</span><span class="lat-track"><i></i></span><span class="lat-val">347–351 µs</span></div>
-          <div class="lat-row" style="--lo:345;--hi:347"><span class="lat-label">delivery p50</span><span class="lat-track"><i></i></span><span class="lat-val">345–347 µs</span></div>
-          <div class="lat-row" style="--lo:445;--hi:445"><span class="lat-label">delivery p99</span><span class="lat-track"><i></i></span><span class="lat-val">445 µs</span></div>
-        </div>
-        <div class="lat-axis" aria-hidden="true"><span></span><span class="lat-ticks"><b style="--t:0">0</b><b style="--t:100">100</b><b style="--t:200">200</b><b style="--t:300">300</b><b style="--t:400">400</b><b style="--t:500">500 µs</b></span><span></span></div>
-        <p class="perf-foot">Replicated across three availability zones, a Quorum ack in memory took 454 to 475 µs at p50, about 280 µs more than a single broker. That ran on three 4 vCPU VMs with an earlier 0.6.0 build.</p>
-      </figure>
-
-      <p class="perf-more reveal">Performance analysis is ongoing. A full write-up with the method and every run is coming.</p>
-    </div>
-  </section>
 
   <section class="section" id="projects" aria-labelledby="projects-title">
     <div class="wrap">
@@ -563,47 +459,7 @@ docker compose up -d</code></pre>
     </div>
   </section>
 
-  <section class="section fit" id="fit" aria-labelledby="fit-title">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <span class="eyebrow">Fit</span>
-        <h2 id="fit-title">When to use Felix, and when not to</h2>
-        <p>Felix is young. This is where it fits today, and where it doesn't yet.</p>
-      </div>
 
-      <div class="fit-cols">
-        <article class="fit-col good reveal" aria-labelledby="fit-good">
-          <header><span class="fit-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5 10 17.5 19 7"/></svg></span><h3 id="fit-good">Good fit</h3></header>
-          <ul class="fit-list">
-            <li><b>Live collaboration and fanout to many clients.</b> A publish is encoded once however many subscribers it reaches, and a slow subscriber falls behind on its own. Browsers connect through <a href="https://github.com/GetFelix/felix-gateway">felix-gateway</a>.</li>
-            <li><b>Streams with state beside them.</b> Caches with keyed watches, counters and consumer groups sit on the same log as the stream, behind one client and one set of grants.</li>
-            <li><b>Multi-tenant products.</b> Every operation is scoped to a tenant and namespace, and tokens are narrowed to the actions and resources a tenant was granted.</li>
-            <li><b>Per-stream choices.</b> Each stream picks in memory or durable, and <code>Leader</code> or <code>Quorum</code> acknowledgement, so one cluster can carry both throwaway and must-keep data.</li>
-          </ul>
-        </article>
-        <article class="fit-col later reveal" style="--d:.06s" aria-labelledby="fit-later">
-          <header><span class="fit-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></span><h3 id="fit-later">Not yet</h3></header>
-          <ul class="fit-list">
-            <li><b>You need the Kafka ecosystem.</b> Felix serves Kafka producers and consumers that assign their own partitions, but has no consumer groups or transactions over the Kafka protocol, so Kafka Connect, Kafka Streams and ksqlDB don't run.</li>
-            <li><b>You need proven scale.</b> Published performance is from one broker. Replicated, multi-node results are still to come.</li>
-            <li><b>You need Go or C#.</b> Clients ship for Rust, Python and TypeScript. Go and C# are not started.</li>
-            <li><b>You need a 1.0 stability promise.</b> Felix is pre-1.0, and its API, wire protocol and semantics can change between releases.</li>
-          </ul>
-        </article>
-      </div>
-      <p class="gu-foot reveal"><a class="text-link" href="https://docs.getfelix.dev/getting-started/what-felix-is-for/#4-workload-fit">Workload by workload<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></p>
-    </div>
-  </section>
-
-  <section class="st-strip" aria-labelledby="st-strip-title">
-    <div class="wrap">
-      <div class="st-strip-row reveal">
-        <h2 class="st-strip-k" id="st-strip-title">Status</h2>
-        <p><b>Today:</b> durable streams, a key/value cache, <code>Quorum</code> acknowledgement, leader failover and online rebalancing. <b>Next, 0.7:</b> memory held to a byte budget.</p>
-        <a class="text-link" href="guarantees.html#status">What works today, and what's next<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-      </div>
-    </div>
-  </section>
 
   <section class="section" id="get-started" aria-labelledby="start-title">
     <div class="wrap">
@@ -643,6 +499,13 @@ docker compose up -d</code></pre>
     </div>
   </section>
 
+  <nav class="page-next" aria-label="Next steps">
+    <div class="wrap next-grid">
+      <a class="next-card primary" href="/features.html"><span class="next-k">Next</span><span class="next-t">Features</span><span class="next-d">Everything Felix does, feature by feature.</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a class="next-card" href="https://docs.getfelix.dev"><span class="next-k">Read more</span><span class="next-t">Docs</span><span class="next-d">Guides, the API and the full status table.</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </div>
+  </nav>
+
 </main>
 
 <footer class="site-footer">
@@ -658,23 +521,34 @@ docker compose up -d</code></pre>
         </a>
         <p>The broker, control plane and felixctl are <span class="nowrap">AGPL-3.0</span>. The wire protocol and the client libraries are <span class="nowrap">Apache-2.0</span>.</p>
       </div>
+      <nav aria-labelledby="f-site">
+        <h2 id="f-site">Site</h2>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/features.html">Features</a></li>
+          <li><a href="/guarantees.html">Guarantees</a></li>
+          <li><a href="/performance.html">Performance</a></li>
+          <li><a href="/status.html">Status</a></li>
+          <li><a href="https://docs.getfelix.dev">Docs</a></li>
+          <li><a href="https://github.com/GetFelix">GitHub</a></li>
+        </ul>
+      </nav>
       <nav aria-labelledby="f-project">
         <h2 id="f-project">Project</h2>
         <ul>
-          <li><a href="https://github.com/GetFelix">GitHub organization</a></li>
           <li><a href="https://github.com/GetFelix/felix">Source code</a></li>
           <li><a href="https://github.com/GetFelix/felix/releases">Releases</a></li>
-          <li><a href="/guarantees.html">How Felix keeps your data</a></li>
+          <li><a href="https://github.com/GetFelix/felix/milestones">Milestones</a></li>
           <li><a href="https://github.com/GetFelix/felix/blob/main/LICENSING.md">Licensing</a></li>
         </ul>
       </nav>
       <nav aria-labelledby="f-docs">
         <h2 id="f-docs">Docs</h2>
         <ul>
-          <li><a href="https://docs.getfelix.dev">Documentation</a></li>
           <li><a href="https://docs.getfelix.dev/getting-started/quickstart/">Quickstart</a></li>
           <li><a href="https://docs.getfelix.dev/getting-started/what-felix-is-for/">What works today</a></li>
           <li><a href="https://docs.getfelix.dev/architecture/semantics/">Delivery semantics</a></li>
+          <li><a href="https://docs.getfelix.dev/architecture/testing/">How Felix is tested</a></li>
         </ul>
       </nav>
     </div>

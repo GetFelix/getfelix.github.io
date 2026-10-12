@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Felix performance</title>
+<meta name="description" content="Felix throughput and latency, measured on one broker, with the setup behind each number.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#f6f8fa" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#070a0e" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://getfelix.dev/performance.html">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Felix">
+<meta property="og:title" content="Felix performance">
+<meta property="og:description" content="Throughput and latency measured on one broker, with the setup behind each number.">
+<meta property="og:url" content="https://getfelix.dev/performance.html">
+<meta property="og:image" content="https://getfelix.dev/assets/img/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Felix logo, a cat in a round badge above the word Felix, beside the words: an open-source broker for streams, caches and queues, written in Rust.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="/assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/site.css?v=6ce2b6bb">
+<link rel="stylesheet" href="/assets/performance.css?v=86a662cd">
+<script>
+  (function () {
+    var d = document.documentElement;
+    d.classList.add("js");
+    try {
+      var t = localStorage.getItem("theme");
+      if (t === "light" || t === "dark") d.setAttribute("data-theme", t);
+    } catch (e) {}
+  })();
+</script>
+<script defer src="/assets/site.js?v=27c2637c"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="Felix home">
+      <picture>
+        <source srcset="/assets/img/felix-mark-96.webp" type="image/webp">
+        <img src="/assets/img/felix-mark-96.png" alt="" width="30" height="30">
+      </picture>
+      Felix
+    </a>
+    <nav class="nav" aria-label="Main">
+      <button class="icon-btn nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Menu">
+        <svg class="open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        <svg class="shut" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="/features.html"><span class="nav-l">Features</span><span class="nav-hint">What Felix does</span></a></li>
+        <li><a href="/guarantees.html"><span class="nav-l">Guarantees</span><span class="nav-hint">Replication, failover and testing</span></a></li>
+        <li><a href="/performance.html" aria-current="page"><span class="nav-l">Performance</span><span class="nav-hint">Throughput and latency</span></a></li>
+        <li><a href="/status.html"><span class="nav-l">Status</span><span class="nav-hint">What works today, and what's next</span></a></li>
+        <li><a href="https://docs.getfelix.dev"><span class="nav-l">Docs<svg class="ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></span><span class="nav-hint">docs.getfelix.dev</span></a></li>
+      </ul>
+      <span class="sep" aria-hidden="true"></span>
+      <a class="icon-btn gh" href="https://github.com/GetFelix" aria-label="GetFelix on GitHub">
+        <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+      </a>
+      <button class="icon-btn theme-toggle" type="button" aria-label="Switch theme">
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11Z"/></svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="section page-intro" aria-labelledby="perf-page-title">
+    <div class="wrap">
+      <div>
+        <div class="section-head">
+          <span class="eyebrow"><picture><source srcset="/assets/img/felix-mark-96.webp" type="image/webp"><img src="/assets/img/felix-mark-96.png" alt="" width="22" height="22"></picture>Performance</span>
+          <h1 id="perf-page-title">Throughput and latency</h1>
+          <p>How fast Felix moves records, with the setup behind each number. These are single-broker results; replicated, multi-node results are coming and will be added here.</p>
+        </div>
+        <nav class="page-toc" aria-label="On this page">
+        <a href="#performance"><span class="n" aria-hidden="true">1</span>Measured on one broker</a>
+        <a href="#next-results"><span class="n" aria-hidden="true">2</span>Coming next</a>
+        </nav>
+      </div>
+      <figure class="intro-fig">
+        <div class="stage glow"><svg class="tz-svg" viewBox="0 0 320 184" role="img" aria-labelledby="pf-setup-t"><title id="pf-setup-t">The setup behind the single-broker numbers: four load generators in the same Azure region drive one broker on an 8 vCPU VM with local NVMe. In durable runs the broker fsyncs before it acks.</title><text class="tz-h" x="0" y="10">same region</text><rect class="tz-fol" x="0" y="20" width="100" height="32" rx="8"/><text class="tz-ft" x="50" y="40.5" text-anchor="middle">load gen 1</text><path class="tz-wire" d="M100 36C128 36 124 102 150 102"/><rect class="tz-fol" x="0" y="62" width="100" height="32" rx="8"/><text class="tz-ft" x="50" y="82.5" text-anchor="middle">load gen 2</text><path class="tz-wire" d="M100 78C128 78 124 102 150 102"/><rect class="tz-fol" x="0" y="104" width="100" height="32" rx="8"/><text class="tz-ft" x="50" y="124.5" text-anchor="middle">load gen 3</text><path class="tz-wire" d="M100 120C128 120 124 102 150 102"/><rect class="tz-fol" x="0" y="146" width="100" height="32" rx="8"/><text class="tz-ft" x="50" y="166.5" text-anchor="middle">load gen 4</text><path class="tz-wire" d="M100 162C128 162 124 102 150 102"/><rect class="tz-lead" x="150" y="38" width="169" height="128" rx="12"/><text class="tz-lt" x="164" y="62">felix-broker</text><text class="tz-ft" x="164" y="82">8 vCPU Azure VM</text><rect class="tz-fol" x="162" y="96" width="145" height="56" rx="8"/><text class="tz-ft" x="174" y="119">local NVMe</text><text class="tz-h" x="174" y="139">fsync before ack</text></svg></div>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section" id="performance" aria-labelledby="perf-title">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Single broker</span>
+        <h2 id="perf-title">Measured on one broker</h2>
+        <p>Preview results from Felix 0.6.0 on one 8 vCPU Azure VM with local NVMe, driven by four load generators in the same region. "Durable" means the broker fsyncs before it acks. These are single-broker numbers, and replicated multi-node results are coming.</p>
+        <span class="perf-status">0.6.0-preview · single region · more results coming</span>
+      </div>
+
+      <div class="perf-stats">
+        <article class="stat reveal">
+          <p class="stat-value">4.1<span class="unit">GB/s</span></p>
+          <h3>Published, in memory</h3>
+          <p class="stat-note">4 KiB records in batches of 64, fire-and-forget. The broker was CPU-bound at 7.4 of 8 cores. Mean of 3 runs.</p>
+        </article>
+        <article class="stat reveal" style="--d:.06s">
+          <p class="stat-value">1.43<span class="unit">GB/s</span></p>
+          <h3>Published, durable</h3>
+          <p class="stat-note">Same workload with an fsync before each ack. 97% of what fio measured on the same NVMe array. Mean of 3 runs.</p>
+        </article>
+        <article class="stat reveal" style="--d:.12s">
+          <p class="stat-value">2.27<span class="unit">M records/s</span></p>
+          <h3>Acked, durable, small records</h3>
+          <p class="stat-note">256 B records in batches of 64, fsync before each ack. 2.27 to 2.29 million across 3 runs.</p>
+        </article>
+        <article class="stat reveal" style="--d:.18s">
+          <p class="stat-value">345<span class="unit">µs p50</span></p>
+          <h3>Durable publish to delivery</h3>
+          <p class="stat-note">One 256 B publish in flight, received by a subscriber on a second connection after the fsync. p99 445 µs. 2 runs.</p>
+        </article>
+      </div>
+
+      <figure class="perf-chart reveal" style="--d:.1s">
+        <figcaption>
+          <h3>Latency, one publish in flight</h3>
+          <p>256 B records. Ack is the publisher's round trip. Delivery is when a subscriber on another connection receives the record. The lighter end of a bar is the spread between two runs.</p>
+        </figcaption>
+        <div class="lat-group">
+          <span class="lat-mode">In memory</span>
+          <div class="lat-row" style="--lo:175;--hi:204"><span class="lat-label">ack p50</span><span class="lat-track"><i></i></span><span class="lat-val">175–204 µs</span></div>
+          <div class="lat-row" style="--lo:175;--hi:178"><span class="lat-label">delivery p50</span><span class="lat-track"><i></i></span><span class="lat-val">175–178 µs</span></div>
+          <div class="lat-row" style="--lo:213;--hi:248"><span class="lat-label">delivery p99</span><span class="lat-track"><i></i></span><span class="lat-val">213–248 µs</span></div>
+        </div>
+        <div class="lat-group">
+          <span class="lat-mode">Durable, fsync before ack</span>
+          <div class="lat-row" style="--lo:347;--hi:351"><span class="lat-label">ack p50</span><span class="lat-track"><i></i></span><span class="lat-val">347–351 µs</span></div>
+          <div class="lat-row" style="--lo:345;--hi:347"><span class="lat-label">delivery p50</span><span class="lat-track"><i></i></span><span class="lat-val">345–347 µs</span></div>
+          <div class="lat-row" style="--lo:445;--hi:445"><span class="lat-label">delivery p99</span><span class="lat-track"><i></i></span><span class="lat-val">445 µs</span></div>
+        </div>
+        <div class="lat-axis" aria-hidden="true"><span></span><span class="lat-ticks"><b style="--t:0">0</b><b style="--t:100">100</b><b style="--t:200">200</b><b style="--t:300">300</b><b style="--t:400">400</b><b style="--t:500">500 µs</b></span><span></span></div>
+        <p class="perf-foot">Replicated across three availability zones, a Quorum ack in memory took 454 to 475 µs at p50, about 280 µs more than a single broker. That ran on three 4 vCPU VMs with an earlier 0.6.0 build.</p>
+      </figure>
+
+    </div>
+  </section>
+
+  <section class="section perf-next" id="next-results" aria-labelledby="next-results-title">
+    <div class="wrap">
+      <div class="soon reveal">
+        <span class="soon-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5.5" r="2.5"/><circle cx="5.5" cy="17.5" r="2.5"/><circle cx="18.5" cy="17.5" r="2.5"/><path d="M10.7 7.7 6.8 15.3M13.3 7.7l3.9 7.6M8 17.5h8"/></svg></span>
+        <div>
+          <span class="eyebrow">Coming next</span>
+          <h2 id="next-results-title">Replicated, multi-node results</h2>
+          <p>Published performance is from one broker. Replicated, multi-node results are still to come.</p>
+          <p>Performance analysis is ongoing. A full write-up with the method and every run is coming.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <nav class="page-next" aria-label="Next steps">
+    <div class="wrap next-grid">
+      <a class="next-card primary" href="/status.html"><span class="next-k">Next</span><span class="next-t">Status</span><span class="next-d">What works today, what's next, and where Felix fits.</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a class="next-card" href="/#get-started"><span class="next-k">Try it</span><span class="next-t">Get started</span><span class="next-d">Install a client, a broker and felixctl.</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </div>
+  </nav>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-about">
+        <a class="brand" href="/">
+          <picture>
+            <source srcset="/assets/img/felix-mark-96.webp" type="image/webp">
+            <img src="/assets/img/felix-mark-96.png" alt="" width="30" height="30" loading="lazy">
+          </picture>
+          Felix
+        </a>
+        <p>The broker, control plane and felixctl are <span class="nowrap">AGPL-3.0</span>. The wire protocol and the client libraries are <span class="nowrap">Apache-2.0</span>.</p>
+      </div>
+      <nav aria-labelledby="f-site">
+        <h2 id="f-site">Site</h2>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/features.html">Features</a></li>
+          <li><a href="/guarantees.html">Guarantees</a></li>
+          <li><a href="/performance.html">Performance</a></li>
+          <li><a href="/status.html">Status</a></li>
+          <li><a href="https://docs.getfelix.dev">Docs</a></li>
+          <li><a href="https://github.com/GetFelix">GitHub</a></li>
+        </ul>
+      </nav>
+      <nav aria-labelledby="f-project">
+        <h2 id="f-project">Project</h2>
+        <ul>
+          <li><a href="https://github.com/GetFelix/felix">Source code</a></li>
+          <li><a href="https://github.com/GetFelix/felix/releases">Releases</a></li>
+          <li><a href="https://github.com/GetFelix/felix/milestones">Milestones</a></li>
+          <li><a href="https://github.com/GetFelix/felix/blob/main/LICENSING.md">Licensing</a></li>
+        </ul>
+      </nav>
+      <nav aria-labelledby="f-docs">
+        <h2 id="f-docs">Docs</h2>
+        <ul>
+          <li><a href="https://docs.getfelix.dev/getting-started/quickstart/">Quickstart</a></li>
+          <li><a href="https://docs.getfelix.dev/getting-started/what-felix-is-for/">What works today</a></li>
+          <li><a href="https://docs.getfelix.dev/architecture/semantics/">Delivery semantics</a></li>
+          <li><a href="https://docs.getfelix.dev/architecture/testing/">How Felix is tested</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Felix Authors</span>
+      <span>This site is MIT licensed. <a href="https://github.com/GetFelix/getfelix.github.io">Source</a></span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>How Felix keeps your data</title>
-<meta name="description" content="What a Felix acknowledgement promises when brokers fail, how those claims are tested, and what works today.">
+<meta name="description" content="What a Felix acknowledgement promises when brokers fail, and how those claims are tested.">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#f6f8fa" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#070a0e" media="(prefers-color-scheme: dark)">
@@ -16,7 +16,7 @@
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Felix">
 <meta property="og:title" content="How Felix keeps your data">
-<meta property="og:description" content="Shards, replicas and failover, how Felix is tested against faults, and what works today.">
+<meta property="og:description" content="Shards, replicas and failover, and how Felix is tested against faults.">
 <meta property="og:url" content="https://getfelix.dev/guarantees.html">
 <meta property="og:image" content="https://getfelix.dev/assets/img/og-image.png">
 <meta property="og:image:width" content="1200">
@@ -24,8 +24,8 @@
 <meta property="og:image:alt" content="The Felix logo, a cat in a round badge above the word Felix, beside the words: an open-source broker for streams, caches and queues, written in Rust.">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/site.css?v=55a7abe9">
-<link rel="stylesheet" href="/assets/guarantees.css?v=127a6907">
+<link rel="stylesheet" href="/assets/site.css?v=6ce2b6bb">
+<link rel="stylesheet" href="/assets/guarantees.css?v=5e44553d">
 <script>
   (function () {
     var d = document.documentElement;
@@ -36,7 +36,11 @@
     } catch (e) {}
   })();
 </script>
-<script defer src="/assets/site.js?v=26d9fe72"></script>
+<script>
+  // The status section moved to its own page; keep old links working.
+  if (location.hash === "#status") location.replace("/status.html#status");
+</script>
+<script defer src="/assets/site.js?v=27c2637c"></script>
 <script defer src="/assets/guarantees.js?v=be5fcb41"></script>
 </head>
 <body>
@@ -52,15 +56,19 @@
       Felix
     </a>
     <nav class="nav" aria-label="Main">
-      <a class="sec" href="/#features">Features</a>
-      <a class="sec" href="#clustering">Clustering</a>
-      <a class="sec" href="#tested">Testing</a>
-      <a class="sec" href="#status">Status</a>
-      <a class="sec sec-wide" href="/#performance">Performance</a>
-      <a class="sec" href="/#get-started">Get started</a>
-      <a href="https://docs.getfelix.dev">Docs</a>
+      <button class="icon-btn nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Menu">
+        <svg class="open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        <svg class="shut" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="/features.html"><span class="nav-l">Features</span><span class="nav-hint">What Felix does</span></a></li>
+        <li><a href="/guarantees.html" aria-current="page"><span class="nav-l">Guarantees</span><span class="nav-hint">Replication, failover and testing</span></a></li>
+        <li><a href="/performance.html"><span class="nav-l">Performance</span><span class="nav-hint">Throughput and latency</span></a></li>
+        <li><a href="/status.html"><span class="nav-l">Status</span><span class="nav-hint">What works today, and what's next</span></a></li>
+        <li><a href="https://docs.getfelix.dev"><span class="nav-l">Docs<svg class="ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></span><span class="nav-hint">docs.getfelix.dev</span></a></li>
+      </ul>
       <span class="sep" aria-hidden="true"></span>
-      <a class="icon-btn" href="https://github.com/GetFelix" aria-label="GetFelix on GitHub">
+      <a class="icon-btn gh" href="https://github.com/GetFelix" aria-label="GetFelix on GitHub">
         <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
       </a>
       <button class="icon-btn theme-toggle" type="button" aria-label="Switch theme">
@@ -73,19 +81,22 @@
 
 <main id="main">
 
-  <section class="section g-intro" aria-labelledby="g-title">
+  <section class="section page-intro" aria-labelledby="g-title">
     <div class="wrap">
-      <a class="g-back" href="/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Felix overview</a>
-      <div class="section-head">
-        <span class="eyebrow">Guarantees</span>
-        <h1 id="g-title">How Felix keeps your data</h1>
-        <p>What an acknowledgement promises when a broker fails, how those promises are tested, and what works today. Each part links to the full write-up in the docs.</p>
-      </div>
-      <nav class="g-toc" aria-label="On this page">
+      <div>
+        <div class="section-head">
+          <span class="eyebrow"><picture><source srcset="/assets/img/felix-mark-96.webp" type="image/webp"><img src="/assets/img/felix-mark-96.png" alt="" width="22" height="22"></picture>Guarantees</span>
+          <h1 id="g-title">How Felix keeps your data</h1>
+          <p>What an acknowledgement promises when a broker fails, and how those promises are tested. Each part links to the full write-up in the docs.</p>
+        </div>
+        <nav class="page-toc" aria-label="On this page">
         <a href="#clustering"><span class="n" aria-hidden="true">1</span>Shards, replicas and failover</a>
         <a href="#tested"><span class="n" aria-hidden="true">2</span>How Felix is tested</a>
-        <a href="#status"><span class="n" aria-hidden="true">3</span>What works today, and what's next</a>
-      </nav>
+        </nav>
+      </div>
+      <figure class="intro-fig">
+        <div class="stage glow"><svg class="tz-svg" viewBox="0 0 320 148" role="img" aria-labelledby="gi-c-t"><title id="gi-c-t">Three brokers and three shards. Each broker leads one shard and follows the other two, so every shard has a copy on each broker.</title><text class="tz-h" x="125" y="12" text-anchor="middle">shard 0</text><text class="tz-h" x="201" y="12" text-anchor="middle">shard 1</text><text class="tz-h" x="277" y="12" text-anchor="middle">shard 2</text><text class="tz-b" x="0" y="43">broker 1</text><text class="tz-b" x="0" y="87">broker 2</text><text class="tz-b" x="0" y="131">broker 3</text><rect class="tz-lead" x="90" y="22" width="70" height="32" rx="8"/><text class="tz-lt" x="125" y="42" text-anchor="middle">leader</text><rect class="tz-fol" x="166" y="22" width="70" height="32" rx="8"/><text class="tz-ft" x="201" y="42" text-anchor="middle">follower</text><rect class="tz-fol" x="242" y="22" width="70" height="32" rx="8"/><text class="tz-ft" x="277" y="42" text-anchor="middle">follower</text><rect class="tz-fol" x="90" y="66" width="70" height="32" rx="8"/><text class="tz-ft" x="125" y="86" text-anchor="middle">follower</text><rect class="tz-lead" x="166" y="66" width="70" height="32" rx="8"/><text class="tz-lt" x="201" y="86" text-anchor="middle">leader</text><rect class="tz-fol" x="242" y="66" width="70" height="32" rx="8"/><text class="tz-ft" x="277" y="86" text-anchor="middle">follower</text><rect class="tz-fol" x="90" y="110" width="70" height="32" rx="8"/><text class="tz-ft" x="125" y="130" text-anchor="middle">follower</text><rect class="tz-fol" x="166" y="110" width="70" height="32" rx="8"/><text class="tz-ft" x="201" y="130" text-anchor="middle">follower</text><rect class="tz-lead" x="242" y="110" width="70" height="32" rx="8"/><text class="tz-lt" x="277" y="130" text-anchor="middle">leader</text></svg></div>
+      </figure>
     </div>
   </section>
 
@@ -101,7 +112,7 @@
         <div class="cl-grid">
           <div class="stage glow cl-stage">
             <div class="cl-conf" aria-label="The stream shown"><span>stream <b>orders</b></span><span>shards <b>3</b></span><span>replication_factor <b>3</b></span><span>consistency <b>Quorum</b></span><span>durable <b>true</b></span></div>
-            <svg class="cl-svg" viewBox="0 0 560 448" role="img" aria-labelledby="cl-t cl-d"><title id="cl-t">A three-broker Felix cluster running one stream with three shards, each replicated to all three brokers.</title><desc id="cl-d">Each broker leads one shard and follows the other two. A write for shard 0 goes to its leader on broker 1, which ships it to the followers on brokers 2 and 3; the client is acknowledged once two of the three hold it. Broker 1 then fails. Shards 1 and 2 keep serving, and the control plane promotes broker 2's copy of shard 0, which already holds the acknowledged record. The client follows the new leader and its next write is held by brokers 2 and 3. Broker 1 comes back as a follower and catches up, and placement moves shard 0 back to it.</desc><text class="shard" x="94" y="22">SHARD 0</text><text class="shard" x="248" y="22">SHARD 1</text><text class="shard" x="402" y="22">SHARD 2</text><rect class="client" x="2" y="36" width="40" height="364" rx="20"/><text class="client-t" transform="translate(26 218) rotate(-90)" text-anchor="middle">CLIENT</text><path class="link" d="M42 114H94"/><path class="link-on l0" d="M42 114H94"/><path class="link" d="M42 240H94"/><path class="link-on l1" d="M42 240H94"/><path class="link" d="M42 366H94"/><path class="link-on l2" d="M42 366H94"/><g class="card k0"><rect class="card-bg" x="84" y="36" width="472" height="112" rx="14"/><rect class="card-down" x="84" y="36" width="472" height="112" rx="14"/><text class="bname" x="96" y="57">BROKER 1</text><g class="st-up"><circle class="up-dot" cx="506" cy="53" r="3.5"/><text class="st" x="544" y="57" text-anchor="end">UP</text></g><g class="st-down"><path class="x" d="M482 49l7 7m0-7-7 7"/><text class="st" x="544" y="57" text-anchor="end">DOWN</text></g></g><g class="card k1"><rect class="card-bg" x="84" y="162" width="472" height="112" rx="14"/><rect class="card-down" x="84" y="162" width="472" height="112" rx="14"/><text class="bname" x="96" y="183">BROKER 2</text><g class="st-up"><circle class="up-dot" cx="506" cy="179" r="3.5"/><text class="st" x="544" y="183" text-anchor="end">UP</text></g></g><g class="card k2"><rect class="card-bg" x="84" y="288" width="472" height="112" rx="14"/><rect class="card-down" x="84" y="288" width="472" height="112" rx="14"/><text class="bname" x="96" y="309">BROKER 3</text><g class="st-up"><circle class="up-dot" cx="506" cy="305" r="3.5"/><text class="st" x="544" y="309" text-anchor="end">UP</text></g></g><g class="chips k0"><rect class="chip-bg" x="94" y="68" width="146" height="68" rx="10"/><rect class="chip-bg" x="248" y="68" width="146" height="68" rx="10"/><rect class="chip-bg" x="402" y="68" width="146" height="68" rx="10"/></g><g class="chips k1"><rect class="chip-bg" x="94" y="194" width="146" height="68" rx="10"/><rect class="chip-bg" x="248" y="194" width="146" height="68" rx="10"/><rect class="chip-bg" x="402" y="194" width="146" height="68" rx="10"/></g><g class="chips k2"><rect class="chip-bg" x="94" y="320" width="146" height="68" rx="10"/><rect class="chip-bg" x="248" y="320" width="146" height="68" rx="10"/><rect class="chip-bg" x="402" y="320" width="146" height="68" rx="10"/></g><g class="lf lf0"><rect class="lf-glow" x="92" y="66" width="150" height="72" rx="12"/><rect class="lf-on" x="94" y="68" width="146" height="68" rx="10"/></g><g class="lf lf1"><rect class="lf-glow" x="246" y="192" width="150" height="72" rx="12"/><rect class="lf-on" x="248" y="194" width="146" height="68" rx="10"/></g><g class="lf lf2"><rect class="lf-glow" x="400" y="318" width="150" height="72" rx="12"/><rect class="lf-on" x="402" y="320" width="146" height="68" rx="10"/></g><g class="chips k0"><g class="chip c00"><g class="r-lead"><path class="crown" transform="translate(105 82)" d="M0 9.5 1.2 2.2 4.6 5.6 7 0 9.4 5.6 12.8 2.2 14 9.5Z"/><text class="role" x="125" y="92">LEADER</text></g><g class="r-fol"><circle class="fol-ic" cx="112" cy="87" r="4.5"/><text class="role" x="125" y="92">FOLLOWER</text></g><g class="r-off"><path d="M108 83l7 7m0-7-7 7"/><text class="role" x="125" y="92">OFFLINE</text></g><rect class="rec old" x="106" y="107" width="14" height="14" rx="3"/><rect class="rec old" x="124" y="107" width="14" height="14" rx="3"/><rect class="rec old" x="142" y="107" width="14" height="14" rx="3"/><rect class="rec old" x="160" y="107" width="14" height="14" rx="3"/><rect class="slot" x="178" y="107" width="14" height="14" rx="3"/><rect class="slot" x="196" y="107" width="14" height="14" rx="3"/><rect class="slot" x="214" y="107" width="14" height="14" rx="3"/><rect class="rec new na" x="178" y="107" width="14" height="14" rx="3"/><rect class="rec new nb" x="196" y="107" width="14" height="14" rx="3"/></g><g class="chip c10"><g class="r-fol"><circle class="fol-ic" cx="266" cy="87" r="4.5"/><text class="role" x="279" y="92">FOLLOWER</text></g><rect class="rec old" x="260" y="107" width="14" height="14" rx="3"/><rect class="rec old" x="278" y="107" width="14" height="14" rx="3"/><rect class="rec old" x="296" y="107" width="14" height="14" rx="3"/><rect class="rec old" x="314" y="107" width="14" height="14" rx="3"/><rect class="rec old" x="332" y="107" width="14" height="14" rx="3"/><rect class="slot" x="350" y="107" width="14" height="14" rx="3"/><rect class="slot" x="368" y="107" width="14" height="14" rx="3"/></g><g class="chip c20"><g class="r-fol"><circle class="fol-ic" cx="420" cy="87" r="4.5"/><text class="role" x="433" y="92">FOLLOWER</text></g><rect class="rec old" x="414" y="107" width="14" height="14" rx="3"/><rect class="rec old" x="432" y="107" width="14" height="14" rx="3"/><rect class="rec old" x="450" y="107" width="14" height="14" rx="3"/><rect class="slot" x="468" y="107" width="14" height="14" rx="3"/><rect class="slot" x="486" y="107" width="14" height="14" rx="3"/><rect class="slot" x="504" y="107" width="14" height="14" rx="3"/><rect class="slot" x="522" y="107" width="14" height="14" rx="3"/></g></g><g class="chips k1"><g class="chip c01"><g class="r-fol"><circle class="fol-ic" cx="112" cy="213" r="4.5"/><text class="role" x="125" y="218">FOLLOWER</text></g><g class="r-lead"><path class="crown" transform="translate(105 208)" d="M0 9.5 1.2 2.2 4.6 5.6 7 0 9.4 5.6 12.8 2.2 14 9.5Z"/><text class="role" x="125" y="218">LEADER</text></g><g class="r-fence"><g class="lock" transform="translate(106 205)"><rect x="0.5" y="5" width="11" height="7.5" rx="1.6"/><path d="M3 5V3.4a3 3 0 0 1 6 0V5"/></g><text class="role" x="125" y="218">FENCED</text></g><rect class="rec old" x="106" y="233" width="14" height="14" rx="3"/><rect class="rec old" x="124" y="233" width="14" height="14" rx="3"/><rect class="rec old" x="142" y="233" width="14" height="14" rx="3"/><rect class="rec old" x="160" y="233" width="14" height="14" rx="3"/><rect class="slot" x="178" y="233" width="14" height="14" rx="3"/><rect class="slot" x="196" y="233" width="14" height="14" rx="3"/><rect class="slot" x="214" y="233" width="14" height="14" rx="3"/><rect class="rec new na" x="178" y="233" width="14" height="14" rx="3"/><rect class="rec new nb" x="196" y="233" width="14" height="14" rx="3"/></g><g class="chip c11"><g class="r-lead"><path class="crown" transform="translate(259 208)" d="M0 9.5 1.2 2.2 4.6 5.6 7 0 9.4 5.6 12.8 2.2 14 9.5Z"/><text class="role" x="279" y="218">LEADER</text></g><rect class="rec old" x="260" y="233" width="14" height="14" rx="3"/><rect class="rec old" x="278" y="233" width="14" height="14" rx="3"/><rect class="rec old" x="296" y="233" width="14" height="14" rx="3"/><rect class="rec old" x="314" y="233" width="14" height="14" rx="3"/><rect class="rec old" x="332" y="233" width="14" height="14" rx="3"/><rect class="slot" x="350" y="233" width="14" height="14" rx="3"/><rect class="slot" x="368" y="233" width="14" height="14" rx="3"/></g><g class="chip c21"><g class="r-fol"><circle class="fol-ic" cx="420" cy="213" r="4.5"/><text class="role" x="433" y="218">FOLLOWER</text></g><rect class="rec old" x="414" y="233" width="14" height="14" rx="3"/><rect class="rec old" x="432" y="233" width="14" height="14" rx="3"/><rect class="rec old" x="450" y="233" width="14" height="14" rx="3"/><rect class="slot" x="468" y="233" width="14" height="14" rx="3"/><rect class="slot" x="486" y="233" width="14" height="14" rx="3"/><rect class="slot" x="504" y="233" width="14" height="14" rx="3"/><rect class="slot" x="522" y="233" width="14" height="14" rx="3"/></g></g><g class="chips k2"><g class="chip c02"><g class="r-fol"><circle class="fol-ic" cx="112" cy="339" r="4.5"/><text class="role" x="125" y="344">FOLLOWER</text></g><rect class="rec old" x="106" y="359" width="14" height="14" rx="3"/><rect class="rec old" x="124" y="359" width="14" height="14" rx="3"/><rect class="rec old" x="142" y="359" width="14" height="14" rx="3"/><rect class="rec old" x="160" y="359" width="14" height="14" rx="3"/><rect class="slot" x="178" y="359" width="14" height="14" rx="3"/><rect class="slot" x="196" y="359" width="14" height="14" rx="3"/><rect class="slot" x="214" y="359" width="14" height="14" rx="3"/><rect class="rec new na" x="178" y="359" width="14" height="14" rx="3"/><rect class="rec new nb" x="196" y="359" width="14" height="14" rx="3"/></g><g class="chip c12"><g class="r-fol"><circle class="fol-ic" cx="266" cy="339" r="4.5"/><text class="role" x="279" y="344">FOLLOWER</text></g><rect class="rec old" x="260" y="359" width="14" height="14" rx="3"/><rect class="rec old" x="278" y="359" width="14" height="14" rx="3"/><rect class="rec old" x="296" y="359" width="14" height="14" rx="3"/><rect class="rec old" x="314" y="359" width="14" height="14" rx="3"/><rect class="rec old" x="332" y="359" width="14" height="14" rx="3"/><rect class="slot" x="350" y="359" width="14" height="14" rx="3"/><rect class="slot" x="368" y="359" width="14" height="14" rx="3"/></g><g class="chip c22"><g class="r-lead"><path class="crown" transform="translate(413 334)" d="M0 9.5 1.2 2.2 4.6 5.6 7 0 9.4 5.6 12.8 2.2 14 9.5Z"/><text class="role" x="433" y="344">LEADER</text></g><rect class="rec old" x="414" y="359" width="14" height="14" rx="3"/><rect class="rec old" x="432" y="359" width="14" height="14" rx="3"/><rect class="rec old" x="450" y="359" width="14" height="14" rx="3"/><rect class="slot" x="468" y="359" width="14" height="14" rx="3"/><rect class="slot" x="486" y="359" width="14" height="14" rx="3"/><rect class="slot" x="504" y="359" width="14" height="14" rx="3"/><rect class="slot" x="522" y="359" width="14" height="14" rx="3"/></g></g><g class="tally qa"><circle class="pip" cx="222" cy="53" r="4.5"/><circle class="pf p0" cx="222" cy="53" r="4.5"/><circle class="pip" cx="236" cy="53" r="4.5"/><circle class="pf p1" cx="236" cy="53" r="4.5"/><circle class="pip" cx="250" cy="53" r="4.5"/><circle class="pf p2" cx="250" cy="53" r="4.5"/><text class="q q1" x="264" y="57">1 of 3</text><text class="q q2" x="264" y="57">2 of 3 · <tspan>ack</tspan></text><text class="q q3" x="264" y="57">3 of 3</text></g><g class="tally qb"><circle class="pip" cx="222" cy="179" r="4.5"/><circle class="pf p0" cx="222" cy="179" r="4.5"/><circle class="pip" cx="236" cy="179" r="4.5"/><circle class="pf p1" cx="236" cy="179" r="4.5"/><circle class="pip" cx="250" cy="179" r="4.5"/><circle class="pf p2" cx="250" cy="179" r="4.5"/><text class="q q1" x="264" y="183">1 of 3</text><text class="q q2" x="264" y="183">2 of 3 · <tspan>ack</tspan></text><text class="q q3" x="264" y="183">3 of 3</text></g><circle class="kept" cx="185" cy="240" r="10"/><g class="ack ta"><circle cx="63" cy="97" r="9"/><path d="M58.5 97l3 3 5.5-6"/></g><g class="ack tb"><circle cx="63" cy="223" r="9"/><path d="M58.5 223l3 3 5.5-6"/></g><g class="mv d-a" style="--x0:42px;--y0:114px;--x1:185px;--y1:114px"><circle class="dot-h" r="7"/><circle class="dot-c" r="3.6"/></g><g class="mv d-a2" style="--x0:185px;--y0:114px;--x1:185px;--y1:240px"><circle class="dot-h" r="7"/><circle class="dot-c" r="3.6"/></g><g class="mv d-a3" style="--x0:185px;--y0:114px;--x1:185px;--y1:366px"><circle class="dot-h" r="7"/><circle class="dot-c" r="3.6"/></g><g class="mv d-aa" style="--x0:185px;--y0:114px;--x1:42px;--y1:114px"><circle class="ack-ring" r="6"/></g><g class="mv d-b" style="--x0:42px;--y0:240px;--x1:203px;--y1:240px"><circle class="dot-h" r="7"/><circle class="dot-c" r="3.6"/></g><g class="mv d-b3" style="--x0:203px;--y0:240px;--x1:203px;--y1:366px"><circle class="dot-h" r="7"/><circle class="dot-c" r="3.6"/></g><g class="mv d-ba" style="--x0:203px;--y0:240px;--x1:42px;--y1:240px"><circle class="ack-ring" r="6"/></g><g class="mv d-b1" style="--x0:203px;--y0:240px;--x1:203px;--y1:114px"><circle class="dot-h" r="7"/><circle class="dot-c" r="3.6"/></g><g class="cp"><rect class="cp-bg" x="84" y="414" width="472" height="30" rx="10"/><rect class="cp-pulse" x="84" y="414" width="472" height="30" rx="10"/><text class="cp-l" x="98" y="433.5">CONTROL PLANE</text><text class="cp-m m0" x="248" y="433.5">places shards on brokers</text><text class="cp-m m1" x="248" y="433.5">promotes shard 0 on broker 2</text><text class="cp-m m2" x="248" y="433.5">broker 1 rejoins</text><text class="cp-m m3" x="248" y="433.5">moves shard 0 to broker 1</text></g></svg>
+            <svg class="cl-svg" viewBox="0 0 560 448" role="img" aria-labelledby="cl-t cl-d"><title id="cl-t">A three-broker Felix cluster running one stream with three shards, each replicated to all three brokers.</title><desc id="cl-d">Each broker leads one shard and follows the other two. A write for shard 0 goes to its leader on broker 1, which ships it to the followers on brokers 2 and 3; the client is acknowledged once two of the three hold it. Broker 1 then fails. Shards 1 and 2 keep serving, and the control plane promotes broker 2's copy of shard 0, which already holds the acknowledged record. The client follows the new leader and its next write is held by brokers 2 and 3. Broker 1 comes back as a follower and catches up, and placement moves shard 0 back to it.</desc><text class="shard" x="94" y="22">SHARD 0</text><text class="shard" x="248" y="22">SHARD 1</text><text class="shard" x="402" y="22">SHARD 2</text><rect class="client" x="2" y="36" width="40" height="364" rx="20"/><text class="client-t" transform="translate(26 218) rotate(-90)" text-anchor="middle">CLIENT</text><path class="link" d="M42 114H94"/><path class="link-on l0" d="M42 114H94"/><path class="link" d="M42 240H94"/><path class="link-on l1" d="M42 240H94"/><path class="link" d="M42 366H94"/><path class="link-on l2" d="M42 366H94"/><g class="card k0"><rect class="card-bg" x="84" y="36" width="472" height="112" rx="14"/><rect class="card-down" x="84" y="36" width="472" height="112" rx="14"/><text class="bname" x="96" y="57">BROKER 1</text><g class="st-up"><circle class="up-dot" cx="506" cy="53" r="3.5"/><text class="st" x="544" y="57" text-anchor="end">UP</text></g><g class="st-down"><path class="x" d="M482 49l7 7m0-7-7 7"/><text class="st" x="544" y="57" text-anchor="end">DOWN</text></g></g><g class="card k1"><rect class="card-bg" x="84" y="162" width="472" height="112" rx="14"/><rect class="card-down" x="84" y="162" width="472" height="112" rx="14"/><text class="bname" x="96" y="183">BROKER 2</text><g class="st-up"><circle class="up-dot" cx="506" cy="179" r="3.5"/><text class="st" x="544" y="183" text-anchor="end">UP</text></g></g><g class="card k2"><rect class="card-bg" x="84" y="288" width="472" height="112" rx="14"/><rect class="card-down" x="84" y="288" width="472" height="112" rx="14"/><text class="bname" x="96" y="309">BROKER 3</text><g class="st-up"><circle class="up-dot" cx="506" cy="305" r="3.5"/><text class="st" x="544" y="309" text-anchor="end">UP</text></g></g><g class="chips k0"><rect class="chip-bg" x="94" y="68" width="146" height="68" rx="10"/><rect class="chip-bg" x="248" y="68" width="146" height="68" rx="10"/><rect class="chip-bg" x="402" y="68" width="146" height="68" rx="10"/></g><g class="chips k1"><rect class="chip-bg" x="94" y="194" width="146" height="68" rx="10"/><rect class="chip-bg" x="248" y="194" width="146" height="68" rx="10"/><rect class="chip-bg" x="402" y="194" width="146" height="68" rx="10"/></g><g class="chips k2"><rect class="chip-bg" x="94" y="320" width="146" height="68" rx="10"/><rect class="chip-bg" x="248" y="320" width="146" height="68" rx="10"/><rect class="chip-bg" x="402" y="320" width="146" height="68" rx="10"/></g><g class="lf lf0"><rect class="lf-glow" x="92" y="66" width="150" height="72" rx="12"/><rect class="lf-on" x="94" y="68" width="146" height="68" rx="10"/></g><g class="lf lf1"><rect class="lf-glow" x="246" y="192" width="150" height="72" rx="12"/><rect class="lf-on" x="248" y="194" width="146" height="68" rx="10"/></g><g class="lf lf2"><rect class="lf-glow" x="400" y="318" width="150" height="72" rx="12"/><rect class="lf-on" x="402" y="320" width="146" height="68" rx="10"/></g><g class="chips k0"><g class="chip c00"><g class="r-lead"><path class="crown" transform="translate(105 82)" d="M0 9.5 1.2 2.2 4.6 5.6 7 0 9.4 5.6 12.8 2.2 14 9.5Z"/><text class="role" x="125" y="92">LEADER</text></g><g class="r-fol"><circle class="fol-ic" cx="112" cy="87" r="4.5"/><text class="role" x="125" y="92">FOLLOWER</text></g><g class="r-off"><path d="M108 83l7 7m0-7-7 7"/><text class="role" x="125" y="92">OFFLINE</text></g><rect class="rec old" x="106" y="107" width="14" height="14" rx="3"/><rect class="rec old" x="124" y="107" width="14" height="14" rx="3"/><rect class="rec old" x="142" y="107" width="14" height="14" rx="3"/><rect class="rec old" x="160" y="107" width="14" height="14" rx="3"/><rect class="slot" x="178" y="107" width="14" height="14" rx="3"/><rect class="slot" x="196" y="107" width="14" height="14" rx="3"/><rect class="slot" x="214" y="107" width="14" height="14" rx="3"/><rect class="rec new na" x="178" y="107" width="14" height="14" rx="3"/><rect class="rec new nb" x="196" y="107" width="14" height="14" rx="3"/></g><g class="chip c10"><g class="r-fol"><circle class="fol-ic" cx="266" cy="87" r="4.5"/><text class="role" x="279" y="92">FOLLOWER</text></g><rect class="rec old" x="260" y="107" width="14" height="14" rx="3"/><rect class="rec old" x="278" y="107" width="14" height="14" rx="3"/><rect class="rec old" x="296" y="107" width="14" height="14" rx="3"/><rect class="rec old" x="314" y="107" width="14" height="14" rx="3"/><rect class="rec old" x="332" y="107" width="14" height="14" rx="3"/><rect class="slot" x="350" y="107" width="14" height="14" rx="3"/><rect class="slot" x="368" y="107" width="14" height="14" rx="3"/></g><g class="chip c20"><g class="r-fol"><circle class="fol-ic" cx="420" cy="87" r="4.5"/><text class="role" x="433" y="92">FOLLOWER</text></g><rect class="rec old" x="414" y="107" width="14" height="14" rx="3"/><rect class="rec old" x="432" y="107" width="14" height="14" rx="3"/><rect class="rec old" x="450" y="107" width="14" height="14" rx="3"/><rect class="slot" x="468" y="107" width="14" height="14" rx="3"/><rect class="slot" x="486" y="107" width="14" height="14" rx="3"/><rect class="slot" x="504" y="107" width="14" height="14" rx="3"/><rect class="slot" x="522" y="107" width="14" height="14" rx="3"/></g></g><g class="chips k1"><g class="chip c01"><g class="r-fol"><circle class="fol-ic" cx="112" cy="213" r="4.5"/><text class="role" x="125" y="218">FOLLOWER</text></g><g class="r-lead"><path class="crown" transform="translate(105 208)" d="M0 9.5 1.2 2.2 4.6 5.6 7 0 9.4 5.6 12.8 2.2 14 9.5Z"/><text class="role" x="125" y="218">LEADER</text></g><g class="r-fence"><g class="lock" transform="translate(106 205)"><rect x="0.5" y="5" width="11" height="7.5" rx="1.6"/><path d="M3 5V3.4a3 3 0 0 1 6 0V5"/></g><text class="role" x="125" y="218">FENCED</text></g><rect class="rec old" x="106" y="233" width="14" height="14" rx="3"/><rect class="rec old" x="124" y="233" width="14" height="14" rx="3"/><rect class="rec old" x="142" y="233" width="14" height="14" rx="3"/><rect class="rec old" x="160" y="233" width="14" height="14" rx="3"/><rect class="slot" x="178" y="233" width="14" height="14" rx="3"/><rect class="slot" x="196" y="233" width="14" height="14" rx="3"/><rect class="slot" x="214" y="233" width="14" height="14" rx="3"/><rect class="rec new na" x="178" y="233" width="14" height="14" rx="3"/><rect class="rec new nb" x="196" y="233" width="14" height="14" rx="3"/></g><g class="chip c11"><g class="r-lead"><path class="crown" transform="translate(259 208)" d="M0 9.5 1.2 2.2 4.6 5.6 7 0 9.4 5.6 12.8 2.2 14 9.5Z"/><text class="role" x="279" y="218">LEADER</text></g><rect class="rec old" x="260" y="233" width="14" height="14" rx="3"/><rect class="rec old" x="278" y="233" width="14" height="14" rx="3"/><rect class="rec old" x="296" y="233" width="14" height="14" rx="3"/><rect class="rec old" x="314" y="233" width="14" height="14" rx="3"/><rect class="rec old" x="332" y="233" width="14" height="14" rx="3"/><rect class="slot" x="350" y="233" width="14" height="14" rx="3"/><rect class="slot" x="368" y="233" width="14" height="14" rx="3"/></g><g class="chip c21"><g class="r-fol"><circle class="fol-ic" cx="420" cy="213" r="4.5"/><text class="role" x="433" y="218">FOLLOWER</text></g><rect class="rec old" x="414" y="233" width="14" height="14" rx="3"/><rect class="rec old" x="432" y="233" width="14" height="14" rx="3"/><rect class="rec old" x="450" y="233" width="14" height="14" rx="3"/><rect class="slot" x="468" y="233" width="14" height="14" rx="3"/><rect class="slot" x="486" y="233" width="14" height="14" rx="3"/><rect class="slot" x="504" y="233" width="14" height="14" rx="3"/><rect class="slot" x="522" y="233" width="14" height="14" rx="3"/></g></g><g class="chips k2"><g class="chip c02"><g class="r-fol"><circle class="fol-ic" cx="112" cy="339" r="4.5"/><text class="role" x="125" y="344">FOLLOWER</text></g><rect class="rec old" x="106" y="359" width="14" height="14" rx="3"/><rect class="rec old" x="124" y="359" width="14" height="14" rx="3"/><rect class="rec old" x="142" y="359" width="14" height="14" rx="3"/><rect class="rec old" x="160" y="359" width="14" height="14" rx="3"/><rect class="slot" x="178" y="359" width="14" height="14" rx="3"/><rect class="slot" x="196" y="359" width="14" height="14" rx="3"/><rect class="slot" x="214" y="359" width="14" height="14" rx="3"/><rect class="rec new na" x="178" y="359" width="14" height="14" rx="3"/><rect class="rec new nb" x="196" y="359" width="14" height="14" rx="3"/></g><g class="chip c12"><g class="r-fol"><circle class="fol-ic" cx="266" cy="339" r="4.5"/><text class="role" x="279" y="344">FOLLOWER</text></g><rect class="rec old" x="260" y="359" width="14" height="14" rx="3"/><rect class="rec old" x="278" y="359" width="14" height="14" rx="3"/><rect class="rec old" x="296" y="359" width="14" height="14" rx="3"/><rect class="rec old" x="314" y="359" width="14" height="14" rx="3"/><rect class="rec old" x="332" y="359" width="14" height="14" rx="3"/><rect class="slot" x="350" y="359" width="14" height="14" rx="3"/><rect class="slot" x="368" y="359" width="14" height="14" rx="3"/></g><g class="chip c22"><g class="r-lead"><path class="crown" transform="translate(413 334)" d="M0 9.5 1.2 2.2 4.6 5.6 7 0 9.4 5.6 12.8 2.2 14 9.5Z"/><text class="role" x="433" y="344">LEADER</text></g><rect class="rec old" x="414" y="359" width="14" height="14" rx="3"/><rect class="rec old" x="432" y="359" width="14" height="14" rx="3"/><rect class="rec old" x="450" y="359" width="14" height="14" rx="3"/><rect class="slot" x="468" y="359" width="14" height="14" rx="3"/><rect class="slot" x="486" y="359" width="14" height="14" rx="3"/><rect class="slot" x="504" y="359" width="14" height="14" rx="3"/><rect class="slot" x="522" y="359" width="14" height="14" rx="3"/></g></g><g class="tally qa"><circle class="pip" cx="222" cy="53" r="4.5"/><circle class="pf p0" cx="222" cy="53" r="4.5"/><circle class="pip" cx="236" cy="53" r="4.5"/><circle class="pf p1" cx="236" cy="53" r="4.5"/><circle class="pip" cx="250" cy="53" r="4.5"/><circle class="pf p2" cx="250" cy="53" r="4.5"/><text class="q q1" x="264" y="57">1 of 3</text><text class="q q2" x="264" y="57">2 of 3 · <tspan>ack</tspan></text><text class="q q3" x="264" y="57">3 of 3</text></g><g class="tally qb"><circle class="pip" cx="222" cy="179" r="4.5"/><circle class="pf p0" cx="222" cy="179" r="4.5"/><circle class="pip" cx="236" cy="179" r="4.5"/><circle class="pf p1" cx="236" cy="179" r="4.5"/><circle class="pip" cx="250" cy="179" r="4.5"/><circle class="pf p2" cx="250" cy="179" r="4.5"/><text class="q q1" x="264" y="183">1 of 3</text><text class="q q2" x="264" y="183">2 of 3 · <tspan>ack</tspan></text><text class="q q3" x="264" y="183">3 of 3</text></g><circle class="kept" cx="185" cy="240" r="10"/><g class="ack ta"><circle cx="63" cy="97" r="9"/><path d="M58.5 97l3 3 5.5-6"/></g><g class="ack tb"><circle cx="63" cy="223" r="9"/><path d="M58.5 223l3 3 5.5-6"/></g><g class="mv d-a" style="--x0:42px;--y0:114px;--x1:185px;--y1:114px"><circle class="dot-h" r="7"/><circle class="dot-c" r="3.6"/></g><g class="mv d-a2" style="--x0:185px;--y0:114px;--x1:185px;--y1:240px"><circle class="dot-h" r="7"/><circle class="dot-c" r="3.6"/></g><g class="mv d-a3" style="--x0:185px;--y0:114px;--x1:185px;--y1:366px"><circle class="dot-h" r="7"/><circle class="dot-c" r="3.6"/></g><g class="mv d-aa" style="--x0:185px;--y0:114px;--x1:42px;--y1:114px"><circle class="ack-ring" r="6"/></g><g class="mv d-b" style="--x0:42px;--y0:240px;--x1:203px;--y1:240px"><circle class="dot-h" r="7"/><circle class="dot-c" r="3.6"/></g><g class="mv d-b3" style="--x0:203px;--y0:240px;--x1:203px;--y1:366px"><circle class="dot-h" r="7"/><circle class="dot-c" r="3.6"/></g><g class="mv d-ba" style="--x0:203px;--y0:240px;--x1:42px;--y1:240px"><circle class="ack-ring" r="6"/></g><g class="mv d-b1" style="--x0:203px;--y0:240px;--x1:203px;--y1:114px"><circle class="dot-h" r="7"/><circle class="dot-c" r="3.6"/></g><g class="cp"><rect class="cp-bg" x="84" y="414" width="472" height="30" rx="10"/><rect class="cp-pulse" x="84" y="414" width="472" height="30" rx="10"/><text class="cp-l" x="98" y="433.5">CONTROL PLANE</text><text class="cp-m m0" x="248" y="433.5">places shards on brokers</text><text class="cp-m m1" x="248" y="433.5">promotes shard 0 on broker 2</text><text class="cp-m m2" x="248" y="433.5">broker 1 rejoins</text><text class="cp-m m3" x="248" y="433.5">moves shard 0 to broker 1</text></g></svg><p class="cp-html" aria-hidden="true"><span class="cp-k">Control plane</span><span class="cp-ms"><span class="cp-m m0">places shards on brokers</span><span class="cp-m m1">promotes shard 0 on broker 2</span><span class="cp-m m2">broker 1 rejoins</span><span class="cp-m m3">moves shard 0 to broker 1</span></span></p>
           </div>
           <div class="cl-side">
             <ol class="cl-steps">
@@ -124,7 +135,7 @@
             <p class="gu-lede">The shard's leader answers alone.</p>
             <dl>
               <div><dt>Acknowledged</dt><dd>When the leader has queued the record, or written it with <code>ack_on_commit</code>.</dd></div>
-              <div><dt>Leader lost</dt><dd>Records it had not yet shipped are lost. Replication lag bounds that window and is exported as a metric.</dd></div>
+              <div><dt>Leader lost</dt><dd>Records it had not yet shipped are lost, and with <code>ack_on_commit</code> off, the default, so is a record still queued when it crashes or its lease runs out. Replication lag bounds that window and is exported as a metric.</dd></div>
               <div><dt>Failover</dt><dd>Roughly 13 to 26 s after a crash with the defaults. A broker stopped gracefully hands its shards to followers first.</dd></div>
             </dl>
             <p class="gu-note">Closing the loss window would take a majority round on every write, which is what <code>Quorum</code> does.</p>
@@ -162,7 +173,7 @@
             <h4><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h12M12 6l6 6-6 6"/><path d="M20 5v14"/></svg>Delivery</h4>
             <ul>
               <li>Each event on a durable stream carries its offset. Subscribe from <code>earliest</code>, <code>latest</code> or an offset.</li>
-              <li>A slow subscriber is dropped from, never waited on. On a durable stream its subscription ends at the first drop and names the offset to resume from.</li>
+              <li>Under the default overflow policy, a slow subscriber is dropped from, never waited on. On a durable stream its subscription ends at the first drop and names the offset to resume from.</li>
               <li>Idempotent producers make a re-sent publish land once. Exactly-once delivery is not offered.</li>
             </ul>
           </article>
@@ -273,83 +284,12 @@
     </div>
   </section>
 
-  <section class="section status-sec" id="status" aria-labelledby="status-title">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <span class="eyebrow">Status</span>
-        <h2 id="status-title">What works today, and what's next</h2>
-        <p>Felix is pre-1.0, so the API can change between previews. The marks follow the status table in the docs.</p>
-      </div>
-
-      <p class="st-key reveal"><span class="st-k"><span class="st-tag today"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4 6.5 11.4 12.5 4.8"/></svg>Today</span> implemented and tested</span> <span class="st-k"><span class="st-tag partial"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8h9"/></svg>Partial</span> real, but incomplete</span></p>
-
-      <div class="st-grid">
-        <article class="st-card reveal">
-          <h3>Streams and delivery</h3>
-          <ul>
-            <li><span class="st-tag today"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4 6.5 11.4 12.5 4.8"/></svg>Today</span><span class="st-n">Publish and subscribe with high fanout</span></li>
-            <li><span class="st-tag today"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4 6.5 11.4 12.5 4.8"/></svg>Today</span><span class="st-n">Slow-consumer isolation</span></li>
-            <li><span class="st-tag today"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4 6.5 11.4 12.5 4.8"/></svg>Today</span><span class="st-n">Durable streams</span></li>
-            <li><span class="st-tag today"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4 6.5 11.4 12.5 4.8"/></svg>Today</span><span class="st-n">Resumable subscriptions</span></li>
-            <li><span class="st-tag today"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4 6.5 11.4 12.5 4.8"/></svg>Today</span><span class="st-n">Idempotent producers</span></li>
-          </ul>
-        </article>
-        <article class="st-card reveal" style="--d:.05s">
-          <h3>State beside the stream</h3>
-          <ul>
-            <li><span class="st-tag today"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4 6.5 11.4 12.5 4.8"/></svg>Today</span><span class="st-n">Key/value cache with TTL</span></li>
-            <li><span class="st-tag today"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4 6.5 11.4 12.5 4.8"/></svg>Today</span><span class="st-n">Keyed cache watch and counters</span></li>
-            <li><span class="st-tag partial"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8h9"/></svg>Partial</span><span class="st-n">Consumer groups<span class="st-why">A group serves one shard</span></span></li>
-            <li><span class="st-tag partial"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8h9"/></svg>Partial</span><span class="st-n">Log-backed cache<span class="st-why">The key index is held whole in memory</span></span></li>
-            <li><span class="st-tag partial"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8h9"/></svg>Partial</span><span class="st-n">Atomic event and state commits<span class="st-why">A re-sent commit may land twice</span></span></li>
-          </ul>
-        </article>
-        <article class="st-card reveal">
-          <h3>Clustering</h3>
-          <ul>
-            <li><span class="st-tag today"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4 6.5 11.4 12.5 4.8"/></svg>Today</span><span class="st-n">Sharding and <code>Quorum</code> acknowledgement</span></li>
-            <li><span class="st-tag today"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4 6.5 11.4 12.5 4.8"/></svg>Today</span><span class="st-n">Leader failover</span></li>
-            <li><span class="st-tag today"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4 6.5 11.4 12.5 4.8"/></svg>Today</span><span class="st-n">Online rebalancing</span></li>
-            <li><span class="st-tag today"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4 6.5 11.4 12.5 4.8"/></svg>Today</span><span class="st-n">Replication factor restore</span></li>
-            <li><span class="st-tag partial"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8h9"/></svg>Partial</span><span class="st-n">Multi-node clustering<span class="st-why">The control plane decides every failover</span></span></li>
-          </ul>
-        </article>
-        <article class="st-card reveal" style="--d:.05s">
-          <h3>Access and operations</h3>
-          <ul>
-            <li><span class="st-tag today"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4 6.5 11.4 12.5 4.8"/></svg>Today</span><span class="st-n">Tenants and token-based authorization</span></li>
-            <li><span class="st-tag today"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4 6.5 11.4 12.5 4.8"/></svg>Today</span><span class="st-n">Kafka producers and consumers</span></li>
-            <li><span class="st-tag partial"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8h9"/></svg>Partial</span><span class="st-n">Per-tenant quotas<span class="st-why">Publish rate and connections only</span></span></li>
-            <li><span class="st-tag partial"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8h9"/></svg>Partial</span><span class="st-n">Tiered storage<span class="st-why">Offload only, nothing reads it back yet</span></span></li>
-            <li><span class="st-tag partial"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8h9"/></svg>Partial</span><span class="st-n">Clients beyond Rust<span class="st-why">Python and TypeScript ship</span></span></li>
-          </ul>
-        </article>
-      </div>
-
-      <div class="st-road reveal" aria-labelledby="st-road-title">
-        <h3 class="gu-title" id="st-road-title">What's next</h3>
-        <ol>
-          <li class="now"><span class="st-dot" aria-hidden="true"></span><span class="st-ver">0.6 <em>now, in preview</em></span><p>Moving shards between brokers without downtime, backed by cluster-scale numbers for replicated streams.</p></li>
-          <li><span class="st-dot" aria-hidden="true"></span><span class="st-ver">0.7 <em>next</em></span><p>Memory held to a byte budget: subscriber queues, QUIC receive windows and the cache key index. Gateways that act for their users.</p></li>
-          <li><span class="st-dot" aria-hidden="true"></span><span class="st-ver">1.0 <em>later</em></span><p>A stability promise, backed by a long-running public workload on Felix.</p></li>
-        </ol>
-      </div>
-      <p class="gu-foot reveal"><a class="text-link" href="https://docs.getfelix.dev/getting-started/what-felix-is-for/">The full status table<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="text-link" href="https://github.com/GetFelix/felix/milestones">Milestones on GitHub<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></p>
+  <nav class="page-next" aria-label="Next steps">
+    <div class="wrap next-grid">
+      <a class="next-card primary" href="/performance.html"><span class="next-k">Next</span><span class="next-t">Performance</span><span class="next-d">Throughput and latency, measured on one broker.</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a class="next-card" href="/#get-started"><span class="next-k">Try it</span><span class="next-t">Get started</span><span class="next-d">Install a client, a broker and felixctl.</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
     </div>
-  </section>
-
-  <section class="section g-next" aria-labelledby="g-next-title">
-    <div class="wrap">
-      <div class="g-cta reveal">
-        <h2 id="g-next-title">Try it on your own machine</h2>
-        <p>Install a client and a broker, or go back to the overview.</p>
-        <div class="g-cta-actions">
-          <a class="btn btn-primary" href="/#get-started">Get started<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-          <a class="btn btn-ghost" href="/">Back to the overview</a>
-        </div>
-      </div>
-    </div>
-  </section>
+  </nav>
 
 </main>
 
@@ -366,23 +306,34 @@
         </a>
         <p>The broker, control plane and felixctl are <span class="nowrap">AGPL-3.0</span>. The wire protocol and the client libraries are <span class="nowrap">Apache-2.0</span>.</p>
       </div>
+      <nav aria-labelledby="f-site">
+        <h2 id="f-site">Site</h2>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/features.html">Features</a></li>
+          <li><a href="/guarantees.html">Guarantees</a></li>
+          <li><a href="/performance.html">Performance</a></li>
+          <li><a href="/status.html">Status</a></li>
+          <li><a href="https://docs.getfelix.dev">Docs</a></li>
+          <li><a href="https://github.com/GetFelix">GitHub</a></li>
+        </ul>
+      </nav>
       <nav aria-labelledby="f-project">
         <h2 id="f-project">Project</h2>
         <ul>
-          <li><a href="https://github.com/GetFelix">GitHub organization</a></li>
           <li><a href="https://github.com/GetFelix/felix">Source code</a></li>
           <li><a href="https://github.com/GetFelix/felix/releases">Releases</a></li>
-          <li><a href="/guarantees.html">How Felix keeps your data</a></li>
+          <li><a href="https://github.com/GetFelix/felix/milestones">Milestones</a></li>
           <li><a href="https://github.com/GetFelix/felix/blob/main/LICENSING.md">Licensing</a></li>
         </ul>
       </nav>
       <nav aria-labelledby="f-docs">
         <h2 id="f-docs">Docs</h2>
         <ul>
-          <li><a href="https://docs.getfelix.dev">Documentation</a></li>
           <li><a href="https://docs.getfelix.dev/getting-started/quickstart/">Quickstart</a></li>
           <li><a href="https://docs.getfelix.dev/getting-started/what-felix-is-for/">What works today</a></li>
           <li><a href="https://docs.getfelix.dev/architecture/semantics/">Delivery semantics</a></li>
+          <li><a href="https://docs.getfelix.dev/architecture/testing/">How Felix is tested</a></li>
         </ul>
       </nav>
     </div>
