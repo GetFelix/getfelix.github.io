@@ -563,11 +563,20 @@
 .card-quick summary::-webkit-details-marker {
   display: none;
 }
+/* A drawn chevron: a text triangle shrinks to a dot at phone sizes. */
 .card-quick summary::after {
-  content: " \25BE";
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-left: 8px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform 0.15s ease;
 }
 .card-quick[open] summary::after {
-  content: " \25B4";
+  transform: translateY(2px) rotate(-135deg);
 }
 .quick-cmd {
   position: relative;
