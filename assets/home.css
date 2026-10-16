@@ -363,10 +363,12 @@
 .card-media .shot-dark {
   display: none;
 }
-:root[data-theme="dark"] .card-media .shot-dark {
+:root[data-theme="dark"] .card-media .shot-dark,
+:root[data-theme="solarized"] .card-media .shot-dark {
   display: block;
 }
-:root[data-theme="dark"] .card-media .shot-light {
+:root[data-theme="dark"] .card-media .shot-light,
+:root[data-theme="solarized"] .card-media .shot-light {
   display: none;
 }
 @media (prefers-color-scheme: dark) {
