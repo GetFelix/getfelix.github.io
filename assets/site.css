@@ -116,6 +116,38 @@
   --idea-soft: rgba(179, 157, 250, 0.1);
 }
 
+/* Solarized (dark), from Ethan Schoonover's palette. Placed after the dark
+   rules so it wins over the system-dark media query at equal specificity. */
+:root[data-theme="solarized"] {
+  color-scheme: dark;
+  --bg: #002b36;
+  --bg-raised: #073642;
+  --bg-sunken: #00222b;
+  --line: rgba(147, 161, 161, 0.12);
+  --line-strong: rgba(147, 161, 161, 0.22);
+  --text: #eee8d5;
+  --muted: #a7b4b4;
+  --faint: #8fa0a1;
+  --accent: #2aa198;
+  --accent-text: #2aa198;
+  --accent-soft: rgba(42, 161, 152, 0.12);
+  --accent-glow: rgba(42, 161, 152, 0.35);
+  --on-accent: #002b36;
+  --code-bg: #00222b;
+  --code-text: #93a1a1;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 1px 2px rgba(0, 0, 0, 0.35), 0 12px 32px -12px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 2px 4px rgba(0, 0, 0, 0.25), 0 32px 64px -24px rgba(0, 0, 0, 0.75);
+  --dot: rgba(147, 161, 161, 0.14);
+  --dot-accent: rgba(42, 161, 152, 0.55);
+  --ok: #859900;
+  --ok-soft: rgba(133, 153, 0, 0.14);
+  --warn: #b58900;
+  --warn-soft: rgba(181, 137, 0, 0.14);
+  --idea: #8c8fd8;
+  --idea-soft: rgba(108, 113, 196, 0.16);
+}
+
 *,
 *::before,
 *::after {
@@ -352,6 +384,16 @@ p {
   :root:not([data-theme="light"]) .theme-toggle .moon {
     display: block;
   }
+}
+.theme-toggle .sol {
+  display: none;
+}
+:root[data-theme="solarized"] .theme-toggle .sun,
+:root[data-theme="solarized"] .theme-toggle .moon {
+  display: none;
+}
+:root[data-theme="solarized"] .theme-toggle .sol {
+  display: block;
 }
 
 /* Buttons */

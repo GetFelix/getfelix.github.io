@@ -11,16 +11,21 @@
     if (set) return set;
     return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   }
+  var themes = ["light", "dark", "solarized"];
+  function nextTheme() {
+    var i = themes.indexOf(currentTheme());
+    return themes[(i + 1) % themes.length];
+  }
   function labelToggle() {
     if (!toggle) return;
-    var next = currentTheme() === "dark" ? "light" : "dark";
+    var next = nextTheme();
     toggle.setAttribute("aria-label", "Switch to " + next + " theme");
     toggle.setAttribute("title", "Switch to " + next + " theme");
   }
   if (toggle) {
     labelToggle();
     toggle.addEventListener("click", function () {
-      var next = currentTheme() === "dark" ? "light" : "dark";
+      var next = nextTheme();
       root.setAttribute("data-theme", next);
       try {
         localStorage.setItem("theme", next);
