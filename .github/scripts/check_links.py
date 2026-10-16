@@ -37,6 +37,9 @@ for name, html in pages.items():
                 if ref not in ids[name]:
                     problems.append("%s: %s names missing id %s" % (name, attr, ref))
 
+# Pages the header nav doesn't list, so their header marks no link as current.
+NOT_IN_NAV = {"404.html", "about.html"}
+
 shared = {}
 for name, html in pages.items():
     for part in ("header", "footer"):
@@ -46,7 +49,7 @@ for name, html in pages.items():
             continue
         block = m.group(0)
         current = block.count('aria-current="page"')
-        if part == "header" and current != (0 if name == "404.html" else 1):
+        if part == "header" and current != (0 if name in NOT_IN_NAV else 1):
             problems.append("%s: the header marks %d links as the current page" % (name, current))
         block = block.replace(' aria-current="page"', "")
         first = shared.setdefault(part, (name, block))

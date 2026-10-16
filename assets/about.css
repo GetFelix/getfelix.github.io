@@ -1,0 +1,49 @@
+/* About page */
+
+.about-bio p {
+  max-width: 600px;
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.65;
+}
+.about-bio p:last-child {
+  margin-bottom: 0;
+}
+
+.profile-card {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 36px 28px 30px;
+  border-radius: var(--radius);
+  background: radial-gradient(ellipse 90% 70% at 50% 0%, var(--accent-soft), transparent 70%), var(--bg-raised);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-md);
+  text-align: center;
+}
+.profile-card img {
+  width: 168px;
+  height: 168px;
+  margin-bottom: 14px;
+  border-radius: 50%;
+  border: 3px solid color-mix(in srgb, var(--accent) 45%, var(--line));
+  box-shadow: 0 0 0 7px var(--accent-soft), var(--shadow-md);
+  object-fit: cover;
+}
+.profile-name {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.profile-role {
+  margin: 0 0 14px;
+  color: var(--faint);
+  font-family: var(--mono);
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+}
+.profile-card .btn {
+  margin-top: 4px;
+}
