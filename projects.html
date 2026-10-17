@@ -93,6 +93,7 @@
         <a href="#webhook-relay"><span class="n" aria-hidden="true">3</span>Webhook relay</a>
         <a href="#gateway"><span class="n" aria-hidden="true">4</span>Gateway</a>
         <a href="#metro"><span class="n" aria-hidden="true">5</span>Metro</a>
+        <a href="#blocks"><span class="n" aria-hidden="true">6</span>Blocks</a>
       </nav>
     </div>
   </section>
@@ -285,6 +286,37 @@ cargo run -p felix-gateway</code></pre>
         <div class="project-links">
           <a href="https://github.com/GetFelix/felix-metro"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>GitHub</a>
           <a href="https://github.com/GetFelix/felix-metro/blob/main/docs/design.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v16H6.5A2.5 2.5 0 0 0 4 21.5Z"/><path d="M8 7h8"/></svg>Design<span class="visually-hidden"> for felix-metro</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section project" id="blocks" aria-labelledby="blocks-title">
+    <div class="wrap">
+      <div class="project-media reveal">
+        <div class="pm framed">
+          <picture class="shot-light">
+            <source srcset="/assets/img/blocks-day.webp" type="image/webp">
+            <img src="/assets/img/blocks-day.jpg" alt="Felix Blocks style frame: a first-person view across a meadow to a wooden house with a red roof, two other players with name tags, the block hotbar and the builders list" width="1600" height="900" loading="lazy" decoding="async">
+          </picture>
+          <picture class="shot-dark">
+            <source srcset="/assets/img/blocks-night.webp" type="image/webp">
+            <img src="/assets/img/blocks-night.jpg" alt="" width="1600" height="900" loading="lazy" decoding="async">
+          </picture>
+        </div>
+      </div>
+      <div class="project-body reveal" style="--d:.08s">
+        <div class="project-title">
+          <h2 id="blocks-title">felix-blocks</h2>
+          <span class="status idea">In design</span>
+        </div>
+        <p>A voxel building game in the browser. Dig and build alone, or open your world to friends and build in it together, each of you seeing the other's blocks as they land.</p>
+        <h3>Felix features it will use</h3>
+        <ul class="uses"><li>A log-backed cache holds the world, one key per edited chunk, so untouched terrain is never stored</li><li>Conditional writes let two players edit one chunk at once without either losing a block</li><li>A retained cache watch shows a joining player the whole world, then every change</li><li>Compaction keeps a world at its current blocks however many edits it has seen</li><li>Permissions in Felix separate builders from visitors</li></ul>
+        <p class="note">Nothing runs yet. Multiplayer waits on conditional writes through felix-gateway, which are planned. The <a href="https://github.com/GetFelix/felix-blocks/blob/main/docs/design.md">design</a> covers the data model and how edits resolve, and the <a href="https://github.com/GetFelix/felix-blocks/milestones">milestones</a> track the build.</p>
+        <div class="project-links">
+          <a href="https://github.com/GetFelix/felix-blocks"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>GitHub</a>
+          <a href="https://github.com/GetFelix/felix-blocks/blob/main/docs/design.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v16H6.5A2.5 2.5 0 0 0 4 21.5Z"/><path d="M8 7h8"/></svg>Design<span class="visually-hidden"> for felix-blocks</span></a>
         </div>
       </div>
     </div>
