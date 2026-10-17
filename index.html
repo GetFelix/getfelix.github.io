@@ -364,8 +364,16 @@
             <div class="card-links">
               <a href="https://github.com/GetFelix/felix-canvas"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>GitHub</a>
               <a href="https://docs.getfelix.dev/built-on-felix/canvas/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v16H6.5A2.5 2.5 0 0 0 4 21.5Z"/><path d="M8 7h8"/></svg>Docs<span class="visually-hidden"> for felix-canvas</span></a>
-              <details class="card-quick">
-                <summary>Quick start</summary>
+              <a class="quick-open" href="https://docs.getfelix.dev/built-on-felix/canvas/" data-quick="quick-felix-canvas">Quick start</a>
+              <dialog class="quick-dialog" id="quick-felix-canvas" aria-labelledby="quick-felix-canvas-title">
+                <div class="quick-head">
+                  <picture>
+                    <source srcset="/assets/img/canvas-mark.webp" type="image/webp">
+                    <img src="/assets/img/canvas-mark.png" alt="" width="48" height="48" loading="lazy">
+                  </picture>
+                  <h4 id="quick-felix-canvas-title">felix-canvas</h4>
+                  <button class="icon-btn quick-close" type="button" data-quick-close aria-label="Close the felix-canvas quick start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+                </div>
                 <div class="quick-cmd">
 <pre><code>curl -fsSL https://github.com/GetFelix/felix-canvas/releases/download/<!--release:felix-canvas:tag-->v0.3.2<!--/release:felix-canvas:tag-->/felix-canvas-compose-<!--release:felix-canvas:version-->0.3.2<!--/release:felix-canvas:version-->.tar.gz | tar xz
 cd felix-canvas-compose-<!--release:felix-canvas:version-->0.3.2<!--/release:felix-canvas:version-->
@@ -376,7 +384,7 @@ docker compose up -d</code></pre>
                   <button class="icon-btn" type="button" data-copy aria-label="Copy the felix-canvas quick start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
                 </div>
                 <p>Needs Docker or Podman with Compose 2.20 or later; with Podman, run <code>podman compose up -d</code> (see <a href="https://docs.getfelix.dev/getting-started/containers/">Docker or Podman</a>). Open <code>localhost:8787</code> in two windows, sign in as <code>ana</code> and <code>ben</code>, and draw. The <a href="https://github.com/GetFelix/felix-canvas/blob/main/docs/self-hosting.md">self-hosting guide</a> covers sign-in, TLS and Kubernetes.</p>
-              </details>
+              </dialog>
             </div>
           </div>
         </article>
@@ -406,15 +414,24 @@ docker compose up -d</code></pre>
             <div class="card-links">
               <a href="https://github.com/GetFelix/felix-arena"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>GitHub</a>
               <a href="https://docs.getfelix.dev/built-on-felix/arena/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v16H6.5A2.5 2.5 0 0 0 4 21.5Z"/><path d="M8 7h8"/></svg>Docs<span class="visually-hidden"> for felix-arena</span></a>
-              <details class="card-quick">
-                <summary>Quick start</summary>
+              <a class="quick-open" href="https://docs.getfelix.dev/built-on-felix/arena/" data-quick="quick-felix-arena">Quick start</a>
+              <dialog class="quick-dialog" id="quick-felix-arena" aria-labelledby="quick-felix-arena-title">
+                <div class="quick-head">
+                  <picture>
+                    <source srcset="/assets/img/arena-mark.webp" type="image/webp">
+                    <img src="/assets/img/arena-mark.png" alt="" width="48" height="54" loading="lazy">
+                  </picture>
+                  <h4 id="quick-felix-arena-title">felix-arena</h4>
+                  <button class="icon-btn quick-close" type="button" data-quick-close aria-label="Close the felix-arena quick start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+                </div>
                 <div class="quick-cmd">
 <pre><code>curl -fsSL https://github.com/GetFelix/felix-arena/releases/download/<!--release:felix-arena:tag-->v0.1.2<!--/release:felix-arena:tag-->/felix-arena-web-<!--release:felix-arena:tag-->v0.1.2<!--/release:felix-arena:tag-->.tar.gz | tar xz
 cd felix-arena-web-<!--release:felix-arena:tag-->v0.1.2<!--/release:felix-arena:tag-->
 python3 -m http.server 5173</code></pre>
+                  <button class="icon-btn" type="button" data-copy aria-label="Copy the felix-arena quick start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
                 </div>
                 <p>Open <code>localhost:5173/play.html?offline</code> to play against bots in the page. To play through Felix, start the development stack from the <a href="https://github.com/GetFelix/felix-arena#development-stack">repository</a> first.</p>
-              </details>
+              </dialog>
             </div>
           </div>
         </article>
@@ -435,8 +452,16 @@ python3 -m http.server 5173</code></pre>
             <div class="card-links">
               <a href="https://github.com/GetFelix/felix-webhook-relay"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>GitHub</a>
               <a href="https://docs.getfelix.dev/built-on-felix/webhook-relay/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v16H6.5A2.5 2.5 0 0 0 4 21.5Z"/><path d="M8 7h8"/></svg>Docs<span class="visually-hidden"> for felix-webhook-relay</span></a>
-              <details class="card-quick">
-                <summary>Quick start</summary>
+              <a class="quick-open" href="https://docs.getfelix.dev/built-on-felix/webhook-relay/" data-quick="quick-felix-webhook-relay">Quick start</a>
+              <dialog class="quick-dialog" id="quick-felix-webhook-relay" aria-labelledby="quick-felix-webhook-relay-title">
+                <div class="quick-head">
+                  <picture>
+                    <source srcset="/assets/img/relay-mark.webp" type="image/webp">
+                    <img src="/assets/img/relay-mark.png" alt="" width="48" height="26" loading="lazy">
+                  </picture>
+                  <h4 id="quick-felix-webhook-relay-title">felix-webhook-relay</h4>
+                  <button class="icon-btn quick-close" type="button" data-quick-close aria-label="Close the felix-webhook-relay quick start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+                </div>
                 <div class="quick-cmd">
 <pre><code>curl -fsSL https://github.com/GetFelix/felix-webhook-relay/releases/download/<!--release:felix-webhook-relay:tag-->v0.2.0<!--/release:felix-webhook-relay:tag-->/felix-webhook-relay-compose-<!--release:felix-webhook-relay:version-->0.2.0<!--/release:felix-webhook-relay:version-->.tar.gz | tar xz
 cd felix-webhook-relay-compose-<!--release:felix-webhook-relay:version-->0.2.0<!--/release:felix-webhook-relay:version-->
@@ -448,7 +473,7 @@ docker compose up -d --wait</code></pre>
                   <button class="icon-btn" type="button" data-copy aria-label="Copy the felix-webhook-relay quick start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
                 </div>
                 <p>Needs Docker or Podman with Compose 2.20 or later; with Podman, run <code>podman compose up -d --wait</code> (see <a href="https://docs.getfelix.dev/getting-started/containers/">Docker or Podman</a>). Keep <code>.env</code>, since the relay cannot open its stored secrets without <code>RELAY_SECRET_KEY</code>. Open <code>localhost:8090/admin/acme</code> to sign in; the <a href="https://github.com/GetFelix/felix-webhook-relay#quick-start">README</a> walks through the first endpoint.</p>
-              </details>
+              </dialog>
             </div>
           </div>
         </article>
@@ -480,8 +505,16 @@ docker compose up -d --wait</code></pre>
             <div class="card-links">
               <a href="https://github.com/GetFelix/felix-gateway"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>GitHub</a>
               <a href="https://docs.getfelix.dev/clients/browsers/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v16H6.5A2.5 2.5 0 0 0 4 21.5Z"/><path d="M8 7h8"/></svg>Docs<span class="visually-hidden"> for felix-gateway</span></a>
-              <details class="card-quick">
-                <summary>Quick start</summary>
+              <a class="quick-open" href="https://docs.getfelix.dev/clients/browsers/" data-quick="quick-felix-gateway">Quick start</a>
+              <dialog class="quick-dialog" id="quick-felix-gateway" aria-labelledby="quick-felix-gateway-title">
+                <div class="quick-head">
+                  <picture>
+                    <source srcset="/assets/img/felix-mark-96.webp" type="image/webp">
+                    <img src="/assets/img/felix-mark-96.png" alt="" width="48" height="48" loading="lazy">
+                  </picture>
+                  <h4 id="quick-felix-gateway-title">felix-gateway</h4>
+                  <button class="icon-btn quick-close" type="button" data-quick-close aria-label="Close the felix-gateway quick start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+                </div>
                 <div class="quick-cmd">
 <pre><code>git clone --depth 1 --branch <!--release:felix-gateway:tag-->v0.5.0<!--/release:felix-gateway:tag--> https://github.com/GetFelix/felix-gateway
 cd felix-gateway
@@ -492,7 +525,7 @@ cargo run -p felix-gateway</code></pre>
                   <button class="icon-btn" type="button" data-copy aria-label="Copy the felix-gateway quick start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
                 </div>
                 <p>Needs Docker or Podman, Rust 1.97 and Node 24; set <code>CONTAINER_ENGINE=podman</code> to pick Podman (see <a href="https://docs.getfelix.dev/getting-started/containers/">Docker or Podman</a>). The gateway listens on <code>localhost:8787</code>; connect from a browser app with <code>npm install felix-gateway-client</code>.</p>
-              </details>
+              </dialog>
             </div>
           </div>
         </article>
