@@ -16,6 +16,13 @@
     </item>
     -->
     <item>
+      <title>Ten parcels, one envelope: Linux UDP GSO and Felix's MTU cap</title>
+      <link>https://getfelix.dev/blog/ten-parcels-one-envelope.html</link>
+      <guid isPermaLink="true">https://getfelix.dev/blog/ten-parcels-one-envelope.html</guid>
+      <pubDate>Sat, 17 Oct 2026 00:00:00 +0000</pubDate>
+      <description>Raising Felix's QUIC MTU on Linux stalled delivery for good, because UDP GSO turns ten packets into one datagram the kernel refuses and quinn never falls back; this is how we found it, why the cap is 6,550, and why 4,096 is the default.</description>
+    </item>
+    <item>
       <title>Our model said everything passed. It was checking nothing.</title>
       <link>https://getfelix.dev/blog/checking-nothing.html</link>
       <guid isPermaLink="true">https://getfelix.dev/blog/checking-nothing.html</guid>
