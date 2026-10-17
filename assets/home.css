@@ -1658,3 +1658,51 @@
   margin-top: 28px;
   text-align: center;
 }
+
+/* Use cases: short links into the docs, one per scenario. */
+.usecase-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.usecase {
+  display: block;
+  padding: 18px 20px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.15s ease;
+}
+.usecase:hover,
+.usecase:focus-visible {
+  border-color: var(--accent);
+}
+.usecase h3 {
+  font-size: 16.5px;
+  font-weight: 650;
+  letter-spacing: -0.015em;
+  color: var(--accent-text);
+}
+.usecase p {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 14.5px;
+  line-height: 1.55;
+}
+.usecase-all {
+  display: inline-flex;
+  margin-top: 22px;
+}
+@media (max-width: 900px) {
+  .usecase-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .usecase-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
