@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Projects built on Felix</title>
-<meta name="description" content="Four open-source apps built only on Felix: a multiplayer canvas, a 3D arena game, a webhook relay and a browser gateway.">
+<meta name="description" content="Open-source apps built only on Felix: a multiplayer canvas, a 3D arena game, a webhook relay, a browser gateway, and a 3D city simulator in design.">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#f6f8fa" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#070a0e" media="(prefers-color-scheme: dark)">
@@ -16,7 +16,7 @@
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Felix">
 <meta property="og:title" content="Projects built on Felix">
-<meta property="og:description" content="Four open-source apps built only on Felix, with what each uses and how to run it.">
+<meta property="og:description" content="Open-source apps built only on Felix, with what each uses and how to run it.">
 <meta property="og:url" content="https://getfelix.dev/projects.html">
 <meta property="og:image" content="https://getfelix.dev/assets/img/og-image.png">
 <meta property="og:image:width" content="1200">
@@ -92,6 +92,7 @@
         <a href="#arena"><span class="n" aria-hidden="true">2</span>Arena</a>
         <a href="#webhook-relay"><span class="n" aria-hidden="true">3</span>Webhook relay</a>
         <a href="#gateway"><span class="n" aria-hidden="true">4</span>Gateway</a>
+        <a href="#metro"><span class="n" aria-hidden="true">5</span>Metro</a>
       </nav>
     </div>
   </section>
@@ -253,6 +254,33 @@ cargo run -p felix-gateway</code></pre>
         <div class="project-links">
           <a href="https://github.com/GetFelix/felix-gateway"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>GitHub</a>
           <a href="https://docs.getfelix.dev/clients/browsers/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v16H6.5A2.5 2.5 0 0 0 4 21.5Z"/><path d="M8 7h8"/></svg>Docs<span class="visually-hidden"> for felix-gateway</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section project" id="metro" aria-labelledby="metro-title">
+    <div class="wrap">
+      <div class="project-media reveal">
+        <div class="pm art metro">
+          <picture>
+            <source srcset="/assets/img/metro-mark.webp" type="image/webp">
+            <img src="/assets/img/metro-mark.png" alt="Felix Metro mark: the Felix cat inside a rewind clock, behind a night skyline over a timeline" width="360" height="358" loading="lazy" decoding="async">
+          </picture>
+        </div>
+      </div>
+      <div class="project-body reveal" style="--d:.08s">
+        <div class="project-title">
+          <h2 id="metro-title">felix-metro</h2>
+          <span class="status idea">In design</span>
+        </div>
+        <p>A 3D city simulator in the browser. Residents commute, shop and go home, and you can drag the timeline back to any earlier moment and watch the city play forward from there.</p>
+        <h3>Felix features it will use</h3>
+        <ul class="uses"><li>A durable stream per city with one shard per district, a record per simulation tick</li><li>Atomic commits write each tick, with keyframes pointed to by stream state</li><li>Bounded range reads load a past moment from the nearest keyframe</li><li>Subscribing from an offset plays forward into live with no gap</li><li>An expected-offset commit keeps a single simulation writing each city</li></ul>
+        <p class="note">Nothing runs yet. The <a href="https://github.com/GetFelix/felix-metro/blob/main/docs/design.md">design</a> covers the data model and how seeking works, and the <a href="https://github.com/GetFelix/felix-metro/milestones">milestones</a> track the build.</p>
+        <div class="project-links">
+          <a href="https://github.com/GetFelix/felix-metro"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>GitHub</a>
+          <a href="https://github.com/GetFelix/felix-metro/blob/main/docs/design.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v16H6.5A2.5 2.5 0 0 0 4 21.5Z"/><path d="M8 7h8"/></svg>Design<span class="visually-hidden"> for felix-metro</span></a>
         </div>
       </div>
     </div>

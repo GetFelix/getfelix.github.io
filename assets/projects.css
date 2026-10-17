@@ -73,6 +73,9 @@
 .pm.art.relay video {
   height: 90%;
 }
+.pm.art.metro picture {
+  height: 82%;
+}
 .pm .media-caption {
   position: absolute;
   top: 30px;
@@ -249,6 +252,10 @@
 .status.ok {
   color: var(--ok);
   background: var(--ok-soft);
+}
+.status.idea {
+  color: var(--idea);
+  background: var(--idea-soft);
 }
 
 @media (max-width: 900px) {
