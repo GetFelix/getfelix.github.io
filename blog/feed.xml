@@ -15,5 +15,20 @@
       <description>One-line summary.</description>
     </item>
     -->
+    <item>
+      <title>How we catch a 1% regression</title>
+      <link>https://getfelix.dev/blog/catching-a-one-percent-regression.html</link>
+      <guid isPermaLink="true">https://getfelix.dev/blog/catching-a-one-percent-regression.html</guid>
+      <pubDate>Sat, 17 Oct 2026 00:00:00 +0000</pubDate>
+      <description>Felix&#x27;s rule is that a release must not be measurably slower than the one before it; this is how same-runner A/B runs, a Welch&#x27;s t-test and throwaway bisect PRs in GitHub Actions find a 1-2% loss, and why a single benchmark run can&#x27;t.</description>
+    </item>
+
+    <item>
+      <title>The data came back</title>
+      <link>https://getfelix.dev/blog/the-data-came-back.html</link>
+      <guid isPermaLink="true">https://getfelix.dev/blog/the-data-came-back.html</guid>
+      <pubDate>Sat, 17 Oct 2026 00:00:00 +0000</pubDate>
+      <description>Deleting a Felix stream or cache and creating one with the same name could bring back the old one&#x27;s data; this is how incarnations fixed it, and how we kept control-plane members on different releases from storing different answers during the rollout.</description>
+    </item>
   </channel>
 </rss>
