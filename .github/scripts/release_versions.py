@@ -36,7 +36,9 @@ import subprocess
 import sys
 from pathlib import Path
 
-PAGE = Path(__file__).resolve().parents[2] / "index.html"
+ROOT = Path(__file__).resolve().parents[2]
+PAGE = ROOT / "index.html"
+PROJECTS = ROOT / "projects.html"
 ORG = "GetFelix"
 
 MARKER = re.compile(
@@ -111,7 +113,9 @@ def downloads(html, repo):
 
 def update(hold_felix_channel):
     html = PAGE.read_text(encoding="utf-8")
-    repos = sorted({m.group(2) for m in MARKER.finditer(html)} | {m.group(2) for m in LINK.finditer(html)})
+    projects_html = PROJECTS.read_text(encoding="utf-8")
+    both = html + projects_html
+    repos = sorted({m.group(2) for m in MARKER.finditer(both)} | {m.group(2) for m in LINK.finditer(both)})
     if not repos:
         sys.exit("no release markers in %s" % PAGE)
     shown = shown_versions(html)
@@ -136,8 +140,8 @@ def update(hold_felix_channel):
     # whole repo on its old release, so the version and the download never disagree.
     missing = []
     for repo in sorted(wanted):
-        before = downloads(html, repo)
-        after = downloads(render(html, repo, wanted[repo]), repo)
+        before = downloads(both, repo)
+        after = downloads(render(both, repo, wanted[repo]), repo)
         for tag, name in sorted(after - before):
             if name not in release_assets(repo, tag):
                 missing.append("%s %s has no asset %s; left %s on its current release"
@@ -165,8 +169,11 @@ def update(hold_felix_channel):
             changes.append("%s link: %s -> %s" % (repo, old, new))
         return m.group(1) + new + m.group(4)
 
-    new_html = MARKER.sub(marker, html)
-    new_html = LINK.sub(link, new_html)
+    def rewrite(text):
+        return LINK.sub(link, MARKER.sub(marker, text))
+
+    new_html = rewrite(html)
+    new_projects = rewrite(projects_html)
 
     if "felix" in wanted:
         match = LD.search(new_html)
@@ -182,10 +189,12 @@ def update(hold_felix_channel):
 
     if new_html != html:
         PAGE.write_text(new_html, encoding="utf-8")
+    if new_projects != projects_html:
+        PROJECTS.write_text(new_projects, encoding="utf-8")
     for line in changes:
         print(line)
     if not changes:
-        print("index.html already shows the newest releases: %s"
+        print("index.html and projects.html already show the newest releases: %s"
               % ", ".join("%s %s" % (r, wanted[r]["version"]) for r in sorted(wanted)))
 
     out = os.environ.get("GITHUB_OUTPUT")
@@ -200,10 +209,10 @@ def update(hold_felix_channel):
 def check():
     html = PAGE.read_text(encoding="utf-8")
     problems = []
-    # Only index.html is rewritten, so a marker on another page would go stale.
+    # Only these two pages are rewritten, so a marker on another page would go stale.
     for other in sorted(PAGE.parent.glob("*.html")):
-        if other != PAGE and (MARKER.search(other.read_text(encoding="utf-8")) or "data-release=" in other.read_text(encoding="utf-8")):
-            problems.append("%s: has a release marker, but only %s is updated" % (other.name, PAGE.name))
+        if other not in (PAGE, PROJECTS) and (MARKER.search(other.read_text(encoding="utf-8")) or "data-release=" in other.read_text(encoding="utf-8")):
+            problems.append("%s: has a release marker, but only %s and %s are updated" % (other.name, PAGE.name, PROJECTS.name))
     regions = []
     hero = re.search(r'<section class="hero".*?</section>', html, re.S)
     projects = re.search(r'<section[^>]*\bid="projects".*?</section>', html, re.S)
@@ -211,6 +220,9 @@ def check():
         sys.exit("could not find the hero or the projects section in %s" % PAGE)
     regions.append(("hero", hero.group(0)))
     regions += [("project card", c) for c in re.findall(r"<article\b.*?</article>", projects.group(0), re.S)]
+
+    projects_page = PROJECTS.read_text(encoding="utf-8")
+    regions += [("projects page", re.search(r"<main\b.*?</main>", projects_page, re.S).group(0))]
 
     for name, text in regions:
         text = MARKER.sub("", text)
@@ -224,7 +236,7 @@ def check():
         print(p)
     if problems:
         sys.exit("Wrap each version in <!--release:REPO:version-->, or see %s" % Path(__file__).name)
-    print("Every version in the hero and the project cards is marked.")
+    print("Every version in the hero, the project cards and the projects page is marked.")
 
 
 def main():
