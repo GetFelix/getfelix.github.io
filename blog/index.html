@@ -96,6 +96,21 @@
   <section class="blog-list" aria-label="Posts">
     <div class="wrap">
       <ol class="post-list" reversed>
+        <li><article class="post-card">
+          <p class="post-meta"><time datetime="2026-10-17">17 October 2026</time><span>10 min read</span></p>
+          <h2><a href="/blog/checking-nothing.html">Our model said everything passed. It was checking nothing.</a></h2>
+          <p>Felix checks 107 TLA+ configurations in CI; this is about three times a passing check meant nothing, and the twin configurations, reachability checks and spec pairing we use to catch it.</p>
+        </article></li>
+        <li><article class="post-card">
+          <p class="post-meta"><time datetime="2026-10-17">17 October 2026</time><span>10 min read</span></p>
+          <h2><a href="/blog/one-slow-subscriber.html">One slow subscriber shouldn't slow anyone else</a></h2>
+          <p>How Felix keeps one slow subscriber from holding up publishers or other readers, and how a 2% single-publisher loss came from where the feeder gave back a subscriber's byte budget.</p>
+        </article></li>
+        <li><article class="post-card">
+          <p class="post-meta"><time datetime="2026-10-17">17 October 2026</time><span>12 min read</span></p>
+          <h2><a href="/blog/point-your-kafka-client-at-felix.html">Point your Kafka client at Felix</a></h2>
+          <p>Felix brokers speak enough of the Kafka wire protocol for Kafka producers and partition-assigning consumers to use durable Felix streams; this is how a Kafka request becomes a Felix operation, how idempotent sequences survive a failover, and exactly where compatibility stops.</p>
+        </article></li>
       </ol>
       <p class="post-empty">The first post is on its way. <a href="/blog/feed.xml">Subscribe with RSS</a> to get it when it lands.</p>
     </div>
