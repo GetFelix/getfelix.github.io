@@ -16,6 +16,13 @@
     </item>
     -->
     <item>
+      <title>Acknowledged, then forgotten: a crash under periodic fsync</title>
+      <link>https://getfelix.dev/blog/acknowledged-then-forgotten.html</link>
+      <guid isPermaLink="true">https://getfelix.dev/blog/acknowledged-then-forgotten.html</guid>
+      <pubDate>Sat, 17 Oct 2026 00:00:00 +0000</pubDate>
+      <description>Under Felix's default periodic fsync, a crashed broker could come back missing records it had acknowledged while the cluster still counted it as caught up; this is how review and the TLA+ model found it on the follower and leader sides, and what the fix costs.</description>
+    </item>
+    <item>
       <title>How we catch a 1% regression</title>
       <link>https://getfelix.dev/blog/catching-a-one-percent-regression.html</link>
       <guid isPermaLink="true">https://getfelix.dev/blog/catching-a-one-percent-regression.html</guid>
