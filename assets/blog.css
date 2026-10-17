@@ -57,7 +57,6 @@
 }
 .post-card {
   display: grid;
-  gap: 8px;
   padding: 28px 0;
 }
 .post-card h2 {
@@ -76,6 +75,198 @@
   color: var(--muted);
   max-width: 64ch;
 }
+/* Post card thumbnails */
+.post-thumb.ck {
+  --cat: #141b23;
+  --cat-edge: #141b23;
+  --fur: #ffffff;
+  --ear: #5b6773;
+  --bad: #b42318;
+  --bad-soft: rgba(180, 35, 24, 0.1);
+  --gold: #f0b429;
+  --paper: #fffdf5;
+  --mouse: #9aa6b2;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .post-thumb.ck {
+    --cat: #121820;
+    --cat-edge: #aebdcb;
+    --fur: #e3eaf1;
+    --ear: #3d4853;
+    --bad: #ff8073;
+    --bad-soft: rgba(255, 128, 115, 0.12);
+    --paper: #18212b;
+    --mouse: #7f8d9b;
+  }
+}
+:root[data-theme="dark"] .post-thumb.ck {
+  --cat: #121820;
+  --cat-edge: #aebdcb;
+  --fur: #e3eaf1;
+  --ear: #3d4853;
+  --bad: #ff8073;
+  --bad-soft: rgba(255, 128, 115, 0.12);
+  --paper: #18212b;
+  --mouse: #7f8d9b;
+}
+:root[data-theme="solarized"] .post-thumb.ck {
+  --cat: #00161c;
+  --cat-edge: #93a1a1;
+  --fur: #eee8d5;
+  --ear: #284b54;
+  --bad: #ef5350;
+  --bad-soft: rgba(239, 83, 80, 0.14);
+  --gold: #e0b43a;
+  --paper: #0b404d;
+  --mouse: #839496;
+}
+.post-thumb .ck-svg text {
+  font-family: var(--sans);
+  font-weight: 600;
+  fill: var(--text);
+}
+.post-thumb .ck-svg .mono {
+  font-family: var(--mono);
+  font-weight: 500;
+}
+.post-thumb .ck-svg .m { fill: var(--muted); font-weight: 500; }
+.post-thumb .ck-svg .a { fill: var(--accent-text); }
+.post-thumb .ck-svg .ok { fill: var(--ok); }
+.post-thumb .ck-svg .bad { fill: var(--bad); }
+.post-thumb .ck-svg .wn { fill: var(--warn); }
+.post-thumb .ck-svg .hand { font-family: "Lobster Two", var(--sans); font-style: italic; font-weight: 700; }
+.post-thumb .ck-svg .cap { font-family: var(--mono); font-weight: 500; letter-spacing: 0.06em; fill: var(--faint); }
+.post-thumb .ck-svg .rough { filter: url(#ck-rough); }
+.post-thumb .ck-svg .ln,
+.post-thumb .ck-svg .lnm,
+.post-thumb .ck-svg .lna,
+.post-thumb .ck-svg .lnb,
+.post-thumb .ck-svg .lnok {
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.post-thumb .ck-svg .lnm { stroke: var(--faint); }
+.post-thumb .ck-svg .lna { stroke: var(--accent); stroke-width: 2.2; }
+.post-thumb .ck-svg .lnb { stroke: var(--bad); stroke-width: 2.2; }
+.post-thumb .ck-svg .lnok { stroke: var(--ok); stroke-width: 2.2; }
+.post-thumb .ck-svg .dash { stroke-dasharray: 5 6; }
+.post-thumb .ck-svg .lane { stroke: var(--line-strong); stroke-width: 3; stroke-linecap: round; fill: none; }
+.post-thumb .ck-svg .cf { fill: var(--cat); stroke: var(--cat-edge); stroke-width: 2.4; stroke-linejoin: round; }
+.post-thumb .ck-svg .cw { fill: var(--fur); }
+.post-thumb .ck-svg .ce { fill: var(--ear); }
+.post-thumb .ck-svg .cn { fill: #e58a9a; }
+.post-thumb .ck-svg .cp { fill: #141b23; }
+.post-thumb .ck-svg .wh { fill: none; stroke: var(--faint); stroke-width: 1.6; stroke-linecap: round; }
+.post-thumb .ck-svg .lid { fill: none; stroke: var(--cat); stroke-width: 3.5; stroke-linecap: round; }
+.post-thumb .ck-svg .hap { fill: none; stroke: var(--fur); stroke-width: 3.6; stroke-linecap: round; stroke-linejoin: round; }
+.post-thumb .ck-svg .mo { fill: none; stroke: #141b23; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.post-thumb .ck-svg .tl { fill: none; stroke: var(--cat); stroke-width: 10; stroke-linecap: round; }
+.post-thumb .ck-svg .tl-e { fill: none; stroke: var(--cat-edge); stroke-width: 15; stroke-linecap: round; }
+.post-thumb .ck-svg .crown { fill: var(--gold); stroke: #8a5a00; stroke-width: 2; stroke-linejoin: round; }
+.post-thumb .ck-svg .tg { fill: var(--paper); stroke: var(--accent); stroke-width: 2; }
+.post-thumb .ck-svg .tgb { fill: var(--accent); }
+.post-thumb .ck-svg .tgt { fill: var(--on-accent); font-family: var(--mono); font-weight: 500; letter-spacing: 0.08em; }
+.post-thumb .ck-svg .tgv { fill: var(--text); }
+.post-thumb .ck-svg .tag-new .tg { stroke: var(--warn); }
+.post-thumb .ck-svg .tag-new .tgb { fill: var(--warn); }
+.post-thumb .ck-svg .tag-new .tgt { fill: var(--bg-raised); }
+.post-thumb .ck-svg .chw rect { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; }
+.post-thumb .ck-svg .chw text { fill: var(--accent-text); }
+.post-thumb .ck-svg .chc rect { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; stroke-dasharray: 4 4; }
+.post-thumb .ck-svg .chc text { fill: var(--accent-text); }
+.post-thumb .ck-svg .chr rect { fill: var(--bg-sunken); stroke: var(--line-strong); stroke-width: 2; }
+.post-thumb .ck-svg .chx rect { fill: var(--bad-soft); stroke: var(--bad); stroke-width: 2; }
+.post-thumb .ck-svg .chx text { fill: var(--bad); }
+.post-thumb .ck-svg .chg rect { fill: none; stroke: var(--faint); stroke-width: 2; stroke-dasharray: 4 4; }
+.post-thumb .ck-svg .chg text { fill: var(--faint); }
+.post-thumb .ck-svg .strike { stroke: var(--bad); stroke-width: 2.6; stroke-linecap: round; }
+.post-thumb .ck-svg .bolt { fill: var(--gold); stroke: #8a5a00; stroke-width: 1.6; stroke-linejoin: round; }
+.post-thumb .ck-svg .okp rect { fill: var(--ok-soft); stroke: var(--ok); stroke-width: 2; }
+.post-thumb .ck-svg .okp text { fill: var(--ok); }
+.post-thumb .ck-svg .badp rect { fill: var(--bad-soft); stroke: var(--bad); stroke-width: 2; }
+.post-thumb .ck-svg .badp text { fill: var(--bad); }
+.post-thumb .ck-svg .accp rect { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; }
+.post-thumb .ck-svg .accp text { fill: var(--accent-text); }
+.post-thumb .ck-svg .box { fill: var(--bg-raised); stroke: var(--line-strong); stroke-width: 2; }
+.post-thumb .ck-svg .boxa { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; }
+.post-thumb .ck-svg .note { fill: var(--paper); stroke: var(--warn); stroke-width: 1.6; }
+.post-thumb .ck-svg .paper { fill: var(--paper); stroke: var(--text); stroke-width: 2; stroke-linejoin: round; }
+.post-thumb .ck-svg .bubble { fill: var(--bg-raised); stroke: var(--text); stroke-width: 2; stroke-linejoin: round; }
+.post-thumb .ck-svg .ground { fill: none; stroke: var(--line-strong); stroke-width: 2.5; stroke-linecap: round; }
+.post-thumb .ck-svg .metal { fill: var(--bg-sunken); stroke: var(--text); stroke-width: 2; stroke-linejoin: round; }
+.post-thumb .ck-svg .dark { fill: var(--faint); opacity: 0.35; }
+.post-thumb .ck-svg .mouse { fill: var(--mouse); stroke: var(--text); stroke-width: 1.6; }
+.post-thumb .ck-svg .ear-p { fill: #e8a0ac; }
+.post-thumb .ck-svg .dot { fill: var(--text); }
+.post-thumb .ck-svg .ledok { fill: var(--ok); }
+.post-thumb .ck-svg .panel { fill: none; stroke: var(--line-strong); stroke-width: 2; }
+.post-thumb .ck-svg .panel-bad { fill: var(--bad-soft); stroke: var(--bad); stroke-width: 2; opacity: 0.9; }
+.post-thumb .ck-svg .panel-ok { fill: var(--ok-soft); stroke: var(--ok); stroke-width: 2; }
+.post-thumb .ck-svg .stars { fill: var(--gold); stroke: #8a5a00; stroke-width: 1.2; }
+.post-thumb .ck-svg .ballot { fill: var(--paper); stroke: var(--text); stroke-width: 2; }
+.post-thumb .ck-svg .domino { fill: var(--bg-raised); stroke: var(--text); stroke-width: 2.2; stroke-linejoin: round; }
+.post-thumb .ck-svg .pip { fill: var(--accent); }
+/* Headline illustration on each post card. The drawings and their colours are
+   the first figure of the post, copied from its page; every post's figure uses
+   the same .ck rules, so they are shared here under .post-thumb. */
+.post-card {
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 8px 28px;
+  align-items: start;
+}
+.post-text {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+.post-thumb {
+  position: relative;
+  isolation: isolate;
+  display: block;
+  box-sizing: border-box;
+  width: 200px;
+  aspect-ratio: 4 / 3;
+  padding: 10px;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: var(--bg-raised);
+  border: 1px solid color-mix(in srgb, var(--accent) 24%, var(--line));
+}
+.post-thumb::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(ellipse 60% 55% at 62% 50%, var(--accent-glow), transparent 70%);
+  opacity: 0.35;
+  pointer-events: none;
+}
+.post-thumb .ck-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.ck-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+@media (max-width: 640px) {
+  .post-card {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+  .post-thumb {
+    width: 100%;
+    aspect-ratio: auto;
+    height: 180px;
+  }
+}
+
 .post-meta {
   display: flex;
   flex-wrap: wrap;

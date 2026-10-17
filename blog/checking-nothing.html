@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Our model said everything passed. It was checking nothing. · Felix</title>
+<meta name="description" content="Felix checks 107 TLA+ configurations in CI; this is about three times a passing check meant nothing, and the twin configurations, reachability checks and spec pairing we use to catch it.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#f6f8fa" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#070a0e" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://getfelix.dev/blog/checking-nothing.html">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="alternate" type="application/rss+xml" title="Felix blog" href="/blog/feed.xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Felix">
+<meta property="og:title" content="Our model said everything passed. It was checking nothing.">
+<meta property="og:description" content="Felix checks 107 TLA+ configurations in CI; this is about three times a passing check meant nothing, and the twin configurations, reachability checks and spec pairing we use to catch it.">
+<meta property="og:url" content="https://getfelix.dev/blog/checking-nothing.html">
+<meta property="og:image" content="https://getfelix.dev/assets/img/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Felix logo, a cat in a round badge above the word Felix, beside the headline: One system for your events, state and work. Below it: An open-source, distributed platform for streams, caches, queues and counters, all on one replicated log. Written in Rust. getfelix.dev">
+<meta property="article:published_time" content="2026-10-17">
+<meta property="article:author" content="Gabriel Loewen">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Our model said everything passed. It was checking nothing.">
+<meta name="twitter:description" content="Felix checks 107 TLA+ configurations in CI; this is about three times a passing check meant nothing, and the twin configurations, reachability checks and spec pairing we use to catch it.">
+<meta name="twitter:image" content="https://getfelix.dev/assets/img/og-image.png">
+<link rel="preload" href="/assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/site.css?v=0f7e09e7">
+<link rel="stylesheet" href="/assets/blog.css?v=e9776bed">
+<script>
+  (function () {
+    var d = document.documentElement;
+    d.classList.add("js");
+    try {
+      var t = localStorage.getItem("theme");
+      if (t === "light" || t === "dark" || t === "solarized") d.setAttribute("data-theme", t);
+    } catch (e) {}
+  })();
+</script>
+<script defer src="/assets/site.js?v=50a0e9e4"></script>
+<style>
+/* Illustrations for this post. */
+.ck {
+  --cat: #141b23;
+  --cat-edge: #141b23;
+  --fur: #ffffff;
+  --ear: #5b6773;
+  --bad: #b42318;
+  --bad-soft: rgba(180, 35, 24, 0.1);
+  --gold: #f0b429;
+  --paper: #fffdf5;
+  --mouse: #9aa6b2;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .ck {
+    --cat: #121820;
+    --cat-edge: #aebdcb;
+    --fur: #e3eaf1;
+    --ear: #3d4853;
+    --bad: #ff8073;
+    --bad-soft: rgba(255, 128, 115, 0.12);
+    --paper: #18212b;
+    --mouse: #7f8d9b;
+  }
+}
+:root[data-theme="dark"] .ck {
+  --cat: #121820;
+  --cat-edge: #aebdcb;
+  --fur: #e3eaf1;
+  --ear: #3d4853;
+  --bad: #ff8073;
+  --bad-soft: rgba(255, 128, 115, 0.12);
+  --paper: #18212b;
+  --mouse: #7f8d9b;
+}
+:root[data-theme="solarized"] .ck {
+  --cat: #00161c;
+  --cat-edge: #93a1a1;
+  --fur: #eee8d5;
+  --ear: #284b54;
+  --bad: #ef5350;
+  --bad-soft: rgba(239, 83, 80, 0.14);
+  --gold: #e0b43a;
+  --paper: #0b404d;
+  --mouse: #839496;
+}
+.ck .stage {
+  padding: 18px;
+}
+.ck-svg {
+  max-width: 560px;
+  margin: 0 auto;
+}
+.ck-svg text {
+  font-family: var(--sans);
+  font-weight: 600;
+  fill: var(--text);
+}
+.ck-svg .mono {
+  font-family: var(--mono);
+  font-weight: 500;
+}
+.ck-svg .m { fill: var(--muted); font-weight: 500; }
+.ck-svg .a { fill: var(--accent-text); }
+.ck-svg .ok { fill: var(--ok); }
+.ck-svg .bad { fill: var(--bad); }
+.ck-svg .wn { fill: var(--warn); }
+.ck-svg .hand { font-family: "Lobster Two", var(--sans); font-style: italic; font-weight: 700; }
+.ck-svg .cap { font-family: var(--mono); font-weight: 500; letter-spacing: 0.06em; fill: var(--faint); }
+.ck-svg .rough { filter: url(#ck-rough); }
+.ck-svg .ln,
+.ck-svg .lnm,
+.ck-svg .lna,
+.ck-svg .lnb,
+.ck-svg .lnok {
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ck-svg .lnm { stroke: var(--faint); }
+.ck-svg .lna { stroke: var(--accent); stroke-width: 2.2; }
+.ck-svg .lnb { stroke: var(--bad); stroke-width: 2.2; }
+.ck-svg .lnok { stroke: var(--ok); stroke-width: 2.2; }
+.ck-svg .dash { stroke-dasharray: 5 6; }
+.ck-svg .lane { stroke: var(--line-strong); stroke-width: 3; stroke-linecap: round; fill: none; }
+.ck-svg .cf { fill: var(--cat); stroke: var(--cat-edge); stroke-width: 2.4; stroke-linejoin: round; }
+.ck-svg .cw { fill: var(--fur); }
+.ck-svg .ce { fill: var(--ear); }
+.ck-svg .cn { fill: #e58a9a; }
+.ck-svg .cp { fill: #141b23; }
+.ck-svg .wh { fill: none; stroke: var(--faint); stroke-width: 1.6; stroke-linecap: round; }
+.ck-svg .lid { fill: none; stroke: var(--cat); stroke-width: 3.5; stroke-linecap: round; }
+.ck-svg .hap { fill: none; stroke: var(--fur); stroke-width: 3.6; stroke-linecap: round; stroke-linejoin: round; }
+.ck-svg .mo { fill: none; stroke: #141b23; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.ck-svg .tl { fill: none; stroke: var(--cat); stroke-width: 10; stroke-linecap: round; }
+.ck-svg .tl-e { fill: none; stroke: var(--cat-edge); stroke-width: 15; stroke-linecap: round; }
+.ck-svg .crown { fill: var(--gold); stroke: #8a5a00; stroke-width: 2; stroke-linejoin: round; }
+.ck-svg .tg { fill: var(--paper); stroke: var(--accent); stroke-width: 2; }
+.ck-svg .tgb { fill: var(--accent); }
+.ck-svg .tgt { fill: var(--on-accent); font-family: var(--mono); font-weight: 500; letter-spacing: 0.08em; }
+.ck-svg .tgv { fill: var(--text); }
+.ck-svg .tag-new .tg { stroke: var(--warn); }
+.ck-svg .tag-new .tgb { fill: var(--warn); }
+.ck-svg .tag-new .tgt { fill: var(--bg-raised); }
+.ck-svg .chw rect { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; }
+.ck-svg .chw text { fill: var(--accent-text); }
+.ck-svg .chc rect { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; stroke-dasharray: 4 4; }
+.ck-svg .chc text { fill: var(--accent-text); }
+.ck-svg .chr rect { fill: var(--bg-sunken); stroke: var(--line-strong); stroke-width: 2; }
+.ck-svg .chx rect { fill: var(--bad-soft); stroke: var(--bad); stroke-width: 2; }
+.ck-svg .chx text { fill: var(--bad); }
+.ck-svg .chg rect { fill: none; stroke: var(--faint); stroke-width: 2; stroke-dasharray: 4 4; }
+.ck-svg .chg text { fill: var(--faint); }
+.ck-svg .strike { stroke: var(--bad); stroke-width: 2.6; stroke-linecap: round; }
+.ck-svg .bolt { fill: var(--gold); stroke: #8a5a00; stroke-width: 1.6; stroke-linejoin: round; }
+.ck-svg .okp rect { fill: var(--ok-soft); stroke: var(--ok); stroke-width: 2; }
+.ck-svg .okp text { fill: var(--ok); }
+.ck-svg .badp rect { fill: var(--bad-soft); stroke: var(--bad); stroke-width: 2; }
+.ck-svg .badp text { fill: var(--bad); }
+.ck-svg .accp rect { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; }
+.ck-svg .accp text { fill: var(--accent-text); }
+.ck-svg .box { fill: var(--bg-raised); stroke: var(--line-strong); stroke-width: 2; }
+.ck-svg .boxa { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; }
+.ck-svg .note { fill: var(--paper); stroke: var(--warn); stroke-width: 1.6; }
+.ck-svg .paper { fill: var(--paper); stroke: var(--text); stroke-width: 2; stroke-linejoin: round; }
+.ck-svg .bubble { fill: var(--bg-raised); stroke: var(--text); stroke-width: 2; stroke-linejoin: round; }
+.ck-svg .ground { fill: none; stroke: var(--line-strong); stroke-width: 2.5; stroke-linecap: round; }
+.ck-svg .metal { fill: var(--bg-sunken); stroke: var(--text); stroke-width: 2; stroke-linejoin: round; }
+.ck-svg .dark { fill: var(--faint); opacity: 0.35; }
+.ck-svg .mouse { fill: var(--mouse); stroke: var(--text); stroke-width: 1.6; }
+.ck-svg .ear-p { fill: #e8a0ac; }
+.ck-svg .dot { fill: var(--text); }
+.ck-svg .ledok { fill: var(--ok); }
+.ck-svg .panel { fill: none; stroke: var(--line-strong); stroke-width: 2; }
+.ck-svg .panel-bad { fill: var(--bad-soft); stroke: var(--bad); stroke-width: 2; opacity: 0.9; }
+.ck-svg .panel-ok { fill: var(--ok-soft); stroke: var(--ok); stroke-width: 2; }
+.ck-svg .stars { fill: var(--gold); stroke: #8a5a00; stroke-width: 1.2; }
+.ck-svg .ballot { fill: var(--paper); stroke: var(--text); stroke-width: 2; }
+.ck-svg .domino { fill: var(--bg-raised); stroke: var(--text); stroke-width: 2.2; stroke-linejoin: round; }
+.ck-svg .pip { fill: var(--accent); }
+
+/* Wide figures run past the text column on a desktop; narrower screens get the
+   stacked drawing of the same thing. */
+.ck .stage .ck-t { display: none; max-width: 460px; }
+.ck .stage .ck-w { max-width: none; }
+.ck .stage .ck-mid { max-width: 700px; }
+@media (min-width: 940px) {
+  .post-body .ck.wide {
+    margin-left: calc(50% - 440px);
+    margin-right: calc(50% - 440px);
+  }
+  .post-body .ck.wide figcaption {
+    max-width: 660px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+@media (max-width: 939px) {
+  .ck .stage .ck-w { display: none; }
+  .ck .stage .ck-t { display: block; }
+}
+@media (max-width: 760px) {
+  .ck .stage { padding: 10px 8px; }
+}
+.ck-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="Felix home">
+      <picture>
+        <source srcset="/assets/img/felix-mark-96.webp" type="image/webp">
+        <img src="/assets/img/felix-mark-96.png" alt="" width="30" height="30">
+      </picture>
+      Felix
+    </a>
+    <nav class="nav" aria-label="Main">
+      <button class="icon-btn nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Menu">
+        <svg class="open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        <svg class="shut" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="/features.html"><span class="nav-l">Features</span><span class="nav-hint">What Felix does</span></a></li>
+        <li><a href="/guarantees.html"><span class="nav-l">Guarantees</span><span class="nav-hint">Replication, failover and testing</span></a></li>
+        <li><a href="/performance.html"><span class="nav-l">Performance</span><span class="nav-hint">Throughput and latency</span></a></li>
+        <li><a href="/status.html"><span class="nav-l">Status</span><span class="nav-hint">What works today, and what's next</span></a></li>
+        <li><a href="/blog/"><span class="nav-l">Blog</span><span class="nav-hint">Notes from building Felix</span></a></li>
+        <li><a href="https://docs.getfelix.dev"><span class="nav-l">Docs<svg class="ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></span><span class="nav-hint">docs.getfelix.dev</span></a></li>
+      </ul>
+      <span class="sep" aria-hidden="true"></span>
+      <a class="icon-btn gh" href="https://github.com/GetFelix" aria-label="GetFelix on GitHub">
+        <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+      </a>
+      <button class="icon-btn theme-toggle" type="button" aria-label="Switch theme">
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11Z"/></svg>
+        <svg class="sol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18Z" fill="currentColor"/></svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<article class="post" aria-labelledby="post-title">
+  <header class="post-head">
+    <div class="wrap">
+      <a class="post-back" href="/blog/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>All posts</a>
+      <div>
+      <h1 id="post-title">Our model said everything passed. It was checking nothing.</h1>
+      </div>
+      <p class="post-dek">Felix checks 107 TLA+ configurations in CI; this is about three times a passing check meant nothing, and the twin configurations, reachability checks and spec pairing we use to catch it.</p>
+      <div class="byline">
+        <img src="/assets/img/gabriel-loewen.jpg" alt="" width="40" height="40">
+        <div>
+          <span class="byline-name">Gabriel Loewen</span>
+          <span class="post-meta"><time datetime="2026-10-17">17 October 2026</time><span>10 min read</span></span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="post-body">
+    <svg class="ck-defs" aria-hidden="true" focusable="false"><filter id="ck-rough" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="7"/><feDisplacementMap in="SourceGraphic" scale="2"/></filter></svg>
+
+    <p>Felix has a TLA+ model of how a shard replicates, fails over and recovers. CI runs TLC, the TLA+ model checker, over 107 configurations of it. 53 are expected to pass. The other 54 are expected to fail with a specific invariant.</p>
+
+    <p>I once watched a change turn four of those configurations into runs that stopped after five states. Normally they explore six or seven million. The two that were meant to pass still passed. The model had stopped saying anything, and the passing checks couldn't tell me.</p>
+
+    <p>That was one of three times a check of ours passed without checking anything. Here's how each happened, and what catches them now.</p>
+
+    <h2 id="what-tlc-does-and-why-a-pass-can-mean-nothing">What TLC does, and why a pass can mean nothing</h2>
+
+    <p>A TLA+ spec describes a system as states and steps. A state is one value for every variable: who leads, what each broker's log holds, which records were acknowledged. A step, called an action, says how one state can turn into the next, like “the leader appends a record” or “a follower crashes”.</p>
+
+    <p>An invariant is something that must be true in every state. Ours include <code>AckedSurvive</code>: whoever is serving holds every record a client was told is durable. TLC starts from the initial states, applies every enabled action in every order, and checks each invariant in each state it reaches. A configuration (<code>.cfg</code>) fixes the bounds: three brokers, at most one or two writes, how far the clock runs, which features are on.</p>
+
+    <p>If TLC finds a state that breaks an invariant, it prints a counterexample: the exact sequence of steps that gets there. If it runs out of new states first, it reports success.</p>
+
+    <p>That last part is the trap. TLC proves the invariant holds in every state it reached. If the interesting states are never reached, the invariant holds trivially. A model where promotion can't fire will never lose a record during promotion.</p>
+
+    <p>TLC gives you some help. It prints how many states it found and how deep it went. It can flag deadlock, a state where no action is enabled. But <code>scripts/check_tla.sh</code> runs TLC with <code>-deadlock</code>, which turns that check off, because a bounded config is supposed to run out of things to do. And the script judges a pass by the absence of a violation, not by the state count. A run of five states and a run of six million both come out green.</p>
+
+    <figure class="fig ck">
+      <div class="stage glow"><svg class="ck-svg " viewBox="0 0 470 320" role="img" aria-labelledby="ck1-t"><title id="ck1-t">The Felix cat in a guard's cap, asleep in a chair. A walkie-talkie on the desk says Patrol complete. No intruders. A clipboard reads states checked: 5, usually 6M. Behind the cat, the door labelled promotion is padlocked, so the run never got past it.</title><g font-size="18.5"><path class="ground" d="M6 304H464"/><text x="394" y="52" text-anchor="middle" font-size="18.5">promotion</text><g class="rough"><rect class="metal" x="342" y="64" width="104" height="240" rx="4"/></g><circle class="dot" cx="356" cy="190" r="4"/><path class="ln" d="M382 176v-14a12 12 0 0 1 24 0v14" style="stroke-width:3"/><g class="rough"><rect class="crown" x="374" y="174" width="40" height="32" rx="5"/></g><circle class="dot" cx="394" cy="188" r="3.5"/><path class="ln" d="M394 190v8"/><g class="rough"><rect class="box" x="8" y="236" width="182" height="12" rx="3"/></g><path class="ln" d="M20 248V304M178 248V304"/><g class="rough"><rect class="metal" x="22" y="190" width="28" height="46" rx="5"/></g><path class="ln" d="M44 190V172"/><circle class="dot" cx="36" cy="208" r="3"/><path class="ln" d="M28 222h16"/><g class="rough"><path class="bubble" d="M22 12h196a14 14 0 0 1 14 14v46a14 14 0 0 1-14 14h-150l-22 20 4-20h-28a14 14 0 0 1-14-14v-46a14 14 0 0 1 14-14z"/></g><text x="120" y="44" class="hand" text-anchor="middle" font-size="22">Patrol complete.</text><text x="120" y="74" class="hand" text-anchor="middle" font-size="22">No intruders.</text><g transform="rotate(-4 122 190)"><g class="rough"><rect class="paper" x="62" y="134" width="120" height="102" rx="4"/></g><rect class="metal" x="102" y="128" width="40" height="12" rx="3"/><text x="76" y="164" class="m" font-size="18.5">states</text><text x="76" y="192" font-size="18.5">checked: 5</text><text x="76" y="222" class="m" font-size="18.5">usually 6M</text></g><g class="rough"><rect class="metal" x="200" y="148" width="92" height="118" rx="10"/><rect class="metal" x="192" y="262" width="108" height="12" rx="3"/></g><path class="ln" d="M202 274V304M290 274V304"/><g class="rough"><g transform="translate(196 146) scale(0.6)"><path class="tl-e" d="M84 178C114 176 122 146 108 128C99 116 104 102 114 102"/><path class="tl" d="M84 178C114 176 122 146 108 128C99 116 104 102 114 102"/><path class="cf" d="M30 80C14 108 11 160 20 188L86 188C96 160 94 110 72 80Z"/><path class="cw" d="M38 90C33 120 37 150 50 168C63 150 67 120 62 90C56 97 44 97 38 90Z"/><ellipse class="cf" cx="38" cy="187" rx="12" ry="6"/><ellipse class="cf" cx="64" cy="187" rx="12" ry="6"/><g transform="translate(0 -2)"><path class="cf" d="M20 52C19 38 24 29 31 24L27 6Q27 3 30 5L47 17Q50 16.5 53 17L70 5Q73 3 73 6L69 24C76 29 81 38 80 52C80 72 67 86 50 86C33 86 20 72 20 52Z"/><path class="ce" d="M32 21L30.5 11L41 18ZM68 21L69.5 11L59 18Z"/><path class="cw" d="M29 66C31 57 42 55 50 60C58 55 69 57 71 66C71 77 61 84 50 84C39 84 29 77 29 66Z"/><path class="cn" d="M45.5 60.5h9l-4.5 5z"/><path class="wh" d="M31 68L6 63M31 73L7 76M69 68L94 63M69 73L93 76"/><path class="hap" d="M31 45Q38 51 45 45M55 45Q62 51 69 45"/><path class="mo" d="M44 72Q50 75 56 72"/><path d="M27 24Q50 2 73 24Z" fill="var(--accent)" stroke="var(--cat-edge)" stroke-width="2"/><path d="M22 24H80" stroke="var(--accent)" stroke-width="5" stroke-linecap="round"/></g></g></g><path d="M206 222h46" stroke="var(--accent)" stroke-width="7" stroke-linecap="round"/><text x="296" y="150" class="hand m" font-size="20">z</text><text x="310" y="128" class="hand m" font-size="24">z</text><text x="326" y="104" class="hand m" font-size="28">z</text></g></svg></div>
+      <figcaption><b>Figure 1</b>A pass that never reached the room where the trouble is.</figcaption>
+    </figure>
+
+    <h2 id="story-one-the-figure-8-runs-that-stopped-at-five-states">Story one: the Figure 8 runs that stopped at five states</h2>
+
+    <p>Raft's Figure 8 is a well-known way to lose a committed entry: a new leader counts a record it inherited from an old term as committed, and a later leader overwrites it. Felix avoids it with a generation-start record. Each new leader writes one at the start of its generation, and nothing it inherited counts as acknowledged until that record does.</p>
+
+    <p>The model checks this from a seeded history. <code>FelixShardFigure8.tla</code> starts two leaderships in, because each promotion costs a lapsed lease and the time-bounded runs can't get that far. Four configs start from that history. Two pass with the start record, and each has a twin without it that must violate <code>AckedOnMajority</code>.</p>
+
+    <p><a href="https://github.com/GetFelix/felix/pull/1282">#1282</a> taught the leader to learn each follower's incarnation over its connection. In the model, a report now stores incarnation plus one, so that 0 can mean “none”. Placement only promotes a follower whose reported incarnation matches the current one. The seed report wasn't updated with the new encoding:</p>
+
+<pre class="code tla" data-lang="TLA+" tabindex="0"><code><span class="tla-c">\* `incs` holds incarnation + 1 (0 is none), so a report seeded from this</span>
+<span class="tla-c">\* names every broker at its first registration, as `sids` names its first</span>
+<span class="tla-c">\* identity.</span>
+<span class="tla-def">NoReport</span> <span class="tla-op">==</span> [holders <span class="tla-op">|-&gt;</span> {}, len <span class="tla-op">|-&gt;</span> 0, drained <span class="tla-op">|-&gt;</span> <span class="tla-k">FALSE</span>, gen <span class="tla-op">|-&gt;</span> 0, sids <span class="tla-op">|-&gt;</span> [m <span class="tla-op">\in</span> Brokers <span class="tla-op">|-&gt;</span> 0],
+             incs <span class="tla-op">|-&gt;</span> [m <span class="tla-op">\in</span> Brokers <span class="tla-op">|-&gt;</span> 1]]   <span class="tla-c">\* was |-&gt; 0</span>
+
+<span class="tla-def">ByLeaderReport</span>(r, f) <span class="tla-op">==</span>
+    <span class="tla-op">/\</span> f <span class="tla-op">\in</span> r.holders <span class="tla-op">/\</span> f <span class="tla-op">\notin</span> halted
+    <span class="tla-op">/\</span> f <span class="tla-op">\notin</span> restarting
+    <span class="tla-op">/\</span> <span class="tla-k">IF</span> StorageIds <span class="tla-op">/\</span> registered[f] /= 0
+       <span class="tla-k">THEN</span> r.sids[f] + 1 = registered[f]
+       <span class="tla-k">ELSE</span> StampIncarnations <span class="tla-op">=&gt;</span> r.incs[f] = inc[f] + 1</code></pre>
+
+    <p>With the old seed, every broker in the starting report had “no incarnation”. <code>ByLeaderReport</code> was false for everyone, so no promotion could fire, and each seeded run ended after five states with nothing left on the queue. <code>FelixShardFigure8</code> and <code>FelixShardFigure8FollowerAcks</code>, normally 5.99M and 7.67M distinct states, passed. The two <code>CutOver</code> configs start from a different history and ran normally.</p>
+
+    <p>What failed was the twins. Each twin is its passing config with one setting flipped, and its header says what TLC must find:</p>
+
+<pre class="code tla" data-lang="TLA+ config" tabindex="0"><code><span class="tla-c">\* FelixShardFigure8FollowerAcks.cfg without the generation-start record,</span>
+<span class="tla-c">\* so the mark counts a record the leader inherited. `check_tla.sh` expects</span>
+<span class="tla-c">\* TLC to lose an acknowledged record (AckedOnMajority): c, promoted at 3,</span>
+<span class="tla-c">\* takes x from a in its fence and acknowledges it once a and c answer for</span>
+<span class="tla-c">\* it; a promoted at 4 finds b's log ahead by generation and takes y in</span>
+<span class="tla-c">\* place of x. Raft's Figure 8, with follower acks in place of the report.</span>
+<span class="tla-c">\* About 50K distinct states to the violation, under a second.</span>
+...
+    StartRecord = <span class="tla-k">FALSE</span></code></pre>
+
+    <p>After the change, <code>FelixShardFigure8NoStartRecord</code> and <code>FelixShardFigure8FollowerAcksNoStartRecord</code> found nothing. CI printed <code>FAIL: expected TLC to violate AckedOnMajority</code>, and the five-state count sat right above it. The fix was one character in the seed.</p>
+
+    <figure class="fig ck">
+      <div class="stage"><svg class="ck-svg " viewBox="0 0 480 650" role="img" aria-labelledby="ck2-t"><title id="ck2-t">Twin cats: the passing config with StartRecord = TRUE and its twin with StartRecord = FALSE, under an alarm labelled AckedOnMajority. On a normal day the passing cat is calm and passes, while the twin knocks record x off and the alarm rings, as expected. After the seed change both cats sleep through a five-state run, the alarm is silent and the twin finds no violation. A note says silence is the bug.</title><g font-size="18.5"><text x="110" y="30" class="mono" text-anchor="middle" font-size="18.5">StartRecord = TRUE</text><text x="370" y="30" class="mono" text-anchor="middle" font-size="18.5">StartRecord = FALSE</text><rect class="panel" x="4" y="50" width="472" height="282" rx="10"/><text x="18" y="80" class="cap" font-size="18.5">NORMAL DAY</text><g class="rough"><path class="metal" d="M240 94c-14 0-22 10-22 24v14l-6 8h56l-6-8v-14c0-14-8-24-22-24z"/><circle class="metal" cx="240" cy="146" r="5"/></g><text x="240" y="178" class="mono" text-anchor="middle" font-size="18.5">AckedOnMajority</text><path class="lnb" d="M206 108q-8 12 0 24M196 102q-10 18 0 36M274 108q8 12 0 24M284 102q10 18 0 36"/><circle class="ledok" cx="60" cy="120" r="9"/><g class="rough"><g transform="translate(80 162) scale(0.6)"><path class="tl-e" d="M84 178C114 176 122 146 108 128C99 116 104 102 114 102"/><path class="tl" d="M84 178C114 176 122 146 108 128C99 116 104 102 114 102"/><path class="cf" d="M30 80C14 108 11 160 20 188L86 188C96 160 94 110 72 80Z"/><path class="cw" d="M38 90C33 120 37 150 50 168C63 150 67 120 62 90C56 97 44 97 38 90Z"/><ellipse class="cf" cx="38" cy="187" rx="12" ry="6"/><ellipse class="cf" cx="64" cy="187" rx="12" ry="6"/><g transform="translate(0 -2)"><path class="cf" d="M20 52C19 38 24 29 31 24L27 6Q27 3 30 5L47 17Q50 16.5 53 17L70 5Q73 3 73 6L69 24C76 29 81 38 80 52C80 72 67 86 50 86C33 86 20 72 20 52Z"/><path class="ce" d="M32 21L30.5 11L41 18ZM68 21L69.5 11L59 18Z"/><path class="cw" d="M29 66C31 57 42 55 50 60C58 55 69 57 71 66C71 77 61 84 50 84C39 84 29 77 29 66Z"/><path class="cn" d="M45.5 60.5h9l-4.5 5z"/><path class="wh" d="M31 68L6 63M31 73L7 76M69 68L94 63M69 73L93 76"/><path class="hap" d="M31 47Q38 39 45 47M55 47Q62 39 69 47"/><path class="mo" d="M42 70Q50 79 58 70"/></g></g></g><circle class="" cx="320" cy="120" r="9" fill="var(--bad)"/><g class="rough"><g transform="translate(340 162) scale(0.6)"><path class="tl-e" d="M84 178C114 176 122 146 108 128C99 116 104 102 114 102"/><path class="tl" d="M84 178C114 176 122 146 108 128C99 116 104 102 114 102"/><path class="cf" d="M30 80C14 108 11 160 20 188L86 188C96 160 94 110 72 80Z"/><path class="cw" d="M38 90C33 120 37 150 50 168C63 150 67 120 62 90C56 97 44 97 38 90Z"/><ellipse class="cf" cx="38" cy="187" rx="12" ry="6"/><ellipse class="cf" cx="64" cy="187" rx="12" ry="6"/><g transform="translate(0 -2)"><path class="cf" d="M20 52C19 38 24 29 31 24L27 6Q27 3 30 5L47 17Q50 16.5 53 17L70 5Q73 3 73 6L69 24C76 29 81 38 80 52C80 72 67 86 50 86C33 86 20 72 20 52Z"/><path class="ce" d="M32 21L30.5 11L41 18ZM68 21L69.5 11L59 18Z"/><path class="cw" d="M29 66C31 57 42 55 50 60C58 55 69 57 71 66C71 77 61 84 50 84C39 84 29 77 29 66Z"/><path class="cn" d="M45.5 60.5h9l-4.5 5z"/><path class="wh" d="M31 68L6 63M31 73L7 76M69 68L94 63M69 73L93 76"/><path class="cw" d="M30 45Q38 37 46 45Q38 50 30 45ZM54 45Q62 37 70 45Q62 50 54 45Z"/><circle class="cp" cx="40" cy="45" r="3.4"/><circle class="cp" cx="64" cy="45" r="3.4"/><path class="lid" d="M29 42Q38 37 47 43M53 43Q62 37 71 42"/><path class="mo" d="M43 70Q50 77 58 69"/></g></g></g><g transform="rotate(24 446 262)"><g class="chx"><rect x="428" y="246" width="36" height="32" rx="5"/><text x="446" y="268.66" text-anchor="middle" font-size="18.5" class="mono">x</text></g></g><path class="lnm" d="M436 236q6 -18 22 -24M448 244q6 -14 18 -18" style="stroke-width:1.6"/><g class="okp"><rect x="60" y="288" width="100" height="34" rx="17"/><text x="110" y="311.66" text-anchor="middle" font-size="18.5">passes</text></g><g class="badp"><rect x="268" y="288" width="204" height="34" rx="17"/><text x="370" y="311.66" text-anchor="middle" font-size="18.5">expected: violates</text></g><rect class="panel" x="4" y="352" width="472" height="282" rx="10"/><text x="18" y="382" class="cap" font-size="18.5">AFTER THE SEED CHANGE</text><g class="rough"><path class="metal" d="M240 396c-14 0-22 10-22 24v14l-6 8h56l-6-8v-14c0-14-8-24-22-24z"/><circle class="metal" cx="240" cy="448" r="5"/></g><text x="240" y="480" class="mono" text-anchor="middle" font-size="18.5">AckedOnMajority</text><g class="rough"><rect class="note" x="296" y="362" width="170" height="44" rx="5" transform="rotate(3 381 384)"/></g><g transform="rotate(3 381 384)"><text x="381" y="392" class="hand bad" text-anchor="middle" font-size="21">silence is the bug</text></g><circle class="ledok" cx="60" cy="422" r="9"/><g class="rough"><g transform="translate(80 464) scale(0.6)"><path class="tl-e" d="M84 178C114 176 122 146 108 128C99 116 104 102 114 102"/><path class="tl" d="M84 178C114 176 122 146 108 128C99 116 104 102 114 102"/><path class="cf" d="M30 80C14 108 11 160 20 188L86 188C96 160 94 110 72 80Z"/><path class="cw" d="M38 90C33 120 37 150 50 168C63 150 67 120 62 90C56 97 44 97 38 90Z"/><ellipse class="cf" cx="38" cy="187" rx="12" ry="6"/><ellipse class="cf" cx="64" cy="187" rx="12" ry="6"/><g transform="translate(0 -2)"><path class="cf" d="M20 52C19 38 24 29 31 24L27 6Q27 3 30 5L47 17Q50 16.5 53 17L70 5Q73 3 73 6L69 24C76 29 81 38 80 52C80 72 67 86 50 86C33 86 20 72 20 52Z"/><path class="ce" d="M32 21L30.5 11L41 18ZM68 21L69.5 11L59 18Z"/><path class="cw" d="M29 66C31 57 42 55 50 60C58 55 69 57 71 66C71 77 61 84 50 84C39 84 29 77 29 66Z"/><path class="cn" d="M45.5 60.5h9l-4.5 5z"/><path class="wh" d="M31 68L6 63M31 73L7 76M69 68L94 63M69 73L93 76"/><path class="hap" d="M31 45Q38 51 45 45M55 45Q62 51 69 45"/><path class="mo" d="M44 72Q50 75 56 72"/></g></g></g><circle class="ledok" cx="320" cy="422" r="9"/><g class="rough"><g transform="translate(340 464) scale(0.6)"><path class="tl-e" d="M84 178C114 176 122 146 108 128C99 116 104 102 114 102"/><path class="tl" d="M84 178C114 176 122 146 108 128C99 116 104 102 114 102"/><path class="cf" d="M30 80C14 108 11 160 20 188L86 188C96 160 94 110 72 80Z"/><path class="cw" d="M38 90C33 120 37 150 50 168C63 150 67 120 62 90C56 97 44 97 38 90Z"/><ellipse class="cf" cx="38" cy="187" rx="12" ry="6"/><ellipse class="cf" cx="64" cy="187" rx="12" ry="6"/><g transform="translate(0 -2)"><path class="cf" d="M20 52C19 38 24 29 31 24L27 6Q27 3 30 5L47 17Q50 16.5 53 17L70 5Q73 3 73 6L69 24C76 29 81 38 80 52C80 72 67 86 50 86C33 86 20 72 20 52Z"/><path class="ce" d="M32 21L30.5 11L41 18ZM68 21L69.5 11L59 18Z"/><path class="cw" d="M29 66C31 57 42 55 50 60C58 55 69 57 71 66C71 77 61 84 50 84C39 84 29 77 29 66Z"/><path class="cn" d="M45.5 60.5h9l-4.5 5z"/><path class="wh" d="M31 68L6 63M31 73L7 76M69 68L94 63M69 73L93 76"/><path class="hap" d="M31 45Q38 51 45 45M55 45Q62 51 69 45"/><path class="mo" d="M44 72Q50 75 56 72"/></g></g></g><g class="okp"><rect x="26" y="590" width="196" height="34" rx="17"/><text x="124" y="613.66" text-anchor="middle" font-size="18.5">passes, 5 states</text></g><g class="badp"><rect x="296" y="590" width="148" height="34" rx="17"/><text x="370" y="613.66" text-anchor="middle" font-size="18.5">no violation</text></g></g></svg></div>
+      <figcaption><b>Figure 2</b>After the seed change the passing config still passed, in five states. Only the twin, which found nothing to violate, made CI fail.</figcaption>
+    </figure>
+
+    <h2 id="story-two-a-crash-that-always-lost-something">Story two: a crash that always lost something</h2>
+
+    <p>When a leader crashes under Felix's relaxed fsync modes, it can lose records it hadn't synced. It comes back under a new storage identity, gives up the shard, and probes its followers. Placement promotes a follower that's level with it or ahead. Only when every follower is behind does it name the old leader again at a new generation. The model calls that step <code>Reclaim</code>.</p>
+
+    <p><code>FelixShardLeaderCrashReclaim.cfg</code> checks it with one write. Its twin, <code>FelixShardLeaderCrashReclaimBlind.cfg</code>, reclaims without measuring the followers and violates <code>AckedSurvive</code>. Both behaved as expected, and the pair was still empty.</p>
+
+    <p>The <code>Crash</code> action chose a surviving prefix with <code>\E k \in 0..(Len(log[f]) - 1)</code>, so a crash always dropped at least one record. With <code>MaxWrites = 1</code>, the crashed leader always came back empty. An empty log can't be ahead of anyone, so the guard that every follower is behind could never hold, and <code>Reclaim</code> never fired. The pass was vacuous.</p>
+
+    <p>The twin didn't catch it because it failed through a different step. <code>ReclaimBlind</code> skips the measurement, so it fires without the guard and loses the record. That proved the measurement mattered. It didn't prove the real <code>Reclaim</code> was reachable.</p>
+
+    <p>The fix, in <a href="https://github.com/GetFelix/felix/pull/1315">#1315</a>, was to let a crash lose nothing: <code>\E k \in 0..Len(log[f])</code>. That's also more faithful. A SIGKILL keeps the page cache, so a killed broker often loses nothing, and its unclean restart still rotates the identity. Now the leader can come back holding a record no follower took. The PR worked by hand a six-step path from the initial state to a firing <code>Reclaim</code>.</p>
+
+    <figure class="fig ck">
+      <div class="stage"><svg class="ck-svg " viewBox="0 0 480 530" role="img" aria-labelledby="ck3-t"><title id="ck3-t">Four panels. 1: the leader cat, crowned, holds its one write r1, with MaxWrites = 1. 2: a crash tears r1 up, because the surviving prefix k is chosen from 0 to Len minus 1, so a crash always loses at least one record. 3: the cat comes back with an empty log to a closed door labelled Reclaim; with nothing in its log no follower is behind it, so Reclaim never fires. 4, the fix: k is chosen from 0 to Len, the crash can keep r1, and the Reclaim door opens.</title><g font-size="18.5"><rect class="panel" x="4" y="4" width="232" height="258" rx="10"/><rect class="panel" x="244" y="4" width="232" height="258" rx="10"/><rect class="panel-bad" x="4" y="270" width="232" height="258" rx="10"/><rect class="panel-ok" x="244" y="270" width="232" height="258" rx="10"/><text x="20" y="32" class="cap" font-size="18.5">1</text><g class="rough"><g transform="translate(34 50) scale(0.5)"><path class="tl-e" d="M84 178C114 176 122 146 108 128C99 116 104 102 114 102"/><path class="tl" d="M84 178C114 176 122 146 108 128C99 116 104 102 114 102"/><path class="cf" d="M30 80C14 108 11 160 20 188L86 188C96 160 94 110 72 80Z"/><path class="cw" d="M38 90C33 120 37 150 50 168C63 150 67 120 62 90C56 97 44 97 38 90Z"/><ellipse class="cf" cx="38" cy="187" rx="12" ry="6"/><ellipse class="cf" cx="64" cy="187" rx="12" ry="6"/><path class="tl-e" d="M68 108C86 112 100 112 114 108" style="stroke-width:16"/><path class="tl" d="M68 108C86 112 100 112 114 108" style="stroke-width:11"/><circle class="cf" cx="116" cy="107" r="8"/><g transform="translate(0 -2)"><path class="cf" d="M20 52C19 38 24 29 31 24L27 6Q27 3 30 5L47 17Q50 16.5 53 17L70 5Q73 3 73 6L69 24C76 29 81 38 80 52C80 72 67 86 50 86C33 86 20 72 20 52Z"/><path class="ce" d="M32 21L30.5 11L41 18ZM68 21L69.5 11L59 18Z"/><path class="cw" d="M29 66C31 57 42 55 50 60C58 55 69 57 71 66C71 77 61 84 50 84C39 84 29 77 29 66Z"/><path class="cn" d="M45.5 60.5h9l-4.5 5z"/><path class="wh" d="M31 68L6 63M31 73L7 76M69 68L94 63M69 73L93 76"/><path class="hap" d="M31 47Q38 39 45 47M55 47Q62 39 69 47"/><path class="mo" d="M42 70Q50 79 58 70"/><path class="crown" d="M36 18L33 -2L43 8L50 -6L57 8L67 -2L64 18Z"/></g></g></g><g class="chw"><rect x="104" y="92" width="60" height="40" rx="5"/><text x="134" y="118.66" text-anchor="middle" font-size="18.5" class="mono">r1</text></g><text x="120" y="200" class="mono" text-anchor="middle" font-size="18.5">MaxWrites = 1</text><text x="120" y="228" class="m" text-anchor="middle" font-size="18.5">one write, as leader</text><text x="260" y="32" class="cap" font-size="18.5">2</text><g class="rough"><g transform="translate(272 50) scale(0.5)"><path class="tl-e" d="M84 178C114 176 122 146 108 128C99 116 104 102 114 102"/><path class="tl" d="M84 178C114 176 122 146 108 128C99 116 104 102 114 102"/><path class="cf" d="M30 80C14 108 11 160 20 188L86 188C96 160 94 110 72 80Z"/><path class="cw" d="M38 90C33 120 37 150 50 168C63 150 67 120 62 90C56 97 44 97 38 90Z"/><ellipse class="cf" cx="38" cy="187" rx="12" ry="6"/><ellipse class="cf" cx="64" cy="187" rx="12" ry="6"/><g transform="translate(0 -2)"><path class="cf" d="M20 52C19 38 24 29 31 24L27 6Q27 3 30 5L47 17Q50 16.5 53 17L70 5Q73 3 73 6L69 24C76 29 81 38 80 52C80 72 67 86 50 86C33 86 20 72 20 52Z"/><path class="ce" d="M32 21L30.5 11L41 18ZM68 21L69.5 11L59 18Z"/><path class="cw" d="M29 66C31 57 42 55 50 60C58 55 69 57 71 66C71 77 61 84 50 84C39 84 29 77 29 66Z"/><path class="cn" d="M45.5 60.5h9l-4.5 5z"/><path class="wh" d="M31 68L6 63M31 73L7 76M69 68L94 63M69 73L93 76"/><path class="cw" d="M30 45Q38 37 46 45Q38 50 30 45ZM54 45Q62 37 70 45Q62 50 54 45Z"/><circle class="cp" cx="40" cy="45" r="3.4"/><circle class="cp" cx="64" cy="45" r="3.4"/><path class="lid" d="M29 42Q38 37 47 43M53 43Q62 37 71 42"/><path class="mo" d="M43 75Q50 69 57 75"/></g></g></g><g class="rough"><path class="bolt" d="M384 30l-22 46h18l-14 40 34-54h-18l14-32z"/></g><text x="420" y="60" class="hand bad" text-anchor="middle" font-size="22">Crash</text><g transform="rotate(-18 386 140)"><g class="chx"><rect x="360" y="126" width="30" height="36" rx="4"/><text x="375" y="150.66" text-anchor="middle" font-size="18.5" class="mono">r</text></g></g><g transform="rotate(22 430 150)"><g class="chx"><rect x="410" y="134" width="30" height="36" rx="4"/><text x="425" y="158.66" text-anchor="middle" font-size="18.5" class="mono">1</text></g></g><text x="360" y="200" class="mono" text-anchor="middle" font-size="18.5">k ∈ 0..Len−1</text><text x="360" y="228" class="bad" text-anchor="middle" font-size="18.5">always loses one</text><text x="20" y="298" class="cap" font-size="18.5">3</text><g class="rough"><g transform="translate(26 316) scale(0.5)"><path class="tl-e" d="M84 178C114 176 122 146 108 128C99 116 104 102 114 102"/><path class="tl" d="M84 178C114 176 122 146 108 128C99 116 104 102 114 102"/><path class="cf" d="M30 80C14 108 11 160 20 188L86 188C96 160 94 110 72 80Z"/><path class="cw" d="M38 90C33 120 37 150 50 168C63 150 67 120 62 90C56 97 44 97 38 90Z"/><ellipse class="cf" cx="38" cy="187" rx="12" ry="6"/><ellipse class="cf" cx="64" cy="187" rx="12" ry="6"/><g transform="translate(0 -2)"><path class="cf" d="M20 52C19 38 24 29 31 24L27 6Q27 3 30 5L47 17Q50 16.5 53 17L70 5Q73 3 73 6L69 24C76 29 81 38 80 52C80 72 67 86 50 86C33 86 20 72 20 52Z"/><path class="ce" d="M32 21L30.5 11L41 18ZM68 21L69.5 11L59 18Z"/><path class="cw" d="M29 66C31 57 42 55 50 60C58 55 69 57 71 66C71 77 61 84 50 84C39 84 29 77 29 66Z"/><path class="cn" d="M45.5 60.5h9l-4.5 5z"/><path class="wh" d="M31 68L6 63M31 73L7 76M69 68L94 63M69 73L93 76"/><path class="cw" d="M30 45Q38 37 46 45Q38 50 30 45ZM54 45Q62 37 70 45Q62 50 54 45Z"/><circle class="cp" cx="40" cy="45" r="3.4"/><circle class="cp" cx="64" cy="45" r="3.4"/><path class="lid" d="M29 42Q38 37 47 43M53 43Q62 37 71 42"/><path class="mo" d="M43 70Q50 77 58 69"/></g></g></g><text x="172" y="300" class="mono" text-anchor="middle" font-size="18.5">Reclaim</text><g class="rough"><rect class="metal" x="132" y="310" width="80" height="128" rx="3"/></g><circle class="dot" cx="144" cy="378" r="4"/><text x="120" y="470" text-anchor="middle" font-size="18.5">empty log: nobody</text><text x="120" y="498" text-anchor="middle" font-size="18.5">is behind it</text><text x="260" y="298" class="cap" font-size="18.5">THE FIX</text><g class="rough"><g transform="translate(262 316) scale(0.5)"><path class="tl-e" d="M84 178C114 176 122 146 108 128C99 116 104 102 114 102"/><path class="tl" d="M84 178C114 176 122 146 108 128C99 116 104 102 114 102"/><path class="cf" d="M30 80C14 108 11 160 20 188L86 188C96 160 94 110 72 80Z"/><path class="cw" d="M38 90C33 120 37 150 50 168C63 150 67 120 62 90C56 97 44 97 38 90Z"/><ellipse class="cf" cx="38" cy="187" rx="12" ry="6"/><ellipse class="cf" cx="64" cy="187" rx="12" ry="6"/><path class="tl-e" d="M68 108C86 112 100 112 114 108" style="stroke-width:16"/><path class="tl" d="M68 108C86 112 100 112 114 108" style="stroke-width:11"/><circle class="cf" cx="116" cy="107" r="8"/><g transform="translate(0 -2)"><path class="cf" d="M20 52C19 38 24 29 31 24L27 6Q27 3 30 5L47 17Q50 16.5 53 17L70 5Q73 3 73 6L69 24C76 29 81 38 80 52C80 72 67 86 50 86C33 86 20 72 20 52Z"/><path class="ce" d="M32 21L30.5 11L41 18ZM68 21L69.5 11L59 18Z"/><path class="cw" d="M29 66C31 57 42 55 50 60C58 55 69 57 71 66C71 77 61 84 50 84C39 84 29 77 29 66Z"/><path class="cn" d="M45.5 60.5h9l-4.5 5z"/><path class="wh" d="M31 68L6 63M31 73L7 76M69 68L94 63M69 73L93 76"/><path class="hap" d="M31 47Q38 39 45 47M55 47Q62 39 69 47"/><path class="mo" d="M42 70Q50 79 58 70"/></g></g></g><g class="chw"><rect x="318" y="352" width="60" height="40" rx="5"/><text x="348" y="378.66" text-anchor="middle" font-size="18.5" class="mono">r1</text></g><text x="418" y="300" class="mono" text-anchor="middle" font-size="18.5">Reclaim</text><path class="dark" d="M388 310h64v128h-64z"/><g class="rough"><path class="metal" d="M452 310l18 12v128l-18-12z"/></g><text x="360" y="470" class="mono" text-anchor="middle" font-size="18.5">k ∈ 0..Len</text><text x="360" y="498" class="ok" text-anchor="middle" font-size="18.5">a crash can keep r1</text></g></svg></div>
+      <figcaption><b>Figure 3</b>With one write, a crash that always lost a record left the leader empty, and <code>Reclaim</code> could never fire. Letting a crash lose nothing makes it reachable.</figcaption>
+    </figure>
+
+    <h2 id="story-three-the-config-we-couldn-t-afford">Story three: the config we couldn't afford</h2>
+
+    <p>The third is a pass we gave up on knowingly.</p>
+
+    <p><a href="https://github.com/GetFelix/felix/pull/1294">#1294</a> made a follower that crashes under a relaxed fsync mode come back under a new storage identity. <code>FelixShardCrashKeepsId.cfg</code> shows why: without the rotation, the follower stays counted on a record it lost, and TLC finds the <code>AckedSurvive</code> violation in seconds.</p>
+
+    <p>The passing config needed two writes. With one, a crash either empties the log, which <code>FelixShardWipeFull.cfg</code> already covers, or loses nothing. A partial loss, keeping the first record and dropping the second, needs two. The first attempt, <code>FelixShardCrash.cfg</code>, ran two writes with the clock stopped at 2 and no margin. It started at 08:09 and was still running when the 60-minute PR job was cancelled.</p>
+
+    <p>We dropped it. The config header and the README now say plainly that the passing case with a partial loss isn't model-checked in CI. The rotation itself is covered by a unit test the twin cites (<code>a_crash_under_a_relaxed_fsync_mode_rotates_the_id</code>) and by a cluster test, <code>a_crashed_follower_is_not_promoted</code>. That's real coverage, but it isn't the exhaustive check the model would give.</p>
+
+    <p>I'd rather have a written gap than a smaller config that passes for the wrong reason, like the one-write version would have.</p>
+
+    <figure class="fig ck">
+      <div class="stage"><svg class="ck-svg " viewBox="0 0 480 372" role="img" aria-labelledby="ck4-t"><title id="ck4-t">The Felix cat at a desk beside an hourglass labelled 60-minute PR job, nearly run out. A ball of yarn labelled FelixShardCrash, 2 writes, clock to 2, is still unwinding off the desk. A framed notice on the wall says: Not model-checked in CI: a crash with a partial loss. See the README.</title><g font-size="18.5"><g class="rough"><rect class="boxa" x="244" y="12" width="226" height="130" rx="6"/></g><text x="260" y="42" font-size="18.5">Not model-checked</text><text x="260" y="70" class="m" font-size="18.5">in CI: a crash with</text><text x="260" y="98" class="m" font-size="18.5">a partial loss.</text><text x="260" y="126" class="a" font-size="18.5">See the README.</text><g class="rough"><rect class="metal" x="56" y="16" width="84" height="10" rx="3"/><rect class="metal" x="56" y="144" width="84" height="10" rx="3"/><path class="box" d="M66 26C66 68 94 76 98 85C94 94 66 102 66 144H130C130 102 102 94 98 85C102 76 130 68 130 26Z"/></g><path class="crown" d="M92 80L104 80L98 86Z"/><path class="crown" d="M72 142C76 120 90 110 98 108C106 110 120 120 124 142Z"/><path d="M98 86V108" stroke="var(--gold)" stroke-width="2"/><text x="98" y="180" text-anchor="middle" font-size="18.5">60-minute PR job</text><g class="rough"><g transform="translate(176 168) scale(0.6)"><path class="tl-e" d="M84 178C114 176 122 146 108 128C99 116 104 102 114 102"/><path class="tl" d="M84 178C114 176 122 146 108 128C99 116 104 102 114 102"/><path class="cf" d="M30 80C14 108 11 160 20 188L86 188C96 160 94 110 72 80Z"/><path class="cw" d="M38 90C33 120 37 150 50 168C63 150 67 120 62 90C56 97 44 97 38 90Z"/><ellipse class="cf" cx="38" cy="187" rx="12" ry="6"/><ellipse class="cf" cx="64" cy="187" rx="12" ry="6"/><g transform="translate(0 -2)"><path class="cf" d="M20 52C19 38 24 29 31 24L27 6Q27 3 30 5L47 17Q50 16.5 53 17L70 5Q73 3 73 6L69 24C76 29 81 38 80 52C80 72 67 86 50 86C33 86 20 72 20 52Z"/><path class="ce" d="M32 21L30.5 11L41 18ZM68 21L69.5 11L59 18Z"/><path class="cw" d="M29 66C31 57 42 55 50 60C58 55 69 57 71 66C71 77 61 84 50 84C39 84 29 77 29 66Z"/><path class="cn" d="M45.5 60.5h9l-4.5 5z"/><path class="wh" d="M31 68L6 63M31 73L7 76M69 68L94 63M69 73L93 76"/><path class="cw" d="M30 45Q38 37 46 45Q38 50 30 45ZM54 45Q62 37 70 45Q62 50 54 45Z"/><circle class="cp" cx="40" cy="45" r="3.4"/><circle class="cp" cx="64" cy="45" r="3.4"/><path class="lid" d="M29 42Q38 37 47 43M53 43Q62 37 71 42"/><path class="mo" d="M43 75Q50 69 57 75"/></g></g></g><g class="rough"><rect class="box" x="0" y="286" width="480" height="12" rx="3"/></g><g class="rough"><circle class="boxa" cx="356" cy="254" r="32"/></g><path class="lna" d="M332 236q24 10 46 -4M328 254q28 12 56 -2M334 272q22 8 42 -6" style="stroke-width:1.6"/><path class="lna" d="M386 266C420 270 446 262 462 282C470 292 466 304 478 318"/><text x="470" y="328" class="mono" text-anchor="end" font-size="18.5">FelixShardCrash</text><text x="470" y="356" class="m" text-anchor="end" font-size="18.5">2 writes, clock to 2</text></g></svg></div>
+      <figcaption><b>Figure 4</b>A gap you wrote down beats one you didn't know about.</figcaption>
+    </figure>
+
+    <h2 id="why-it-matters">Why it matters</h2>
+
+    <p>The docs make specific claims about Felix. A record acknowledged under <code>Quorum</code> survives a leader failover. A crashed leader never comes back without records it acknowledged. Those claims rest partly on these configs. If a config passes without reaching the states it's about, the claim has nothing behind it, and nobody notices until a cluster loses a record.</p>
+
+    <p>The empty passes looked exactly like real ones: green CI, no warnings, a “Finished” line. The only difference was a state count nobody was reading.</p>
+
+    <h2 id="what-we-learned">What we learned</h2>
+
+    <p>A violating config is the model's smoke detector. A passing config can't tell you it's empty, but a twin that stops violating can. The Figure 8 bug was caught only because the twins existed and <code>check_tla.sh</code> holds them to their expected invariant, not just to “something failed”.</p>
+
+    <p>A twin is only as good as the step it fails through. The <code>Reclaim</code> twin removed the measurement and failed. That didn't show the guarded step could ever fire. <a href="https://github.com/GetFelix/felix/pull/1328">#1328</a> got this right: <code>FelixShardSuspicionWipeUnbacked.cfg</code> differs from the passing <code>FelixShardSuspicion.cfg</code> only by the new <code>Forget</code> step, so its violation has to go through it.</p>
+
+    <p>Bounds bite in both directions. One write made the crash model cheap enough to check, and it also made the interesting crash impossible. The model's choices about what a fault can do need the same scrutiny as the code's.</p>
+
+    <p>Finally, the model and the code drift apart unless something forces them together. Early on, a protocol change (<a href="https://github.com/GetFelix/felix/pull/268">#268</a>) shipped without touching the model, and for three weeks CI pinned a violation the code no longer had. So <code>scripts/check_spec_pairing.py</code> fails any PR that touches the code the model describes but not a <code>.tla</code> or <code>.cfg</code> beyond comments. The way out is a <code>Spec-Unaffected: &lt;reason&gt;</code> line in a commit message or the PR description. It's blunt on purpose. Most edits to those files don't change the protocol, but nobody changes the protocol without being asked.</p>
+
+    <p>The rule that goes with it: when the model and the docs disagree, we don't edit the model to match. We fix the code, or we keep the model's finding as an expected violation and open an issue.</p>
+
+    <h2 id="what-we-ll-do-differently">What we'll do differently</h2>
+
+    <p>Every passing config gets a violating twin that differs by one fix, and the twin must fail through the step that fix guards. If the twin can fail some other way, it doesn't count.</p>
+
+    <p>Every new action gets a reachability check before it merges. Add a temporary invariant that says the action never fires, and TLC must violate it. The README already did this once for acknowledgements: a temporary <code>acked = {}</code> invariant that TLC breaks in 2,307 states. Doing it by hand in a PR description isn't enough.</p>
+
+    <p>Cfg headers record their state counts, and a run that drops far below its recorded count should fail, not just pass quietly.</p>
+
+    <p>The cost is time. The 107 configs are split across seven parallel CI jobs. <code>check_tla.sh</code> fills them longest first, using minutes measured from earlier CI runs, so one long config doesn't push a job past its hour. Pull requests run the configs of ten minutes or less, plus any whose <code>.cfg</code> changed. Main runs all of them. When a config won't fit, like <code>FelixShardCrash</code>, we write down the gap rather than shrink it until it means nothing.</p>
+
+    <h2 id="trying-it">Trying it</h2>
+
+    <p>The specs and every configuration are in <a href="https://github.com/GetFelix/felix/tree/main/docs/formal"><code>docs/formal/</code></a>, with a <a href="https://github.com/GetFelix/felix/blob/main/docs/formal/README.md">README</a> that lists what each config checks and what it's expected to do. Each <code>.cfg</code> header says what it models and cites the tests that back its assumptions.</p>
+
+    <p>To check one config, from the repo root:</p>
+
+<pre class="code" data-lang="Shell" tabindex="0"><code><span class="tok-f">scripts/check_tla.sh</span> FelixShardFigure8FollowerAcksNoStartRecord</code></pre>
+
+    <p>That needs Java 11 or later, or Docker or Podman. It fetches the TLA+ tools once, pinned by version and checksum, and holds the config to its registered outcome. <code>task tla:check</code> runs all of them. Look at the <code>distinct states found</code> line, not just the verdict.</p>
+
+    <p>To run Felix itself, the <a href="https://docs.getfelix.dev/deployment/docker-compose/">Docker Compose guide</a> starts a control plane and a broker with <code>docker compose up -d</code> (or <code>podman compose</code>).</p>
+  </div>
+
+  <section class="post-end" aria-labelledby="try-title">
+    <div class="wrap">
+      <div class="try-card">
+        <h2 id="try-title">Try Felix</h2>
+        <p>Write the compose file from the <a href="https://docs.getfelix.dev/deployment/docker-compose/">Docker Compose guide</a>, then start a broker and its control plane. With Podman, use <code>podman compose</code>.</p>
+<pre class="code" tabindex="0"><code>docker compose up -d</code></pre>
+        <div class="post-links">
+          <a href="https://github.com/GetFelix/felix"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>Felix on GitHub</a>
+          <a href="/blog/feed.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M5 11a8 8 0 0 1 8 8M5 4a15 15 0 0 1 15 15"/><circle cx="6" cy="18" r="1.6" fill="currentColor" stroke="none"/></svg>RSS feed</a>
+          <a href="/blog/">More posts</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</article>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-about">
+        <a class="brand" href="/">
+          <picture>
+            <source srcset="/assets/img/felix-mark-96.webp" type="image/webp">
+            <img src="/assets/img/felix-mark-96.png" alt="" width="30" height="30" loading="lazy">
+          </picture>
+          Felix
+        </a>
+        <p>The broker, control plane and felixctl are <span class="nowrap">AGPL-3.0</span>. The wire protocol and the client libraries are <span class="nowrap">Apache-2.0</span>.</p>
+      </div>
+      <nav aria-labelledby="f-site">
+        <h2 id="f-site">Site</h2>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/features.html">Features</a></li>
+          <li><a href="/guarantees.html">Guarantees</a></li>
+          <li><a href="/performance.html">Performance</a></li>
+          <li><a href="/status.html">Status</a></li>
+          <li><a href="/about.html">About</a></li>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="https://docs.getfelix.dev">Docs</a></li>
+          <li><a href="https://github.com/GetFelix">GitHub</a></li>
+        </ul>
+      </nav>
+      <nav aria-labelledby="f-project">
+        <h2 id="f-project">Project</h2>
+        <ul>
+          <li><a href="https://github.com/GetFelix/felix">Source code</a></li>
+          <li><a href="https://github.com/GetFelix/felix/releases">Releases</a></li>
+          <li><a href="https://github.com/GetFelix/felix/milestones">Milestones</a></li>
+          <li><a href="https://github.com/GetFelix/felix/blob/main/LICENSING.md">Licensing</a></li>
+        </ul>
+      </nav>
+      <nav aria-labelledby="f-docs">
+        <h2 id="f-docs">Docs</h2>
+        <ul>
+          <li><a href="https://docs.getfelix.dev/getting-started/quickstart/">Quickstart</a></li>
+          <li><a href="https://docs.getfelix.dev/getting-started/what-felix-is-for/">What works today</a></li>
+          <li><a href="https://docs.getfelix.dev/architecture/semantics/">Delivery semantics</a></li>
+          <li><a href="https://docs.getfelix.dev/architecture/testing/">How Felix is tested</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Felix Authors</span>
+      <span>This site is MIT licensed. <a href="https://github.com/GetFelix/getfelix.github.io">Source</a></span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

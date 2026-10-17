@@ -26,3 +26,15 @@ Posts are plain HTML pages in `blog/`. There is no build step.
 the sitemap. Delete it when the first real post lands.
 If you change `assets/blog.css`, update its `?v=` (the first 8 hex digits of
 its sha256) on every blog page and in the template.
+
+## Thumbnail on the index
+
+Each card in `blog/index.html` starts with an `<a class="post-thumb ck SLUG"
+href="/blog/SLUG.html" aria-hidden="true" tabindex="-1">` holding the post's
+first figure. Copy that `<svg>` from the post, drop its `role`, `<title>` and
+`aria-labelledby`, add `aria-hidden="true"`, and prefix every `id` and its
+references (`url(#...)`, `href="#..."`) with the post's own prefix so ids stay
+unique on the index. Figures drawn with the shared `.ck` classes need no new
+CSS. If a post defines its own classes, copy only the rules the thumbnail uses
+into `assets/blog.css`, scoped under `.post-thumb.SLUG`, then update the
+`?v=` as above.
