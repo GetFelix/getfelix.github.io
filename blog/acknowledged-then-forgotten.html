@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Acknowledged, then forgotten: a crash under periodic fsync · Felix</title>
 <meta name="description" content="Under Felix's default periodic fsync, a crashed broker could come back missing records it had acknowledged while the cluster still counted it as caught up; this is how review and the TLA+ model found it on the follower and leader sides, and what the fix costs.">
-<meta name="robots" content="noindex">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#f6f8fa" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#070a0e" media="(prefers-color-scheme: dark)">
@@ -352,16 +351,17 @@
 <span class="tok-c">// A new id already tells peers to start over.</span>
 <span class="tok-k">let</span> rotate = origin == <span class="tok-t">Origin</span>::<span class="tok-t">Loaded</span>
     &amp;&amp; <span class="tok-k">match</span> last_run {
-        <span class="tok-t">LastRun</span>::<span class="tok-t">Clean</span> | <span class="tok-t">LastRun</span>::<span class="tok-t">Crashed</span> { relaxed: <span class="tok-m">false</span> } =&gt; <span class="tok-m">false</span>,
-        <span class="tok-t">LastRun</span>::<span class="tok-t">Crashed</span> { relaxed: <span class="tok-m">true</span> } =&gt; <span class="tok-m">true</span>,
+        <span class="tok-t">LastRun</span>::<span class="tok-t">Clean</span> | <span class="tok-t">LastRun</span>::<span class="tok-t">Crashed</span> { relaxed: <span class="tok-m">false</span>, .. } =&gt; <span class="tok-m">false</span>,
+        <span class="tok-c">// Same boot and a synced page cache: the id stays.</span>
+        <span class="tok-t">LastRun</span>::<span class="tok-t">Crashed</span> { relaxed: <span class="tok-m">true</span>, boot: crashed_in } =&gt;
+            crashed_in.<span class="tok-f">is_none</span>() || crashed_in != boot || !<span class="tok-f">synced_after_crash</span>(root),
         <span class="tok-t">LastRun</span>::<span class="tok-t">Unrecorded</span> =&gt; <span class="tok-f">repair_pending</span>(),
     };
 <span class="tok-k">let</span> id = <span class="tok-k">if</span> rotate {
     storage_identity::<span class="tok-f">replace</span>(root, <span class="tok-f">fresh</span>())?
 } <span class="tok-k">else</span> {
     loaded
-};
-<span class="tok-f">write</span>(root, <span class="tok-t">RUNNING</span>, <span class="tok-k">if</span> relaxed { <span class="tok-t">RELAXED</span> } <span class="tok-k">else</span> { <span class="tok-m">0</span> }, id)?;</code></pre>
+};</code></pre>
 
     <p>The new id is on disk before the broker registers or answers a handshake, so nobody sees the old id from the new process. A crash under <code>OnCommit</code> keeps the id, because everything it acknowledged was synced.</p>
     <p>A process crash is different. When the broker is killed but the machine stays up, the kernel still has every write and flushes it after the process dies, so nothing is lost. Treating that like a power loss is expensive: under the default mode, killing two brokers of a three-copy shard would leave it waiting for an operator. So the broker also records the machine's boot id, and only takes a new identity when the machine itself went down (<a href="https://github.com/GetFelix/felix/issues/1367">#1367</a>).</p>
