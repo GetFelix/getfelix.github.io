@@ -16,45 +16,46 @@
     </item>
     -->
     <item>
-      <title>Ten parcels, one envelope: Linux UDP GSO and Felix's MTU cap</title>
-      <link>https://getfelix.dev/blog/ten-parcels-one-envelope.html</link>
-      <guid isPermaLink="true">https://getfelix.dev/blog/ten-parcels-one-envelope.html</guid>
-      <pubDate>Sat, 17 Oct 2026 00:00:00 +0000</pubDate>
-      <description>Raising Felix's QUIC MTU on Linux stalled delivery for good, because UDP GSO turns ten packets into one datagram the kernel refuses and quinn never falls back; this is how we found it, why the cap is 6,550, and why 4,096 is the default.</description>
-    </item>
-    <item>
-      <title>Our model said everything passed. It was checking nothing.</title>
-      <link>https://getfelix.dev/blog/checking-nothing.html</link>
-      <guid isPermaLink="true">https://getfelix.dev/blog/checking-nothing.html</guid>
-      <pubDate>Sat, 17 Oct 2026 00:00:00 +0000</pubDate>
-      <description>Felix checks 107 TLA+ configurations in CI; this is about three times a passing check meant nothing, and the twin configurations, reachability checks and spec pairing we use to catch it.</description>
-    </item>
-    <item>
-      <title>One slow subscriber shouldn't slow anyone else</title>
-      <link>https://getfelix.dev/blog/one-slow-subscriber.html</link>
-      <guid isPermaLink="true">https://getfelix.dev/blog/one-slow-subscriber.html</guid>
-      <pubDate>Sat, 17 Oct 2026 00:00:00 +0000</pubDate>
-      <description>How Felix keeps one slow subscriber from holding up publishers or other readers, and how a 2% single-publisher loss came from where the feeder gave back a subscriber's byte budget.</description>
-    </item>
-    <item>
-      <title>Point your Kafka client at Felix</title>
-      <link>https://getfelix.dev/blog/point-your-kafka-client-at-felix.html</link>
-      <guid isPermaLink="true">https://getfelix.dev/blog/point-your-kafka-client-at-felix.html</guid>
-      <pubDate>Sat, 17 Oct 2026 00:00:00 +0000</pubDate>
-      <description>Felix brokers speak enough of the Kafka wire protocol for Kafka producers and partition-assigning consumers to use durable Felix streams; this is how a Kafka request becomes a Felix operation, how idempotent sequences survive a failover, and exactly where compatibility stops.</description>
       <title>How we catch a 1% regression</title>
       <link>https://getfelix.dev/blog/catching-a-one-percent-regression.html</link>
       <guid isPermaLink="true">https://getfelix.dev/blog/catching-a-one-percent-regression.html</guid>
       <pubDate>Sat, 17 Oct 2026 00:00:00 +0000</pubDate>
       <description>Felix&#x27;s rule is that a release must not be measurably slower than the one before it; this is how same-runner A/B runs, a Welch&#x27;s t-test and throwaway bisect PRs in GitHub Actions find a 1-2% loss, and why a single benchmark run can&#x27;t.</description>
     </item>
-
+    <item>
+      <title>Our model said everything passed. It was checking nothing.</title>
+      <link>https://getfelix.dev/blog/checking-nothing.html</link>
+      <guid isPermaLink="true">https://getfelix.dev/blog/checking-nothing.html</guid>
+      <pubDate>Fri, 16 Oct 2026 00:00:00 +0000</pubDate>
+      <description>Felix checks 107 TLA+ configurations in CI; this is about three times a passing check meant nothing, and the twin configurations, reachability checks and spec pairing we use to catch it.</description>
+    </item>
+    <item>
+      <title>One slow subscriber shouldn't slow anyone else</title>
+      <link>https://getfelix.dev/blog/one-slow-subscriber.html</link>
+      <guid isPermaLink="true">https://getfelix.dev/blog/one-slow-subscriber.html</guid>
+      <pubDate>Fri, 16 Oct 2026 00:00:00 +0000</pubDate>
+      <description>How Felix keeps one slow subscriber from holding up publishers or other readers, and how a 2% single-publisher loss came from where the feeder gave back a subscriber's byte budget.</description>
+    </item>
     <item>
       <title>The data came back</title>
       <link>https://getfelix.dev/blog/the-data-came-back.html</link>
       <guid isPermaLink="true">https://getfelix.dev/blog/the-data-came-back.html</guid>
-      <pubDate>Sat, 17 Oct 2026 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 15 Oct 2026 00:00:00 +0000</pubDate>
       <description>Deleting a Felix stream or cache and creating one with the same name could bring back the old one&#x27;s data; this is how incarnations fixed it, and how we kept control-plane members on different releases from storing different answers during the rollout.</description>
+    </item>
+    <item>
+      <title>Point your Kafka client at Felix</title>
+      <link>https://getfelix.dev/blog/point-your-kafka-client-at-felix.html</link>
+      <guid isPermaLink="true">https://getfelix.dev/blog/point-your-kafka-client-at-felix.html</guid>
+      <pubDate>Mon, 28 Sep 2026 00:00:00 +0000</pubDate>
+      <description>Felix brokers speak enough of the Kafka wire protocol for Kafka producers and partition-assigning consumers to use durable Felix streams; this is how a Kafka request becomes a Felix operation, how idempotent sequences survive a failover, and exactly where compatibility stops.</description>
+    </item>
+    <item>
+      <title>Ten parcels, one envelope: Linux UDP GSO and Felix's MTU cap</title>
+      <link>https://getfelix.dev/blog/ten-parcels-one-envelope.html</link>
+      <guid isPermaLink="true">https://getfelix.dev/blog/ten-parcels-one-envelope.html</guid>
+      <pubDate>Sun, 27 Sep 2026 00:00:00 +0000</pubDate>
+      <description>Raising Felix's QUIC MTU on Linux stalled delivery for good, because UDP GSO turns ten packets into one datagram the kernel refuses and quinn never falls back; this is how we found it, why the cap is 6,550, and why 4,096 is the default.</description>
     </item>
   </channel>
 </rss>
