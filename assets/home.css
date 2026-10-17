@@ -545,55 +545,82 @@
   font-size: 14.5px;
   font-weight: 550;
 }
-/* The quick start opens under the links, across the card. */
 .card-links {
   flex-wrap: wrap;
 }
-.card-quick {
-  position: relative;
-  z-index: 2;
-  min-width: 0;
+.quick-dialog {
+  width: min(640px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  margin: auto;
+  padding: 20px;
+  overflow: auto;
+  color: var(--text);
+  background: var(--bg-raised);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  font-size: 14.5px;
+  font-weight: 400;
+}
+.quick-dialog[open] {
+  animation: quick-in 0.18s ease-out;
+}
+.quick-dialog::backdrop {
+  background: rgba(8, 14, 20, 0.5);
+  backdrop-filter: blur(6px);
+}
+.quick-dialog[open]::backdrop {
+  animation: quick-fade 0.18s ease-out;
+}
+@keyframes quick-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+}
+@keyframes quick-fade {
+  from {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .quick-dialog[open],
+  .quick-dialog[open]::backdrop {
+    animation: none;
+  }
+}
+.quick-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.quick-head picture {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 48px;
+}
+.quick-head img {
   max-width: 100%;
+  height: auto;
+  max-height: 48px;
 }
-.card-quick[open] {
-  flex: 1 1 100%;
-}
-.card-quick summary {
-  cursor: pointer;
-  color: var(--accent-text);
-  list-style: none;
-}
-.card-quick summary::-webkit-details-marker {
-  display: none;
-}
-/* A drawn chevron: a text triangle shrinks to a dot at phone sizes. */
-.card-quick summary::after {
-  content: "";
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  margin-left: 8px;
-  border-right: 2px solid currentColor;
-  border-bottom: 2px solid currentColor;
-  transform: translateY(-2px) rotate(45deg);
-  transition: transform 0.15s ease;
-}
-.card-quick[open] summary::after {
-  transform: translateY(2px) rotate(-135deg);
+.quick-head h4 {
+  flex: 1;
+  margin: 0;
+  font-size: 17px;
 }
 .quick-cmd {
   position: relative;
-  margin-top: 12px;
+  margin-top: 16px;
   border-radius: 10px;
   background: var(--bg-sunken);
   border: 1px solid var(--line);
 }
-/* Wrap the long download URL rather than widen the card. */
 .quick-cmd pre {
   margin: 0;
-  padding: 12px 44px 12px 14px;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
+  padding: 12px 52px 12px 14px;
+  overflow-x: auto;
   font-family: var(--mono);
   font-size: 12.5px;
   line-height: 1.6;
@@ -602,11 +629,16 @@
   position: absolute;
   top: 6px;
   right: 6px;
+  background: var(--bg-sunken);
 }
-.card-quick p {
-  margin: 10px 0 0;
+.quick-dialog p {
+  margin: 14px 0 0;
+  color: var(--muted);
   font-size: 13.5px;
-  font-weight: 400;
+  line-height: 1.6;
+}
+.quick-dialog p a {
+  color: var(--accent-text);
 }
 .card-links a {
   position: relative;
@@ -1584,12 +1616,10 @@
   .tab,
   .install-row > a,
   .card-links a,
-  .card-quick summary,
   .release-pill {
     min-height: 44px;
   }
-  .card-links a,
-  .card-quick summary {
+  .card-links a {
     display: inline-flex;
     align-items: center;
   }
@@ -1614,7 +1644,8 @@
   }
 }
 @media (max-width: 760px) {
-  .quick-cmd .icon-btn {
+  .quick-cmd .icon-btn,
+  .quick-close {
     width: 44px;
     height: 44px;
   }

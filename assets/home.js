@@ -54,6 +54,27 @@
     });
   });
 
+  // Quick start dialogs. Without script the link goes to the docs.
+  if (typeof HTMLDialogElement === "function") {
+    document.querySelectorAll("[data-quick]").forEach(function (link) {
+      var dlg = document.getElementById(link.getAttribute("data-quick"));
+      if (!dlg) return;
+      link.addEventListener("click", function (e) {
+        e.preventDefault();
+        dlg.showModal();
+      });
+      dlg.addEventListener("click", function (e) {
+        // A click on the backdrop lands on the dialog itself, outside its padding box.
+        var r = dlg.getBoundingClientRect();
+        var outside = e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom;
+        if (outside || e.target.closest("[data-quick-close]")) dlg.close();
+      });
+      dlg.addEventListener("close", function () {
+        link.focus();
+      });
+    });
+  }
+
   // Hero background: lanes of log records drifting slowly to the right.
   var canvas = document.querySelector(".hero-bg");
   if (!canvas || !canvas.getContext) return;
