@@ -1,0 +1,533 @@
+/* Blog: the post list and the post layout. */
+
+/* Syntax colours. Code blocks sit on --code-bg, which is dark in every theme,
+   so only solarized needs its own set. */
+:root {
+  --tok-c: #6c7d90;
+  --tok-k: #c49cff;
+  --tok-s: #8fd6a8;
+  --tok-f: #6fd3ef;
+  --tok-t: #f2c879;
+  --tok-m: #ff9f80;
+}
+:root[data-theme="solarized"] {
+  --tok-c: #657b83;
+  --tok-k: #6c71c4;
+  --tok-s: #859900;
+  --tok-f: #268bd2;
+  --tok-t: #b58900;
+  --tok-m: #cb4b16;
+}
+
+/* Index */
+.blog-intro .wrap {
+  grid-template-columns: minmax(0, 1fr);
+}
+.blog-intro .section-head {
+  margin-bottom: 0;
+}
+.blog-intro .section-head p {
+  max-width: 56ch;
+}
+.feed-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 22px;
+  font-weight: 600;
+  font-size: 15px;
+}
+.feed-link svg {
+  width: 16px;
+  height: 16px;
+}
+.blog-list {
+  padding: 56px 0 96px;
+}
+.blog-list .wrap {
+  max-width: calc(760px + 2 * var(--gutter));
+}
+.post-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.post-list li + li {
+  border-top: 1px solid var(--line);
+}
+.post-card {
+  display: grid;
+  gap: 8px;
+  padding: 28px 0;
+}
+.post-card h2 {
+  font-size: clamp(22px, 2.6vw, 27px);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+.post-card h2 a {
+  color: var(--text);
+}
+.post-card h2 a:hover {
+  color: var(--accent-text);
+}
+.post-card p {
+  color: var(--muted);
+  max-width: 64ch;
+}
+.post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--faint);
+}
+.post-meta > * + *::before {
+  content: "·";
+  margin-right: 14px;
+}
+.post-empty {
+  padding: 28px 0;
+  color: var(--muted);
+}
+/* Hidden once the list has a post. A browser without :has() shows both. */
+.post-list:has(li) + .post-empty {
+  display: none;
+}
+
+/* Post header */
+.post-head {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 64px 0 40px;
+  border-bottom: 1px solid var(--line);
+}
+.post-head::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(ellipse 55% 90% at 85% 0%, var(--accent-glow), transparent 70%);
+  opacity: 0.3;
+  pointer-events: none;
+}
+.post-head .wrap,
+.post-body,
+.post-end .wrap {
+  max-width: calc(var(--measure) + 2 * var(--gutter));
+}
+.post-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 22px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.post-back svg {
+  width: 14px;
+  height: 14px;
+}
+.post-head h1 {
+  font-size: clamp(34px, 5vw, 50px);
+  font-weight: 750;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+.post-dek {
+  margin-top: 16px;
+  color: var(--muted);
+  font-size: 19px;
+  line-height: 1.55;
+}
+.byline {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 28px;
+}
+.byline img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid color-mix(in srgb, var(--accent) 40%, var(--line));
+  object-fit: cover;
+}
+.byline-name {
+  display: block;
+  font-weight: 600;
+  font-size: 15.5px;
+  line-height: 1.3;
+}
+.byline .post-meta {
+  font-size: 12.5px;
+}
+
+/* About 70 characters of Inter at 18px. The ch unit is the width of a zero,
+   which is wider than Inter's average letter, so 70ch would run near 90. */
+:root {
+  --measure: 660px;
+}
+.post-body {
+  margin: 0 auto;
+  padding: 48px var(--gutter) 24px;
+  font-size: 18px;
+  line-height: 1.72;
+}
+.post-body > * + * {
+  margin-top: 1.15em;
+}
+.post-body h2 {
+  margin-top: 2.2em;
+  font-size: 1.6em;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+.post-body h3 {
+  margin-top: 1.8em;
+  font-size: 1.22em;
+  font-weight: 650;
+  letter-spacing: -0.015em;
+}
+.post-body h2 + *,
+.post-body h3 + * {
+  margin-top: 0.6em;
+}
+.post-body a {
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent-text) 40%, transparent);
+  text-underline-offset: 3px;
+}
+.post-body a:hover {
+  text-decoration-color: currentColor;
+}
+.post-body ul,
+.post-body ol {
+  padding-left: 1.4em;
+}
+.post-body li + li {
+  margin-top: 0.35em;
+}
+.post-body li::marker {
+  color: var(--faint);
+}
+.post-body blockquote {
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 20px;
+  border-left: 3px solid var(--line-strong);
+  color: var(--muted);
+}
+.post-body hr {
+  margin: 2.4em 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+}
+.post-body strong {
+  font-weight: 650;
+}
+
+/* Code blocks. data-lang puts a label in the top corner. */
+.code {
+  position: relative;
+  margin-left: 0;
+  margin-right: 0;
+  padding: 20px 22px;
+  border-radius: var(--radius-sm);
+  background: var(--code-bg);
+  color: var(--code-text);
+  border: 1px solid var(--line);
+  font-size: 14px;
+  line-height: 1.7;
+  tab-size: 4;
+  overflow-x: auto;
+}
+.code[data-lang] {
+  padding-top: 38px;
+}
+.code[data-lang]::before {
+  content: attr(data-lang);
+  position: absolute;
+  top: 10px;
+  left: 22px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tok-c);
+}
+.code code {
+  font-size: inherit;
+}
+/* JetBrains Mono draws -> and /\ as single glyphs; readers copy these blocks,
+   so show the characters they will paste. */
+.code {
+  font-variant-ligatures: none;
+}
+.tok-c {
+  color: var(--tok-c);
+  font-style: italic;
+}
+.tok-k {
+  color: var(--tok-k);
+}
+.tok-s {
+  color: var(--tok-s);
+}
+.tok-f {
+  color: var(--tok-f);
+}
+.tok-t {
+  color: var(--tok-t);
+}
+.tok-m {
+  color: var(--tok-m);
+}
+
+/* TLA+ reads more like a formula than a program, so it is set on the page
+   background instead of a dark terminal. */
+.code.tla {
+  background: var(--bg-sunken);
+  color: var(--text);
+  border-color: var(--line-strong);
+  border-left: 3px solid var(--idea);
+}
+.code.tla::before {
+  color: var(--idea);
+}
+.tla .tla-rule {
+  color: var(--faint);
+}
+.tla .tla-k {
+  color: var(--idea);
+  font-weight: 500;
+}
+.tla .tla-op {
+  color: var(--accent-text);
+}
+.tla .tla-def {
+  color: var(--text);
+  font-weight: 500;
+}
+.tla .tla-c {
+  color: var(--faint);
+  font-style: italic;
+}
+
+/* Callouts */
+.callout {
+  padding: 16px 20px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-soft);
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+  font-size: 0.94em;
+  line-height: 1.65;
+}
+.callout > * + * {
+  margin-top: 0.6em;
+}
+.callout-t {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 650;
+  color: var(--accent-text);
+}
+.callout-t svg {
+  flex: none;
+  width: 18px;
+  height: 18px;
+}
+.callout.warn {
+  background: var(--warn-soft);
+  border-color: color-mix(in srgb, var(--warn) 30%, transparent);
+}
+.callout.warn .callout-t {
+  color: var(--warn);
+}
+
+/* Figures */
+.fig {
+  margin-left: 0;
+  margin-right: 0;
+}
+.post-body .fig {
+  margin-top: 1.8em;
+  margin-bottom: 1.8em;
+}
+.fig .stage {
+  padding: 22px;
+}
+.fig .tz-svg {
+  max-width: 520px;
+  margin: 0 auto;
+}
+.fig figcaption {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.55;
+}
+.fig figcaption b {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--faint);
+  margin-right: 6px;
+}
+
+/* Tables scroll inside their box on a phone instead of widening the page. */
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--bg-raised);
+}
+.post-body table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15.5px;
+  line-height: 1.5;
+}
+.post-body th,
+.post-body td {
+  padding: 11px 16px;
+  text-align: left;
+  vertical-align: top;
+}
+.post-body th {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--faint);
+  background: var(--bg-sunken);
+  white-space: nowrap;
+}
+.post-body tr + tr td {
+  border-top: 1px solid var(--line);
+}
+.post-body td.num {
+  font-family: var(--mono);
+  font-size: 14px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* Marks the unlisted style sample. */
+.sample-note {
+  display: inline-block;
+  margin-bottom: 14px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--warn-soft);
+  color: var(--warn);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+/* Post footer */
+.post-end {
+  padding: 32px 0 96px;
+}
+.try-card {
+  padding: 26px 28px;
+  border-radius: var(--radius);
+  background: radial-gradient(ellipse 80% 120% at 0% 0%, var(--accent-soft), transparent 70%), var(--bg-raised);
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line));
+  box-shadow: var(--shadow-md);
+}
+.try-card h2 {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+.try-card > p {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 15.5px;
+}
+.try-card .code {
+  margin: 16px 0 0;
+  padding: 14px 18px;
+  font-size: 13.5px;
+}
+.post-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+  margin-top: 20px;
+  font-size: 15px;
+  font-weight: 600;
+}
+.post-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.post-links svg {
+  width: 16px;
+  height: 16px;
+}
+
+@media (max-width: 760px) {
+  .blog-list {
+    padding: 32px 0 72px;
+  }
+  .post-card {
+    padding: 22px 0;
+  }
+  .post-head {
+    padding: 40px 0 28px;
+  }
+  .post-dek {
+    font-size: 17px;
+  }
+  .post-body {
+    padding-top: 32px;
+    font-size: 17px;
+    line-height: 1.68;
+  }
+  .post-body h2 {
+    font-size: 1.45em;
+  }
+  .code {
+    padding: 16px;
+    font-size: 13px;
+  }
+  .code[data-lang] {
+    padding-top: 34px;
+  }
+  .code[data-lang]::before {
+    left: 16px;
+  }
+  .fig .stage {
+    padding: 14px 12px;
+  }
+  .post-body th,
+  .post-body td {
+    padding: 10px 12px;
+  }
+  .try-card {
+    padding: 22px 18px;
+  }
+  .feed-link,
+  .post-back,
+  .post-links a {
+    min-height: 44px;
+  }
+  .post-back {
+    margin-bottom: 8px;
+  }
+}

@@ -284,6 +284,9 @@ p {
 .brand:hover {
   text-decoration: none;
 }
+.site-header .brand {
+  flex: none;
+}
 .brand img {
   width: 30px;
   height: 30px;
@@ -1182,6 +1185,18 @@ p {
     font-size: 13.5px;
     font-weight: 450;
     color: var(--muted);
+  }
+}
+/* Just above the phone layout the full nav only fits with tighter links. */
+@media (min-width: 761px) and (max-width: 900px) {
+  .site-header .wrap {
+    gap: 12px;
+  }
+  .nav a {
+    padding: 8px 9px;
+  }
+  .nav .sep {
+    margin: 0 4px;
   }
 }
 @keyframes menu-in {
