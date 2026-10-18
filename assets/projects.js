@@ -17,24 +17,24 @@
   });
 })();
 
-// The swarm clip plays only while on screen. With reduced motion it never
-// loads, and the poster stays.
+// Each clip plays only while on screen. With reduced motion none of them
+// load, and the posters stay.
 (function () {
-  var video = document.querySelector("video.swarm");
-  if (!video || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  if (!("IntersectionObserver" in window)) {
+  var videos = document.querySelectorAll("video.clip");
+  if (!videos.length || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  function play(video) {
     video.preload = "auto";
     video.play().catch(function () {});
+  }
+  if (!("IntersectionObserver" in window)) {
+    videos.forEach(play);
     return;
   }
-  new IntersectionObserver(function (entries) {
+  var observer = new IntersectionObserver(function (entries) {
     entries.forEach(function (e) {
-      if (e.isIntersecting) {
-        video.preload = "auto";
-        video.play().catch(function () {});
-      } else {
-        video.pause();
-      }
+      if (e.isIntersecting) play(e.target);
+      else e.target.pause();
     });
-  }, { threshold: 0.25 }).observe(video);
+  }, { threshold: 0.25 });
+  videos.forEach(function (video) { observer.observe(video); });
 })();
