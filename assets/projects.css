@@ -73,6 +73,9 @@
 .pm.art.relay video {
   height: 90%;
 }
+.pm.art.agents picture {
+  height: 84%;
+}
 .pm .media-caption {
   position: absolute;
   top: 30px;
