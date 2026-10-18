@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Introducing Felix: one log for streams, caches and counters · Felix</title>
+<meta name="description" content="What Felix is, how a publish travels from a client to disk to every subscriber, why it is built that way, and how to run it on your laptop in five minutes.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#f6f8fa" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#070a0e" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://getfelix.dev/blog/introducing-felix.html">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="alternate" type="application/rss+xml" title="Felix blog" href="/blog/feed.xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Felix">
+<meta property="og:title" content="Introducing Felix: one log for streams, caches and counters">
+<meta property="og:description" content="What Felix is, how a publish travels from a client to disk to every subscriber, why it is built that way, and how to run it on your laptop in five minutes.">
+<meta property="og:url" content="https://getfelix.dev/blog/introducing-felix.html">
+<meta property="og:image" content="https://getfelix.dev/assets/img/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Felix logo, a cat in a round badge above the word Felix, beside the headline: One system for your events, state and work. Below it: An open-source, distributed platform for streams, caches, queues and counters, all on one replicated log. Written in Rust. getfelix.dev">
+<meta property="article:published_time" content="2026-09-26">
+<meta property="article:author" content="Gabriel Loewen">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Introducing Felix: one log for streams, caches and counters">
+<meta name="twitter:description" content="What Felix is, how a publish travels from a client to disk to every subscriber, why it is built that way, and how to run it on your laptop in five minutes.">
+<meta name="twitter:image" content="https://getfelix.dev/assets/img/og-image.png">
+<link rel="preload" href="/assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/site.css?v=0f7e09e7">
+<link rel="stylesheet" href="/assets/blog.css?v=e9776bed">
+<script>
+  (function () {
+    var d = document.documentElement;
+    d.classList.add("js");
+    try {
+      var t = localStorage.getItem("theme");
+      if (t === "light" || t === "dark" || t === "solarized") d.setAttribute("data-theme", t);
+    } catch (e) {}
+  })();
+</script>
+<script defer src="/assets/site.js?v=50a0e9e4"></script>
+<style>
+/* Illustrations for this post. */
+.ck {
+  --cat: #141b23;
+  --cat-edge: #141b23;
+  --fur: #ffffff;
+  --ear: #5b6773;
+  --bad: #b42318;
+  --bad-soft: rgba(180, 35, 24, 0.1);
+  --gold: #f0b429;
+  --paper: #fffdf5;
+  --mouse: #9aa6b2;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .ck {
+    --cat: #121820;
+    --cat-edge: #aebdcb;
+    --fur: #e3eaf1;
+    --ear: #3d4853;
+    --bad: #ff8073;
+    --bad-soft: rgba(255, 128, 115, 0.12);
+    --paper: #18212b;
+    --mouse: #7f8d9b;
+  }
+}
+:root[data-theme="dark"] .ck {
+  --cat: #121820;
+  --cat-edge: #aebdcb;
+  --fur: #e3eaf1;
+  --ear: #3d4853;
+  --bad: #ff8073;
+  --bad-soft: rgba(255, 128, 115, 0.12);
+  --paper: #18212b;
+  --mouse: #7f8d9b;
+}
+:root[data-theme="solarized"] .ck {
+  --cat: #00161c;
+  --cat-edge: #93a1a1;
+  --fur: #eee8d5;
+  --ear: #284b54;
+  --bad: #ef5350;
+  --bad-soft: rgba(239, 83, 80, 0.14);
+  --gold: #e0b43a;
+  --paper: #0b404d;
+  --mouse: #839496;
+}
+.ck .stage {
+  padding: 18px;
+}
+.ck-svg {
+  max-width: 560px;
+  margin: 0 auto;
+}
+.ck-svg text {
+  font-family: var(--sans);
+  font-weight: 600;
+  fill: var(--text);
+}
+.ck-svg .mono {
+  font-family: var(--mono);
+  font-weight: 500;
+}
+.ck-svg .m { fill: var(--muted); font-weight: 500; }
+.ck-svg .a { fill: var(--accent-text); }
+.ck-svg .ok { fill: var(--ok); }
+.ck-svg .bad { fill: var(--bad); }
+.ck-svg .wn { fill: var(--warn); }
+.ck-svg .hand { font-family: "Lobster Two", var(--sans); font-style: italic; font-weight: 700; }
+.ck-svg .cap { font-family: var(--mono); font-weight: 500; letter-spacing: 0.06em; fill: var(--faint); }
+.ck-svg .rough { filter: url(#ck-rough); }
+.ck-svg .ln,
+.ck-svg .lnm,
+.ck-svg .lna,
+.ck-svg .lnb,
+.ck-svg .lnok {
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ck-svg .lnm { stroke: var(--faint); }
+.ck-svg .lna { stroke: var(--accent); stroke-width: 2.2; }
+.ck-svg .lnb { stroke: var(--bad); stroke-width: 2.2; }
+.ck-svg .lnok { stroke: var(--ok); stroke-width: 2.2; }
+.ck-svg .dash { stroke-dasharray: 5 6; }
+.ck-svg .lane { stroke: var(--line-strong); stroke-width: 3; stroke-linecap: round; fill: none; }
+.ck-svg .cf { fill: var(--cat); stroke: var(--cat-edge); stroke-width: 2.4; stroke-linejoin: round; }
+.ck-svg .cw { fill: var(--fur); }
+.ck-svg .ce { fill: var(--ear); }
+.ck-svg .cn { fill: #e58a9a; }
+.ck-svg .cp { fill: #141b23; }
+.ck-svg .wh { fill: none; stroke: var(--faint); stroke-width: 1.6; stroke-linecap: round; }
+.ck-svg .lid { fill: none; stroke: var(--cat); stroke-width: 3.5; stroke-linecap: round; }
+.ck-svg .hap { fill: none; stroke: var(--fur); stroke-width: 3.6; stroke-linecap: round; stroke-linejoin: round; }
+.ck-svg .mo { fill: none; stroke: #141b23; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.ck-svg .tl { fill: none; stroke: var(--cat); stroke-width: 10; stroke-linecap: round; }
+.ck-svg .tl-e { fill: none; stroke: var(--cat-edge); stroke-width: 15; stroke-linecap: round; }
+.ck-svg .crown { fill: var(--gold); stroke: #8a5a00; stroke-width: 2; stroke-linejoin: round; }
+.ck-svg .tg { fill: var(--paper); stroke: var(--accent); stroke-width: 2; }
+.ck-svg .tgb { fill: var(--accent); }
+.ck-svg .tgt { fill: var(--on-accent); font-family: var(--mono); font-weight: 500; letter-spacing: 0.08em; }
+.ck-svg .tgv { fill: var(--text); }
+.ck-svg .tag-new .tg { stroke: var(--warn); }
+.ck-svg .tag-new .tgb { fill: var(--warn); }
+.ck-svg .tag-new .tgt { fill: var(--bg-raised); }
+.ck-svg .chw rect { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; }
+.ck-svg .chw text { fill: var(--accent-text); }
+.ck-svg .chc rect { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; stroke-dasharray: 4 4; }
+.ck-svg .chc text { fill: var(--accent-text); }
+.ck-svg .chr rect { fill: var(--bg-sunken); stroke: var(--line-strong); stroke-width: 2; }
+.ck-svg .chx rect { fill: var(--bad-soft); stroke: var(--bad); stroke-width: 2; }
+.ck-svg .chx text { fill: var(--bad); }
+.ck-svg .chg rect { fill: none; stroke: var(--faint); stroke-width: 2; stroke-dasharray: 4 4; }
+.ck-svg .chg text { fill: var(--faint); }
+.ck-svg .strike { stroke: var(--bad); stroke-width: 2.6; stroke-linecap: round; }
+.ck-svg .bolt { fill: var(--gold); stroke: #8a5a00; stroke-width: 1.6; stroke-linejoin: round; }
+.ck-svg .okp rect { fill: var(--ok-soft); stroke: var(--ok); stroke-width: 2; }
+.ck-svg .okp text { fill: var(--ok); }
+.ck-svg .badp rect { fill: var(--bad-soft); stroke: var(--bad); stroke-width: 2; }
+.ck-svg .badp text { fill: var(--bad); }
+.ck-svg .accp rect { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; }
+.ck-svg .accp text { fill: var(--accent-text); }
+.ck-svg .box { fill: var(--bg-raised); stroke: var(--line-strong); stroke-width: 2; }
+.ck-svg .boxa { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; }
+.ck-svg .note { fill: var(--paper); stroke: var(--warn); stroke-width: 1.6; }
+.ck-svg .paper { fill: var(--paper); stroke: var(--text); stroke-width: 2; stroke-linejoin: round; }
+.ck-svg .bubble { fill: var(--bg-raised); stroke: var(--text); stroke-width: 2; stroke-linejoin: round; }
+.ck-svg .ground { fill: none; stroke: var(--line-strong); stroke-width: 2.5; stroke-linecap: round; }
+.ck-svg .metal { fill: var(--bg-sunken); stroke: var(--text); stroke-width: 2; stroke-linejoin: round; }
+.ck-svg .dark { fill: var(--faint); opacity: 0.35; }
+.ck-svg .mouse { fill: var(--mouse); stroke: var(--text); stroke-width: 1.6; }
+.ck-svg .ear-p { fill: #e8a0ac; }
+.ck-svg .dot { fill: var(--text); }
+.ck-svg .ledok { fill: var(--ok); }
+.ck-svg .panel { fill: none; stroke: var(--line-strong); stroke-width: 2; }
+.ck-svg .panel-bad { fill: var(--bad-soft); stroke: var(--bad); stroke-width: 2; opacity: 0.9; }
+.ck-svg .panel-ok { fill: var(--ok-soft); stroke: var(--ok); stroke-width: 2; }
+.ck-svg .stars { fill: var(--gold); stroke: #8a5a00; stroke-width: 1.2; }
+.ck-svg .ballot { fill: var(--paper); stroke: var(--text); stroke-width: 2; }
+.ck-svg .domino { fill: var(--bg-raised); stroke: var(--text); stroke-width: 2.2; stroke-linejoin: round; }
+.ck-svg .pip { fill: var(--accent); }
+
+/* Wide figures run past the text column on a desktop; narrower screens get the
+   stacked drawing of the same thing. */
+.ck .stage .ck-t { display: none; max-width: 460px; }
+.ck .stage .ck-w { max-width: none; }
+.ck .stage .ck-mid { max-width: 700px; }
+@media (min-width: 940px) {
+  .post-body .ck.wide {
+    margin-left: calc(50% - 440px);
+    margin-right: calc(50% - 440px);
+  }
+  .post-body .ck.wide figcaption {
+    max-width: 660px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+@media (max-width: 939px) {
+  .ck .stage .ck-w { display: none; }
+  .ck .stage .ck-t { display: block; }
+}
+@media (max-width: 760px) {
+  .ck .stage { padding: 10px 8px; }
+}
+.ck-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="Felix home">
+      <picture>
+        <source srcset="/assets/img/felix-mark-96.webp" type="image/webp">
+        <img src="/assets/img/felix-mark-96.png" alt="" width="30" height="30">
+      </picture>
+      Felix
+    </a>
+    <nav class="nav" aria-label="Main">
+      <button class="icon-btn nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Menu">
+        <svg class="open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        <svg class="shut" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="/features.html"><span class="nav-l">Features</span><span class="nav-hint">What Felix does</span></a></li>
+        <li><a href="/projects.html"><span class="nav-l">Projects</span><span class="nav-hint">Apps built on Felix</span></a></li>
+        <li><a href="/guarantees.html"><span class="nav-l">Guarantees</span><span class="nav-hint">Replication, failover and testing</span></a></li>
+        <li><a href="/performance.html"><span class="nav-l">Performance</span><span class="nav-hint">Throughput and latency</span></a></li>
+        <li><a href="/status.html"><span class="nav-l">Status</span><span class="nav-hint">What works today, and what's next</span></a></li>
+        <li><a href="/blog/"><span class="nav-l">Blog</span><span class="nav-hint">Notes from building Felix</span></a></li>
+        <li><a href="https://docs.getfelix.dev"><span class="nav-l">Docs<svg class="ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></span><span class="nav-hint">docs.getfelix.dev</span></a></li>
+      </ul>
+      <span class="sep" aria-hidden="true"></span>
+      <a class="icon-btn gh" href="https://github.com/GetFelix" aria-label="GetFelix on GitHub">
+        <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+      </a>
+      <button class="icon-btn theme-toggle" type="button" aria-label="Switch theme">
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11Z"/></svg>
+        <svg class="sol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18Z" fill="currentColor"/></svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<article class="post" aria-labelledby="post-title">
+  <header class="post-head">
+    <div class="wrap">
+      <a class="post-back" href="/blog/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>All posts</a>
+      <div>
+      <h1 id="post-title">Introducing Felix: one log for streams, caches and counters</h1>
+      </div>
+      <p class="post-dek">What Felix is, how a publish travels from a client to disk to every subscriber, why it is built that way, and how to run it on your laptop in five minutes.</p>
+      <div class="byline">
+        <img src="/assets/img/gabriel-loewen.jpg" alt="" width="40" height="40">
+        <div>
+          <span class="byline-name">Gabriel Loewen</span>
+          <span class="post-meta"><time datetime="2026-09-26">26 September 2026</time><span>11 min read</span></span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="post-body">
+    <svg class="ck-defs" aria-hidden="true" focusable="false"><filter id="ck-rough" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="7"/><feDisplacementMap in="SourceGraphic" scale="2"/></filter></svg>
+
+    <p>Felix is a replicated log that serves streams, caches, counters and consumer groups from one system, over QUIC. You publish to it, subscribe to it, read the newest value for a key from it and add to a counter in it, with one client, one wire protocol and one set of permissions.</p>
+
+    <p>I built it because most services I've worked on end up running three systems for what is really one job, and the bugs live in the gaps between them. This post is the introduction I'd give an engineer who has never heard of Felix: what problem it removes, how a publish gets through it, why it is built the way it is, and how to have it running on your laptop in about five minutes.</p>
+
+    <h2 id="one-log-three-readings">One log, three readings</h2>
+
+    <p>Take an order service. It needs a record of what happened, so other services can react and so you can replay it. It needs to answer "what is order 42 right now?" without walking that history. And it needs to hand out work, like sending the receipt, to exactly one worker at a time.</p>
+
+    <p>The usual answer is an event log for the first, Redis for the second and a work queue for the third. Each is good at its job. But that is three deployments, three permission models, three ways to fail, and some glue code that writes the same fact to two places. When the second write fails, the log says refunded and the cache says paid. Neither system can tell, because only your code knew they were supposed to agree.</p>
+
+    <figure class="fig ck">
+      <div class="stage glow"><svg class="ck-svg" viewBox="0 0 560 340" role="img" aria-labelledby="ck1-t"><title id="ck1-t">Left, labelled three systems: an app wired to an event log, a cache and a queue. Glue code between the log and the cache has failed with a red cross, so the log says order 42 refunded while the cache still says order 42 paid. Right, labelled one log: a row of records numbered 0 to 6 with the Felix cat sitting on it, smiling. Three markers point into the same row: stream at the newest record, queue partway back, and cache: order-42 at the record holding that key. One write, three readings.</title><g font-size="18.5"><path class="ground" d="M6 330H554"/><path class="lnm dash" d="M276 20V318"/><text x="138" y="30" class="cap" text-anchor="middle" font-size="14">THREE SYSTEMS</text><text x="418" y="30" class="cap" text-anchor="middle" font-size="14">ONE LOG</text><g class="rough"><rect class="box" x="12" y="142" width="64" height="52" rx="8"/></g><text x="44" y="174" text-anchor="middle" font-size="16">app</text><g class="rough"><rect class="metal" x="126" y="52" width="140" height="56" rx="8"/></g><text x="196" y="76" text-anchor="middle" font-size="16">event log</text><g class="rough"><rect class="metal" x="126" y="146" width="140" height="56" rx="8"/></g><text x="196" y="170" text-anchor="middle" font-size="16">cache</text><g class="rough"><rect class="metal" x="126" y="240" width="140" height="56" rx="8"/></g><text x="196" y="264" text-anchor="middle" font-size="16">queue</text><text x="196" y="98" class="mono bad" text-anchor="middle" font-size="12">order 42 refunded</text><text x="196" y="192" class="mono bad" text-anchor="middle" font-size="12">order 42 paid</text><text x="196" y="286" class="mono m" text-anchor="middle" font-size="12">send receipt</text><path class="ln" d="M76 160C100 150 100 80 126 80M76 168H126M76 178C100 188 100 268 126 268"/><path class="lnb dash" d="M196 110V144"/><path class="lnb" d="M190 121l12 12M202 121l-12 12"/><text x="30" y="236" class="hand bad" text-anchor="start" font-size="19">glue</text><text x="30" y="256" class="hand bad" text-anchor="start" font-size="19">code</text><g class="chw"><rect x="296" y="196" width="30" height="34" rx="4"/><text x="311.0" y="218.0" text-anchor="middle" font-size="14" class="mono">0</text></g><g class="chw"><rect x="330" y="196" width="30" height="34" rx="4"/><text x="345.0" y="218.0" text-anchor="middle" font-size="14" class="mono">1</text></g><g class="chw"><rect x="364" y="196" width="30" height="34" rx="4"/><text x="379.0" y="218.0" text-anchor="middle" font-size="14" class="mono">2</text></g><g class="chw"><rect x="398" y="196" width="30" height="34" rx="4"/><text x="413.0" y="218.0" text-anchor="middle" font-size="14" class="mono">3</text></g><g class="chw"><rect x="432" y="196" width="30" height="34" rx="4"/><text x="447.0" y="218.0" text-anchor="middle" font-size="14" class="mono">4</text></g><g class="chw"><rect x="466" y="196" width="30" height="34" rx="4"/><text x="481.0" y="218.0" text-anchor="middle" font-size="14" class="mono">5</text></g><g class="chw"><rect x="500" y="196" width="30" height="34" rx="4"/><text x="515.0" y="218.0" text-anchor="middle" font-size="14" class="mono">6</text></g><text x="515" y="252" text-anchor="middle"></text><path class="lna" d="M515 262V240M509 248l6-8 6 8"/><text x="515" y="280" class="a" text-anchor="middle" font-size="14">stream</text><path class="lnm" d="M413 262V240M407 248l6-8 6 8"/><text x="413" y="280" class="m" text-anchor="middle" font-size="14">queue</text><path class="ln" d="M481 160V188M475 180l6 8 6-8"/><text x="487" y="152" class="mono" text-anchor="middle" font-size="13">cache: order-42</text><text x="418" y="312" class="m" text-anchor="middle" font-size="15">one write, three readings</text><g class="rough"><g transform="translate(300 70) scale(0.62)"><path class="tl-e" d="M84 178C114 176 122 146 108 128C99 116 104 102 114 102"/><path class="tl" d="M84 178C114 176 122 146 108 128C99 116 104 102 114 102"/><path class="cf" d="M30 80C14 108 11 160 20 188L86 188C96 160 94 110 72 80Z"/><path class="cw" d="M38 90C33 120 37 150 50 168C63 150 67 120 62 90C56 97 44 97 38 90Z"/><ellipse class="cf" cx="38" cy="187" rx="12" ry="6"/><ellipse class="cf" cx="64" cy="187" rx="12" ry="6"/><g transform="translate(0 -2)"><path class="cf" d="M20 52C19 38 24 29 31 24L27 6Q27 3 30 5L47 17Q50 16.5 53 17L70 5Q73 3 73 6L69 24C76 29 81 38 80 52C80 72 67 86 50 86C33 86 20 72 20 52Z"/><path class="ce" d="M32 21L30.5 11L41 18ZM68 21L69.5 11L59 18Z"/><path class="cw" d="M29 66C31 57 42 55 50 60C58 55 69 57 71 66C71 77 61 84 50 84C39 84 29 77 29 66Z"/><path class="cn" d="M45.5 60.5h9l-4.5 5z"/><path class="wh" d="M31 68L6 63M31 73L7 76M69 68L94 63M69 73L93 76"/><path class="hap" d="M31 47Q38 39 45 47M55 47Q62 39 69 47"/><path class="mo" d="M42 70Q50 79 58 70"/><path d="M33 83Q50 91 67 83" fill="none" stroke="var(--accent)" stroke-width="5" stroke-linecap="round"/></g></g></g></g></svg></div>
+      <figcaption><b>Figure 1</b>Three systems need glue to agree. One log has nothing to disagree with.</figcaption>
+    </figure>
+
+    <p>Felix stores one thing: an append-only log, where writes land at the end and nothing already written changes. A stream, a cache and a queue are three ways of reading it. A subscriber is a position that walks forward over every record. A cache key is a marker on the newest record carrying that key. A consumer group is a shared position that only moves when a worker says a record is done.</p>
+
+    <p>Because they read the same kind of log, they share everything under it: one storage engine, one recovery path, one replication path and one answer to "is this write safe yet?" Access is granted per tenant and checked at the broker, and that one check covers publishing, subscribing and cache operations. When you get paged, it is about one system.</p>
+
+    <p>Counters sit beside the cache. <code>counter_add</code> applies a signed delta and answers with the new sum in the same round trip, which is what you want for rate limits, quotas and live tallies. The sum is rebuilt by folding the log, so it survives a restart and a leader failover. Felix also has an <a href="https://docs.getfelix.dev/features/atomic-commits/">atomic commit</a> that writes an event and the state that goes with it as one record on one shard, so a reader never sees one without the other.</p>
+
+    <h2 id="how-a-publish-travels">How a publish travels</h2>
+
+    <p>A cluster runs two kinds of process. Brokers hold the data and serve clients over QUIC. A control plane holds the metadata, places each shard of a stream on a broker, and decides which broker leads it. A publish only touches the brokers, and on its way through one it crosses four steps in a fixed order.</p>
+
+    <figure class="fig ck">
+      <div class="stage glow"><svg class="ck-svg" viewBox="0 0 600 350" role="img" aria-labelledby="ck2-t"><title id="ck2-t">Four stations left to right. 1 decode: a QUIC frame with a header and a payload. 2 claim offsets: three tickets, 41, 42 and 43, taken in order. 3 durable log: older records in a segment, then 41 42 43 appended and an fsync check mark. 4 fan out: one encoded frame with arrows to three subscribers. A bracket under stations 2 and 3 says order is fixed before the flush, so 42 never lands ahead of 41. Under station 4: encoded once, shared by all. The Felix cat points up at the stations and says: ten subscribers, still one encode.</title><g font-size="18.5"><path class="ground" d="M6 342H594"/><text x="76" y="30" class="cap" text-anchor="middle" font-size="13">1 DECODE</text><g class="rough"><rect class="box" x="10" y="42" width="132" height="132" rx="10"/></g><text x="224" y="30" class="cap" text-anchor="middle" font-size="13">2 CLAIM OFFSETS</text><g class="rough"><rect class="box" x="158" y="42" width="132" height="132" rx="10"/></g><text x="372" y="30" class="cap" text-anchor="middle" font-size="13">3 DURABLE LOG</text><g class="rough"><rect class="box" x="306" y="42" width="132" height="132" rx="10"/></g><text x="520" y="30" class="cap" text-anchor="middle" font-size="13">4 FAN OUT</text><g class="rough"><rect class="box" x="454" y="42" width="132" height="132" rx="10"/></g><path class="lna" d="M146 108H156M150 102l6 6-6 6"/><path class="lna" d="M294 108H304M298 102l6 6-6 6"/><path class="lna" d="M442 108H452M446 102l6 6-6 6"/><g class="rough"><rect class="paper" x="26" y="74" width="100" height="56" rx="4"/></g><path class="ln" d="M56 74V130"/><text x="41" y="107" class="mono m" text-anchor="middle" font-size="11">hdr</text><text x="91" y="107" class="mono" text-anchor="middle" font-size="12">payload</text><text x="76" y="158" class="m" text-anchor="middle" font-size="13">QUIC frame</text><g class="chw"><rect x="172" y="78" width="32" height="36" rx="4"/><text x="188.0" y="101.0" text-anchor="middle" font-size="14" class="mono">41</text></g><g class="chw"><rect x="208" y="78" width="32" height="36" rx="4"/><text x="224.0" y="101.0" text-anchor="middle" font-size="14" class="mono">42</text></g><g class="chw"><rect x="244" y="78" width="32" height="36" rx="4"/><text x="260.0" y="101.0" text-anchor="middle" font-size="14" class="mono">43</text></g><text x="224" y="140" class="m" text-anchor="middle" font-size="13">next offsets,</text><text x="224" y="158" class="m" text-anchor="middle" font-size="13">taken in order</text><g class="chr"><rect x="318" y="74" width="24" height="30" rx="4"/><text x="330.0" y="94.0" text-anchor="middle" font-size="12" class="mono"></text></g><g class="chr"><rect x="345" y="74" width="24" height="30" rx="4"/><text x="357.0" y="94.0" text-anchor="middle" font-size="12" class="mono"></text></g><g class="chr"><rect x="372" y="74" width="24" height="30" rx="4"/><text x="384.0" y="94.0" text-anchor="middle" font-size="12" class="mono"></text></g><g class="chr"><rect x="399" y="74" width="24" height="30" rx="4"/><text x="411.0" y="94.0" text-anchor="middle" font-size="12" class="mono"></text></g><g class="chw"><rect x="318" y="112" width="108" height="26" rx="4"/><text x="372.0" y="130.0" text-anchor="middle" font-size="13" class="mono">41 42 43</text></g><path class="lnok" d="M398 152l6 6 12-13"/><text x="366" y="160" class="mono ok" text-anchor="middle" font-size="13">fsync</text><g class="rough"><rect class="paper" x="486" y="54" width="68" height="34" rx="4"/></g><text x="520" y="76" class="mono" text-anchor="middle" font-size="13">frame</text><path class="lna" d="M520 90C520 110 472 112 472 130"/><g class="rough"><rect class="boxa" x="455" y="132" width="34" height="28" rx="5"/></g><text x="472" y="151" class="a" text-anchor="middle" font-size="12">sub</text><path class="lna" d="M520 90C520 110 520 112 520 130"/><g class="rough"><rect class="boxa" x="503" y="132" width="34" height="28" rx="5"/></g><text x="520" y="151" class="a" text-anchor="middle" font-size="12">sub</text><path class="lna" d="M520 90C520 110 568 112 568 130"/><g class="rough"><rect class="boxa" x="551" y="132" width="34" height="28" rx="5"/></g><text x="568" y="151" class="a" text-anchor="middle" font-size="12">sub</text><path class="lnm" d="M166 192H436M166 186V192M436 186V192"/><text x="300" y="214" class="m" text-anchor="middle" font-size="14">order is fixed before the flush,</text><text x="300" y="234" class="m" text-anchor="middle" font-size="14">so 42 never lands ahead of 41</text><text x="520" y="214" class="a" text-anchor="middle" font-size="14">encoded once,</text><text x="520" y="234" class="a" text-anchor="middle" font-size="14">shared by all</text><g class="rough"><g transform="translate(28 196) scale(0.68)"><path class="tl-e" d="M84 178C114 176 122 146 108 128C99 116 104 102 114 102"/><path class="tl" d="M84 178C114 176 122 146 108 128C99 116 104 102 114 102"/><path class="cf" d="M30 80C14 108 11 160 20 188L86 188C96 160 94 110 72 80Z"/><path class="cw" d="M38 90C33 120 37 150 50 168C63 150 67 120 62 90C56 97 44 97 38 90Z"/><ellipse class="cf" cx="38" cy="187" rx="12" ry="6"/><ellipse class="cf" cx="64" cy="187" rx="12" ry="6"/><path class="tl-e" d="M70 104C88 104 100 96 108 80" style="stroke-width:16"/><path class="tl" d="M70 104C88 104 100 96 108 80" style="stroke-width:11"/><circle class="cf" cx="109" cy="77" r="8"/><g transform="translate(0 -2)"><path class="cf" d="M20 52C19 38 24 29 31 24L27 6Q27 3 30 5L47 17Q50 16.5 53 17L70 5Q73 3 73 6L69 24C76 29 81 38 80 52C80 72 67 86 50 86C33 86 20 72 20 52Z"/><path class="ce" d="M32 21L30.5 11L41 18ZM68 21L69.5 11L59 18Z"/><path class="cw" d="M29 66C31 57 42 55 50 60C58 55 69 57 71 66C71 77 61 84 50 84C39 84 29 77 29 66Z"/><path class="cn" d="M45.5 60.5h9l-4.5 5z"/><path class="wh" d="M31 68L6 63M31 73L7 76M69 68L94 63M69 73L93 76"/><path class="cw" d="M30 45Q38 37 46 45Q38 50 30 45ZM54 45Q62 37 70 45Q62 50 54 45Z"/><circle class="cp" cx="41" cy="45" r="3.4"/><circle class="cp" cx="65" cy="45" r="3.4"/><path class="lid" d="M29 42Q38 37 47 43M53 43Q62 37 71 42"/><path class="mo" d="M44 72Q50 75 56 72"/><path d="M33 83Q50 91 67 83" fill="none" stroke="var(--accent)" stroke-width="5" stroke-linecap="round"/></g></g></g><g class="rough"><path class="bubble" d="M140 268h300a12 12 0 0 1 12 12v24a12 12 0 0 1-12 12h-300a12 12 0 0 1-12-12v-24a12 12 0 0 1 12-12z"/></g><path class="bubble" d="M128 292l-20 8 22 2z"/><text x="290" y="299" class="hand" text-anchor="middle" font-size="19">Ten subscribers, still one encode.</text></g></svg></div>
+      <figcaption><b>Figure 2</b>Decode, claim offsets, persist, fan out. The order is the design.</figcaption>
+    </figure>
+
+    <p>First the broker decodes the frame from the client's QUIC stream and checks the client's token allows publishing there. Then, on a durable stream, it claims the batch's offsets from the log <em>before</em> it waits for anything to reach disk. That fixes the batch's place in the stream the moment its offsets are taken. A sequencer then makes later batches wait behind earlier ones, whether the earlier one succeeds, fails or is cancelled, so delivery order always matches log order.</p>
+
+    <p>Next the batch is persisted under the stream's fsync policy, and only then fanned out. Fanout builds one delivery envelope per batch and hands every subscriber a reference to it. The encoded frame is cached in the envelope, so the first subscriber to need it encodes it and everyone else gets a cheap copy of the same bytes. Ten subscribers or five hundred, the publish is encoded once.</p>
+
+    <p>That last part is why fanout is what Felix is best at. On three 4-vCPU Azure brokers, with a real identity provider verifying every token, one stream on one broker delivered 256-byte messages to 500 subscribers at 1,004,273 messages a second with zero loss. The publisher's acknowledgement p50 went from 183 µs with one subscriber to 206 µs with five hundred. The conditions and the full table are on the <a href="https://docs.getfelix.dev/features/real-network-performance/#fanout">real-network performance page</a>.</p>
+
+    <h2 id="slow-subscribers">A slow subscriber only slows itself</h2>
+
+    <p>Every subscriber has its own bounded queue on the broker. When one fills, the default policy, <code>DropNew</code>, drops the arriving record for that subscriber alone. The publisher never waits on it, and neither does anyone else. An operator can choose <code>Block</code> instead, which trades that isolation for never dropping.</p>
+
+    <p>In the same Azure setup, 50 subscribers read one stream and 10 of them were slowed to 20 ms per delivery. The publisher's acknowledgement p50 stayed at 198 µs, the 40 healthy subscribers each received all 42,000 messages, and the slow ones dropped about 98% of theirs. The loss landed only where the reader fell behind.</p>
+
+    <p>Dropping is only safe if you can tell it happened. On a durable stream, every delivered event carries its log offset, so a jump in offsets is exactly a drop. The subscription ends at the first drop with the offset to resume from, and the cluster client resumes there from the log. I wrote up how that path works, and a bug in it, in <a href="/blog/one-slow-subscriber.html">One slow subscriber shouldn't slow anyone else</a>.</p>
+
+    <h2 id="the-log-on-disk">The log on disk</h2>
+
+    <p>Streams are in memory unless you create them with <code>durable: true</code> and the broker has a storage directory. A durable stream's log is a series of segment files, and those segments are the data. There is no separate write-ahead log in front of them, because the log already is one.</p>
+
+    <p>The rule the storage layer is built on is that records are never rewritten. That one property makes recovery simple to reason about: valid bytes end at end of file. Indexes are derived from the segments, never trusted, so a missing or stale index is just rebuilt. Preallocation reserves disk blocks without changing the file's size, so a preallocated tail never looks like data.</p>
+
+    <figure class="fig ck">
+      <div class="stage glow"><svg class="ck-svg" viewBox="0 0 560 340" role="img" aria-labelledby="ck3-t"><title id="ck3-t">Two rows of records numbered 100 to 105. Top row, crash mid-write: the last record is torn, a jagged half record; a green dashed line cuts it off at the last whole record, because nothing could have acknowledged it, and the log is repaired and starts. Bottom row, damage in the middle: record 102 fails its CRC with acknowledged records on both sides of it, so the broker refuses to start and names the segment and position. The Felix cat looks on, concerned.</title><g font-size="18.5"><path class="ground" d="M6 332H554"/><text x="20" y="34" class="cap" text-anchor="start" font-size="13">CRASH MID-WRITE: TORN TAIL</text><g class="chr"><rect x="20" y="48" width="36" height="40" rx="4"/><text x="38.0" y="73.0" text-anchor="middle" font-size="12" class="mono">100</text></g><g class="chr"><rect x="60" y="48" width="36" height="40" rx="4"/><text x="78.0" y="73.0" text-anchor="middle" font-size="12" class="mono">101</text></g><g class="chr"><rect x="100" y="48" width="36" height="40" rx="4"/><text x="118.0" y="73.0" text-anchor="middle" font-size="12" class="mono">102</text></g><g class="chr"><rect x="140" y="48" width="36" height="40" rx="4"/><text x="158.0" y="73.0" text-anchor="middle" font-size="12" class="mono">103</text></g><g class="chr"><rect x="180" y="48" width="36" height="40" rx="4"/><text x="198.0" y="73.0" text-anchor="middle" font-size="12" class="mono">104</text></g><g class="chr"><rect x="220" y="48" width="36" height="40" rx="4"/><text x="238.0" y="73.0" text-anchor="middle" font-size="12" class="mono">105</text></g><g class="rough"><path class="paper" d="M260 48h22l-6 8 8 8-8 8 8 8-6 8h-18z"/></g><path class="lnok dash" d="M254 40V98"/><text x="254" y="116" class="ok" text-anchor="middle" font-size="14">cut to the last whole record</text><text x="254" y="136" class="m" text-anchor="middle" font-size="13">nothing could have acked it</text><path class="lnok" d="M300 66l8 8 16-17"/><text x="332" y="74" class="ok" text-anchor="start" font-size="15">repaired, starts</text><path class="lnm" d="M14 166H430"/><text x="20" y="196" class="cap" text-anchor="start" font-size="13">DAMAGE IN THE MIDDLE</text><g class="chr"><rect x="20" y="210" width="36" height="40" rx="4"/><text x="38.0" y="235.0" text-anchor="middle" font-size="12" class="mono">100</text></g><g class="chr"><rect x="60" y="210" width="36" height="40" rx="4"/><text x="78.0" y="235.0" text-anchor="middle" font-size="12" class="mono">101</text></g><g class="chx"><rect x="100" y="210" width="36" height="40" rx="4"/><text x="118.0" y="235.0" text-anchor="middle" font-size="11" class="mono">CRC</text></g><g class="chr"><rect x="140" y="210" width="36" height="40" rx="4"/><text x="158.0" y="235.0" text-anchor="middle" font-size="12" class="mono">103</text></g><g class="chr"><rect x="180" y="210" width="36" height="40" rx="4"/><text x="198.0" y="235.0" text-anchor="middle" font-size="12" class="mono">104</text></g><g class="chr"><rect x="220" y="210" width="36" height="40" rx="4"/><text x="238.0" y="235.0" text-anchor="middle" font-size="12" class="mono">105</text></g><text x="118" y="274" class="m" text-anchor="middle" font-size="13">acknowledged records</text><text x="118" y="292" class="m" text-anchor="middle" font-size="13">sit on both sides of it</text><g class="badp"><rect x="262" y="212" width="156" height="36" rx="6"/><text x="340" y="236" text-anchor="middle" font-size="15">refuse to start</text></g><text x="340" y="274" class="m" text-anchor="middle" font-size="13">names the segment</text><text x="340" y="292" class="m" text-anchor="middle" font-size="13">and the position</text><g class="rough"><g transform="translate(448 206) scale(0.64)"><path class="tl-e" d="M84 178C114 176 122 146 108 128C99 116 104 102 114 102"/><path class="tl" d="M84 178C114 176 122 146 108 128C99 116 104 102 114 102"/><path class="cf" d="M30 80C14 108 11 160 20 188L86 188C96 160 94 110 72 80Z"/><path class="cw" d="M38 90C33 120 37 150 50 168C63 150 67 120 62 90C56 97 44 97 38 90Z"/><ellipse class="cf" cx="38" cy="187" rx="12" ry="6"/><ellipse class="cf" cx="64" cy="187" rx="12" ry="6"/><g transform="translate(0 -2)"><path class="cf" d="M20 52C19 38 24 29 31 24L27 6Q27 3 30 5L47 17Q50 16.5 53 17L70 5Q73 3 73 6L69 24C76 29 81 38 80 52C80 72 67 86 50 86C33 86 20 72 20 52Z"/><path class="ce" d="M32 21L30.5 11L41 18ZM68 21L69.5 11L59 18Z"/><path class="cw" d="M29 66C31 57 42 55 50 60C58 55 69 57 71 66C71 77 61 84 50 84C39 84 29 77 29 66Z"/><path class="cn" d="M45.5 60.5h9l-4.5 5z"/><path class="wh" d="M31 68L6 63M31 73L7 76M69 68L94 63M69 73L93 76"/><path class="cw" d="M30 45Q38 37 46 45Q38 50 30 45ZM54 45Q62 37 70 45Q62 50 54 45Z"/><circle class="cp" cx="39" cy="47" r="3.4"/><circle class="cp" cx="63" cy="47" r="3.4"/><path class="lid" d="M29 40Q38 44 47 41M53 41Q62 44 71 40"/><path class="mo" d="M44 74Q50 70 56 74"/><path d="M33 83Q50 91 67 83" fill="none" stroke="var(--accent)" stroke-width="5" stroke-linecap="round"/></g></g></g></g></svg></div>
+      <figcaption><b>Figure 3</b>A torn tail is cut away. Damage between acknowledged records stops the broker.</figcaption>
+    </figure>
+
+    <p>Recovery tells two kinds of damage apart. A crash in the middle of an append leaves a partial record at the end of the newest segment. Nothing could have acknowledged a record that was never finished, so it is truncated and the broker starts. A bad checksum with records after it is different: those later records may have been acknowledged, and guessing would silently lose them. So the broker refuses to start and names the segment and position.</p>
+
+    <p>Three fsync policies decide when a write counts as safe. <code>OnCommit</code> flushes before the acknowledgement and has no loss window. <code>Periodic</code>, the default, flushes every 250 ms, so a machine crash can lose up to one interval. <code>None</code> leaves it to the operating system, which still survives a process crash because the page cache belongs to the kernel.</p>
+
+    <p><code>OnCommit</code> would be slow if every append paid for its own flush, so Felix uses group commit. An fsync flushes the whole file, so appends that arrive while one flush is running all ride on the next one. On a Mac Studio that took the same code path from 253 durable appends a second at concurrency 1 to 14,387 at concurrency 64. The details are in the <a href="https://github.com/GetFelix/felix/blob/main/docs/durable-storage.md#group-commit">durable storage design</a>.</p>
+
+    <h2 id="replication">Replication</h2>
+
+    <p>Each shard has a leader and followers. The control plane grants the leader a time-bounded lease for the shard, and the leader ships its log to the followers. I chose leases and log shipping over running Raft per shard because a broker holds many shards, and a consensus round trip on every publish is a cost the common path should not pay.</p>
+
+    <p>A stream or cache picks its consistency. Under <code>Leader</code>, a publish is acknowledged once the leader has it. Under <code>Quorum</code>, it is acknowledged once a majority of the replica set holds it durably, whichever broker the client reached, and one unreachable replica does not stall it. When a leader is lost, a replica that held the log takes over under a new generation, and the generation fences the old leader so it cannot commit under the new one.</p>
+
+    <p>The control plane decides every failover, so it has to be reachable for a dead leader to be replaced. It keeps its metadata in Postgres, or in a Raft group embedded in its own instances with no external database. The replication protocol is model-checked in TLA+, and fault-injection tests kill brokers and simulate power loss mid-write. <a href="/blog/acknowledged-then-forgotten.html">Acknowledged, then forgotten</a> is a good example of what that combination catches.</p>
+
+    <h2 id="growing-the-protocol">Growing the protocol without version bumps</h2>
+
+    <p>Felix's wire protocol is framed over QUIC with TLS 1.3 always on. Each frame has a small header with a flags field, and the flags decide how the payload is laid out. That makes an unknown flag dangerous: a peer that ignored it would confidently misread the body. So a broker rejects an unknown flag bit instead of masking it off.</p>
+
+    <p>New features are added as bits that both sides agree on, not as protocol versions. The client offers what it can read on the <code>auth</code> message, which is already the first round trip on every stream, so agreeing costs nothing extra. The broker answers with what it supports, and the client uses only what was advertised.</p>
+
+    <figure class="fig ck">
+      <div class="stage glow"><svg class="ck-svg" viewBox="0 0 560 340" role="img" aria-labelledby="ck4-t"><title id="ck4-t">The auth handshake. On the left the client offers client_flags as a row of five bits, all set: what I can read. On the right the broker answers server_flags with four bits set and the last clear. Arrows meet in the middle at both sides use: the four bits both set. A new feature is a new bit, not a new protocol version. The Felix cat on the left holds out its paw. A sticky note on the right reads: old broker? Plain ok means the original three bits only.</title><g font-size="18.5"><path class="ground" d="M6 332H554"/><text x="150" y="30" class="mono" text-anchor="middle" font-size="15">auth: client_flags</text><text x="420" y="30" class="mono" text-anchor="middle" font-size="15">auth_ok: server_flags</text><g class="chw"><rect x="70" y="44" width="30" height="34" rx="4"/><text x="85.0" y="66.0" text-anchor="middle" font-size="15" class="mono">1</text></g><g class="chw"><rect x="104" y="44" width="30" height="34" rx="4"/><text x="119.0" y="66.0" text-anchor="middle" font-size="15" class="mono">1</text></g><g class="chw"><rect x="138" y="44" width="30" height="34" rx="4"/><text x="153.0" y="66.0" text-anchor="middle" font-size="15" class="mono">1</text></g><g class="chw"><rect x="172" y="44" width="30" height="34" rx="4"/><text x="187.0" y="66.0" text-anchor="middle" font-size="15" class="mono">1</text></g><g class="chw"><rect x="206" y="44" width="30" height="34" rx="4"/><text x="221.0" y="66.0" text-anchor="middle" font-size="15" class="mono">1</text></g><g class="chw"><rect x="340" y="44" width="30" height="34" rx="4"/><text x="355.0" y="66.0" text-anchor="middle" font-size="15" class="mono">1</text></g><g class="chw"><rect x="374" y="44" width="30" height="34" rx="4"/><text x="389.0" y="66.0" text-anchor="middle" font-size="15" class="mono">1</text></g><g class="chw"><rect x="408" y="44" width="30" height="34" rx="4"/><text x="423.0" y="66.0" text-anchor="middle" font-size="15" class="mono">1</text></g><g class="chw"><rect x="442" y="44" width="30" height="34" rx="4"/><text x="457.0" y="66.0" text-anchor="middle" font-size="15" class="mono">1</text></g><g class="chg"><rect x="476" y="44" width="30" height="34" rx="4"/><text x="491.0" y="66.0" text-anchor="middle" font-size="15" class="mono">0</text></g><text x="150" y="100" class="m" text-anchor="middle" font-size="13">what I can read</text><text x="420" y="100" class="m" text-anchor="middle" font-size="13">what I can read</text><path class="ln" d="M150 108C150 130 260 128 270 146M420 108C420 130 290 128 280 146M270 140l6 8 4-9"/><text x="275" y="166" class="cap" text-anchor="middle" font-size="13">BOTH SIDES USE</text><g class="accp"><rect x="190" y="176" width="30" height="34" rx="4"/><text x="205.0" y="198.0" text-anchor="middle" font-size="15" class="mono">1</text></g><g class="accp"><rect x="224" y="176" width="30" height="34" rx="4"/><text x="239.0" y="198.0" text-anchor="middle" font-size="15" class="mono">1</text></g><g class="accp"><rect x="258" y="176" width="30" height="34" rx="4"/><text x="273.0" y="198.0" text-anchor="middle" font-size="15" class="mono">1</text></g><g class="accp"><rect x="292" y="176" width="30" height="34" rx="4"/><text x="307.0" y="198.0" text-anchor="middle" font-size="15" class="mono">1</text></g><g class="chg"><rect x="326" y="176" width="30" height="34" rx="4"/><text x="341.0" y="198.0" text-anchor="middle" font-size="15" class="mono">0</text></g><text x="275" y="232" class="a" text-anchor="middle" font-size="14">a new feature is a new bit,</text><text x="275" y="250" class="a" text-anchor="middle" font-size="14">not a new protocol version</text><g class="rough"><g transform="translate(10 150) scale(0.82)"><path class="tl-e" d="M84 178C114 176 122 146 108 128C99 116 104 102 114 102"/><path class="tl" d="M84 178C114 176 122 146 108 128C99 116 104 102 114 102"/><path class="cf" d="M30 80C14 108 11 160 20 188L86 188C96 160 94 110 72 80Z"/><path class="cw" d="M38 90C33 120 37 150 50 168C63 150 67 120 62 90C56 97 44 97 38 90Z"/><ellipse class="cf" cx="38" cy="187" rx="12" ry="6"/><ellipse class="cf" cx="64" cy="187" rx="12" ry="6"/><path class="tl-e" d="M68 108C86 112 100 112 114 108" style="stroke-width:16"/><path class="tl" d="M68 108C86 112 100 112 114 108" style="stroke-width:11"/><circle class="cf" cx="116" cy="107" r="8"/><g transform="translate(0 -2)"><path class="cf" d="M20 52C19 38 24 29 31 24L27 6Q27 3 30 5L47 17Q50 16.5 53 17L70 5Q73 3 73 6L69 24C76 29 81 38 80 52C80 72 67 86 50 86C33 86 20 72 20 52Z"/><path class="ce" d="M32 21L30.5 11L41 18ZM68 21L69.5 11L59 18Z"/><path class="cw" d="M29 66C31 57 42 55 50 60C58 55 69 57 71 66C71 77 61 84 50 84C39 84 29 77 29 66Z"/><path class="cn" d="M45.5 60.5h9l-4.5 5z"/><path class="wh" d="M31 68L6 63M31 73L7 76M69 68L94 63M69 73L93 76"/><path class="cw" d="M30 45Q38 37 46 45Q38 50 30 45ZM54 45Q62 37 70 45Q62 50 54 45Z"/><circle class="cp" cx="41" cy="45" r="3.4"/><circle class="cp" cx="65" cy="45" r="3.4"/><path class="lid" d="M29 42Q38 37 47 43M53 43Q62 37 71 42"/><path class="mo" d="M44 72Q50 75 56 72"/><path d="M33 83Q50 91 67 83" fill="none" stroke="var(--accent)" stroke-width="5" stroke-linecap="round"/></g></g></g><g transform="rotate(-3 470 270)"><g class="rough"><rect class="note" x="392" y="216" width="152" height="96" rx="4"/></g><text x="468" y="242" class="hand" text-anchor="middle" font-size="16">Old broker?</text><text x="468" y="264" class="hand" text-anchor="middle" font-size="15">Plain "ok" means</text><text x="468" y="286" class="hand" text-anchor="middle" font-size="15">the original</text><text x="468" y="304" class="hand" text-anchor="middle" font-size="15">three bits only.</text></g></g></svg></div>
+      <figcaption><b>Figure 4</b>Capabilities are agreed on the first round trip. Silence means the original set.</figcaption>
+    </figure>
+
+<pre class="code" data-lang="JSON" tabindex="0"><code>{<span class="tok-s">"type"</span>:<span class="tok-s">"auth"</span>,<span class="tok-s">"tenant_id"</span>:<span class="tok-s">"t1"</span>,<span class="tok-s">"token"</span>:<span class="tok-s">"..."</span>,<span class="tok-s">"client_flags"</span>:<span class="tok-m">25</span>}
+{<span class="tok-s">"type"</span>:<span class="tok-s">"auth_ok"</span>,<span class="tok-s">"server_flags"</span>:<span class="tok-m">25</span>}</code></pre>
+
+    <p>A broker that predates negotiation ignores the field and replies with a plain <code>ok</code>. The only safe reading of that silence is the original three flag bits, so that set is frozen and nothing is ever added to it. Optional fields default to the old behaviour, so an old peer and a new one exchange identical bytes. The result is that a newer client runs against older brokers without whatever they predate, and nobody has to upgrade in lockstep. The full rules are in the <a href="https://docs.getfelix.dev/architecture/wire-protocol/">wire protocol reference</a>.</p>
+
+    <h2 id="kafka-and-browsers">Kafka clients and browsers</h2>
+
+    <p>You don't have to rewrite every client to try Felix. Each broker can run a Kafka listener, and a durable stream then looks like a Kafka topic: partitions are shards and offsets are Felix's own. Kafka producers write to it, idempotent ones included, and consumers that assign their own partitions read from it, so programs built on librdkafka or <code>kcat</code> can be pointed at Felix one at a time.</p>
+
+    <p>Consumer groups and transactions are refused on purpose, with an error that says why. That means Kafka Connect, Streams and ksqlDB don't work against it. <a href="/blog/point-your-kafka-client-at-felix.html">Point your Kafka client at Felix</a> walks through how a Kafka request becomes a Felix operation and exactly where compatibility stops.</p>
+
+    <p>Browsers can't open QUIC connections to a broker, so <a href="https://docs.getfelix.dev/clients/browsers/">felix-gateway</a> sits between them. A browser opens a WebSocket, names one scope, such as a room or a board, and signs in. The gateway exchanges that sign-in for a Felix token that reaches only that scope's streams, caches and counters, and relays messages both ways without decoding payloads. It holds no application state, so one binary serves any app built from those pieces.</p>
+
+    <p>For everything else there are native clients. The Rust client is the reference, and Python and TypeScript bind to it rather than reimplement it. All three are published as <code>felix-client</code> on crates.io, PyPI and npm.</p>
+
+    <h2 id="what-people-build">What people build on it</h2>
+
+    <p>The best test of "one system" is an application with no database next to it. The <a href="/projects.html">projects page</a> collects the ones in the GetFelix organization, each written partly to find where Felix falls short.</p>
+
+    <p><a href="https://docs.getfelix.dev/built-on-felix/canvas/">felix-canvas</a> is a multiplayer whiteboard. Every edit goes to a durable stream and the canvas is a fold of that log, while cursors go to an in-memory stream because a cursor from 40 ms ago is worthless. Presence is a cache whose entries expire, and a counter hands out sequence numbers. <a href="https://docs.getfelix.dev/built-on-felix/webhook-relay/">felix-webhook-relay</a> stores each webhook before answering, then delivers it to every endpoint through its own consumer group, with retries, dead letters and replay by offset.</p>
+
+    <p><a href="https://docs.getfelix.dev/built-on-felix/arena/">felix-arena</a> is a browser team deathmatch whose simulator commits every tick to a durable stream, so the kill cam is a replay of the log. <a href="https://docs.getfelix.dev/built-on-felix/metro/">felix-metro</a> and <a href="/projects.html#blocks">felix-blocks</a>, a city simulator with a timeline you can drag back and a voxel builder, are in design and use the same pieces.</p>
+
+    <h2 id="where-it-fits">Where it fits</h2>
+
+    <p>Felix fits best where many processes need the same fast-changing data: live feeds, dashboards, presence, configuration and state pushed to a large number of consumers, and services that need an event, a current value and some work queued, all at once. If you're building something new and can see those needs coming, one system you learn once is a real saving.</p>
+
+    <p>It is not a drop-in for systems you already run well. If you need the Kafka ecosystem, Redis data structures beyond a value per key, AMQP routing, or history kept longer than your brokers' disks hold, use the tool built for it. The <a href="https://docs.getfelix.dev/getting-started/what-felix-is-for/">status page</a> marks every capability as built, partial or planned, and it is the page to trust when another disagrees.</p>
+
+    <h2 id="try-it">Try it in five minutes</h2>
+
+    <p>You need Docker, or Podman with the <code>docker-compose</code> provider. The compose file in the repository runs a control plane, one broker with durable storage, and development credentials for a tenant called <code>dev</code>, with a durable stream <code>orders</code> and two caches, <code>config</code> and <code>stats</code>.</p>
+
+<pre class="code" data-lang="Shell" tabindex="0"><code><span class="tok-f">curl</span> -fsSLO https://raw.githubusercontent.com/GetFelix/felix/main/compose.yaml
+<span class="tok-f">docker</span> compose up</code></pre>
+
+    <p>When the broker is ready it prints its connection settings. In a second terminal, subscribe, and in a third, publish:</p>
+
+<pre class="code" data-lang="Shell" tabindex="0"><code><span class="tok-f">docker</span> compose run --rm felixctl sub orders
+<span class="tok-f">docker</span> compose run --rm felixctl pub orders <span class="tok-s">'hello'</span></code></pre>
+
+    <p>The subscriber prints <code>hello</code>. The same stream is a log, so you can read it again from the start, and the caches and counters are right there:</p>
+
+<pre class="code" data-lang="Shell" tabindex="0"><code><span class="tok-f">docker</span> compose run --rm felixctl sub orders --from earliest --count 10
+<span class="tok-f">docker</span> compose run --rm felixctl cache watch config   <span class="tok-c"># leave running: prints every change</span>
+<span class="tok-f">docker</span> compose run --rm felixctl cache put config theme <span class="tok-s">'dark'</span>
+<span class="tok-f">docker</span> compose run --rm felixctl counter add stats page-views <span class="tok-m">1</span></code></pre>
+
+    <p>Every port is bound to <code>127.0.0.1</code>, and the credentials are for local use only. <code>docker compose down -v</code> throws everything away. The <a href="https://docs.getfelix.dev/deployment/docker-compose/#try-it-in-one-command">Docker Compose guide</a> shows how to point an installed <code>felixctl</code> at the stack, and the <a href="https://docs.getfelix.dev/getting-started/quickstart/">quickstart</a> goes further, into the client libraries.</p>
+
+    <h2 id="where-next">Where to go next</h2>
+
+    <p>The <a href="https://docs.getfelix.dev">docs</a> cover the architecture, the wire protocol, configuration and benchmarks, and <a href="https://docs.getfelix.dev/getting-started/why-felix/">Why Felix?</a> makes the case at more length, including when not to use it. The source is on <a href="https://github.com/GetFelix/felix">GitHub</a>. The broker, control plane and <code>felixctl</code> are AGPL-3.0, and the wire protocol and client libraries are Apache-2.0.</p>
+
+    <p>The rest of this blog goes deeper into single pieces: why Felix caps its QUIC packet size on Linux in <a href="/blog/ten-parcels-one-envelope.html">Ten parcels, one envelope</a>, how a passing TLA+ check can mean nothing in <a href="/blog/checking-nothing.html">Our model said everything passed</a>, and how a release is held to no measurable slowdown in <a href="/blog/catching-a-one-percent-regression.html">How we catch a 1% regression</a>.</p>
+  </div>
+
+  <section class="post-end" aria-labelledby="try-title">
+    <div class="wrap">
+      <div class="try-card">
+        <h2 id="try-title">Try Felix</h2>
+        <p>Write the compose file from the <a href="https://docs.getfelix.dev/deployment/docker-compose/">Docker Compose guide</a>, then start a broker and its control plane. With Podman, use <code>podman compose</code>.</p>
+<pre class="code" tabindex="0"><code>docker compose up -d</code></pre>
+        <div class="post-links">
+          <a href="https://github.com/GetFelix/felix"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>Felix on GitHub</a>
+          <a href="/blog/feed.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M5 11a8 8 0 0 1 8 8M5 4a15 15 0 0 1 15 15"/><circle cx="6" cy="18" r="1.6" fill="currentColor" stroke="none"/></svg>RSS feed</a>
+          <a href="/blog/">More posts</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</article>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-about">
+        <a class="brand" href="/">
+          <picture>
+            <source srcset="/assets/img/felix-mark-96.webp" type="image/webp">
+            <img src="/assets/img/felix-mark-96.png" alt="" width="30" height="30" loading="lazy">
+          </picture>
+          Felix
+        </a>
+        <p>The broker, control plane and felixctl are <span class="nowrap">AGPL-3.0</span>. The wire protocol and the client libraries are <span class="nowrap">Apache-2.0</span>.</p>
+      </div>
+      <nav aria-labelledby="f-site">
+        <h2 id="f-site">Site</h2>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/features.html">Features</a></li>
+          <li><a href="/projects.html">Projects</a></li>
+          <li><a href="/guarantees.html">Guarantees</a></li>
+          <li><a href="/performance.html">Performance</a></li>
+          <li><a href="/status.html">Status</a></li>
+          <li><a href="/about.html">About</a></li>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="https://docs.getfelix.dev">Docs</a></li>
+          <li><a href="https://github.com/GetFelix">GitHub</a></li>
+        </ul>
+      </nav>
+      <nav aria-labelledby="f-project">
+        <h2 id="f-project">Project</h2>
+        <ul>
+          <li><a href="https://github.com/GetFelix/felix">Source code</a></li>
+          <li><a href="https://github.com/GetFelix/felix/releases">Releases</a></li>
+          <li><a href="https://github.com/GetFelix/felix/milestones">Milestones</a></li>
+          <li><a href="https://github.com/GetFelix/felix/blob/main/LICENSING.md">Licensing</a></li>
+        </ul>
+      </nav>
+      <nav aria-labelledby="f-docs">
+        <h2 id="f-docs">Docs</h2>
+        <ul>
+          <li><a href="https://docs.getfelix.dev/getting-started/quickstart/">Quickstart</a></li>
+          <li><a href="https://docs.getfelix.dev/getting-started/what-felix-is-for/">What works today</a></li>
+          <li><a href="https://docs.getfelix.dev/architecture/semantics/">Delivery semantics</a></li>
+          <li><a href="https://docs.getfelix.dev/architecture/testing/">How Felix is tested</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Felix Authors</span>
+      <span>This site is MIT licensed. <a href="https://github.com/GetFelix/getfelix.github.io">Source</a></span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
