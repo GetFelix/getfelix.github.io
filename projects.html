@@ -94,6 +94,7 @@
         <a href="#gateway"><span class="n" aria-hidden="true">4</span>Gateway</a>
         <a href="#metro"><span class="n" aria-hidden="true">5</span>Metro</a>
         <a href="#blocks"><span class="n" aria-hidden="true">6</span>Blocks</a>
+        <a href="#agents"><span class="n" aria-hidden="true">7</span>Agents</a>
       </nav>
     </div>
   </section>
@@ -317,6 +318,33 @@ cargo run -p felix-gateway</code></pre>
         <div class="project-links">
           <a href="https://github.com/GetFelix/felix-blocks"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>GitHub</a>
           <a href="https://github.com/GetFelix/felix-blocks/blob/main/docs/design.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v16H6.5A2.5 2.5 0 0 0 4 21.5Z"/><path d="M8 7h8"/></svg>Design<span class="visually-hidden"> for felix-blocks</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section project alt" id="agents" aria-labelledby="agents-title">
+    <div class="wrap">
+      <div class="project-media reveal">
+        <div class="pm art agents">
+          <picture>
+            <source srcset="/assets/img/agents-mark.webp" type="image/webp">
+            <img src="/assets/img/agents-mark.png" alt="Felix Agents mark: the Felix cat above a swarm of five small robot workers joined to one log" width="400" height="421" loading="lazy" decoding="async">
+          </picture>
+        </div>
+      </div>
+      <div class="project-body reveal" style="--d:.08s">
+        <div class="project-title">
+          <h2 id="agents-title">felix-agents</h2>
+          <span class="status idea">In design</span>
+        </div>
+        <p>A swarm of AI workers with Felix as its data backend. Tasks flow out to many workers and results flow back. The viewer is a live picture of the swarm, with workers claiming tasks, sending and receiving work and returning results, and any run can be replayed.</p>
+        <h3>Felix features it will use</h3>
+        <ul class="uses"><li>A consumer group hands each task to one worker and gives it to another when a worker dies</li><li>Conditional cache writes keep workers from overwriting each other's findings and locks</li><li>Counters hold a run to its budget when workers race</li><li>One durable log records every step, with who wrote it, for replay</li><li>Permissions in Felix refuse a prompt-injected worker's writes outside its grants</li></ul>
+        <p class="note">Nothing runs yet. Workers reach Felix through an MCP server, so any MCP host can join a run. Scrubbing in the browser waits on range reads in felix-gateway's client, which are planned. The <a href="https://github.com/GetFelix/felix-agents/blob/main/docs/design.md">design</a> covers the data model and the Felix mapping, and the <a href="https://github.com/GetFelix/felix-agents/milestones">milestones</a> track the build.</p>
+        <div class="project-links">
+          <a href="https://github.com/GetFelix/felix-agents"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>GitHub</a>
+          <a href="https://github.com/GetFelix/felix-agents/blob/main/docs/design.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v16H6.5A2.5 2.5 0 0 0 4 21.5Z"/><path d="M8 7h8"/></svg>Design<span class="visually-hidden"> for felix-agents</span></a>
         </div>
       </div>
     </div>
