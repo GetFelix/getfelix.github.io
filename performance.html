@@ -103,27 +103,30 @@
       <div class="section-head reveal">
         <span class="eyebrow">Single broker</span>
         <h2 id="perf-title">Measured on one broker</h2>
-        <p>Preview results from Felix 0.6.0 on one 8 vCPU Azure VM with local NVMe, driven by four load generators in the same region. "Durable" means the broker fsyncs before it acks. These are single-broker numbers, and replicated multi-node results are coming.</p>
-        <span class="perf-status">0.6.0-preview · single region · more results coming</span>
+        <p>Felix 0.6.0 on one 8 vCPU Azure VM with local NVMe, driven by four load generators in the same region, over QUIC with TLS. "Durable" means the broker fsyncs before it acks. The <a href="https://docs.getfelix.dev/features/v060-performance/">full write-up</a> has the exact conditions, every run, and how to reproduce them.</p>
+        <span class="perf-status">0.6.0 · single region · replicated results coming</span>
       </div>
 
       <div class="perf-stats">
         <article class="stat reveal">
-          <p class="stat-value">4.1<span class="unit">GB/s</span></p>
-          <h3>Published, in memory</h3>
-          <p class="stat-note">4 KiB records in batches of 64, fire-and-forget. The broker was CPU-bound at 7.4 of 8 cores. Mean of 3 runs.</p>
+          <!-- TODO(data): confirm 3.7 against the three headline trials when the campaign finishes. -->
+          <p class="stat-value">3.7<span class="unit">GB/s</span></p>
+          <h3>Published, in memory, nothing lost</h3>
+          <p class="stat-note">4 KiB records in batches of 64, fire-and-forget, with publishers waiting for room so nothing is dropped. On the default settings the broker sheds instead of waiting and accepts 4.2 GB/s, dropping 1 to 2% of messages. The broker was CPU-bound at 7.7 of 8 cores.</p>
         </article>
         <article class="stat reveal" style="--d:.06s">
-          <p class="stat-value">1.43<span class="unit">GB/s</span></p>
+          <p class="stat-value">1.41<span class="unit">GB/s</span></p>
           <h3>Published, durable</h3>
-          <p class="stat-note">Same workload with an fsync before each ack. 97% of what fio measured on the same NVMe array. Mean of 3 runs.</p>
+          <p class="stat-note">Same workload, acked after an fsync. That is the disk: fio measured 1.41 GB/s on the same NVMe array with an fsync after each write.</p>
         </article>
         <article class="stat reveal" style="--d:.12s">
+          <!-- TODO(data): durable 256 B batch 64 acked from the final campaign; this value is from the preview. -->
           <p class="stat-value">2.27<span class="unit">M records/s</span></p>
           <h3>Acked, durable, small records</h3>
           <p class="stat-note">256 B records in batches of 64, fsync before each ack. 2.27 to 2.29 million across 3 runs.</p>
         </article>
         <article class="stat reveal" style="--d:.18s">
+          <!-- TODO(data): one-in-flight durable delivery from the final campaign; this value is from the preview. -->
           <p class="stat-value">345<span class="unit">µs p50</span></p>
           <h3>Durable publish to delivery</h3>
           <p class="stat-note">One 256 B publish in flight, received by a subscriber on a second connection after the fsync. p99 445 µs. 2 runs.</p>
@@ -131,6 +134,7 @@
       </div>
 
       <figure class="perf-chart reveal" style="--d:.1s">
+        <!-- TODO(data): replace every bar with the final one-in-flight latency cells. -->
         <figcaption>
           <h3>Latency, one publish in flight</h3>
           <p>256 B records. Ack is the publisher's round trip. Delivery is when a subscriber on another connection receives the record. The lighter end of a bar is the spread between two runs.</p>
@@ -161,8 +165,9 @@
         <div>
           <span class="eyebrow">Coming next</span>
           <h2 id="next-results-title">Replicated, multi-node results</h2>
-          <p>Published performance is from one broker. Replicated, multi-node results are still to come.</p>
-          <p>Performance analysis is ongoing. A full write-up with the method and every run is coming.</p>
+          <!-- TODO(data): replace this section with the three-broker results when that campaign finishes. -->
+          <p>Published performance is from one broker. Results from three brokers replicating every write across availability zones are being measured now.</p>
+          <p>The <a href="https://docs.getfelix.dev/features/v060-performance/">v0.6.0 performance write-up</a> has the method, every run, and a comparison with NATS JetStream.</p>
         </div>
       </div>
     </div>
