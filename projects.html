@@ -150,15 +150,15 @@ docker compose up -d</code></pre>
       <div class="project-body reveal" style="--d:.08s">
         <div class="project-title">
           <h2 id="arena-title">felix-arena</h2>
-          <span class="status ok"><!--release:felix-arena:version-->0.1.4<!--/release:felix-arena:version--></span>
+          <span class="status ok"><!--release:felix-arena:version-->0.1.5<!--/release:felix-arena:version--></span>
         </div>
         <p>A browser team deathmatch in 3D, played through Felix with the simulation deciding every hit. When you are destroyed, the kill cam replays the last seconds from the match's log in Felix.</p>
         <h3>Felix features it uses</h3>
         <ul class="uses"><li>One durable stream holds the match, a record per simulation tick, replicated with <code>Quorum</code></li><li>Atomic commits write each tick together with its keyframe pointer</li><li>An in-memory stream carries player inputs</li><li>TTL caches track who is connected and each arena's status</li><li>A counter holds the simulator's epoch</li></ul>
         <h3>Quick start</h3>
         <div class="quick-cmd">
-<pre><code>curl -fsSL https://github.com/GetFelix/felix-arena/releases/download/<!--release:felix-arena:tag-->v0.1.4<!--/release:felix-arena:tag-->/felix-arena-web-<!--release:felix-arena:tag-->v0.1.4<!--/release:felix-arena:tag-->.tar.gz | tar xz
-cd felix-arena-web-<!--release:felix-arena:tag-->v0.1.4<!--/release:felix-arena:tag-->
+<pre><code>curl -fsSL https://github.com/GetFelix/felix-arena/releases/download/<!--release:felix-arena:tag-->v0.1.5<!--/release:felix-arena:tag-->/felix-arena-web-<!--release:felix-arena:tag-->v0.1.5<!--/release:felix-arena:tag-->.tar.gz | tar xz
+cd felix-arena-web-<!--release:felix-arena:tag-->v0.1.5<!--/release:felix-arena:tag-->
 python3 -m http.server 5173</code></pre>
           <button class="icon-btn" type="button" data-copy aria-label="Copy the felix-arena quick start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
         </div>
