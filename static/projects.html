@@ -95,6 +95,7 @@
         <a href="#metro"><span class="n" aria-hidden="true">5</span>Metro</a>
         <a href="#blocks"><span class="n" aria-hidden="true">6</span>Blocks</a>
         <a href="#agents"><span class="n" aria-hidden="true">7</span>Agents</a>
+        <a href="#felixd"><span class="n" aria-hidden="true">8</span>felixd</a>
       </nav>
     </div>
   </section>
@@ -347,6 +348,37 @@ cd felix-metro-compose-<!--release:felix-metro:version-->0.1.0<!--/release:felix
         <div class="project-links">
           <a href="https://github.com/GetFelix/felix-agents"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>GitHub</a>
           <a href="https://github.com/GetFelix/felix-agents/blob/main/docs/design.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v16H6.5A2.5 2.5 0 0 0 4 21.5Z"/><path d="M8 7h8"/></svg>Design<span class="visually-hidden"> for felix-agents</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section project alt" id="felixd" aria-labelledby="felixd-title">
+    <div class="wrap">
+      <div class="project-media reveal">
+        <div class="pm framed">
+          <picture class="shot-light">
+            <source srcset="/assets/img/felixd-light.webp" type="image/webp">
+            <img src="/assets/img/felixd-light.jpg" alt="How felixd moves a workload: node A freezes while running workload W, node B claims its expired lease, restores the latest snapshot, resumes the input at offset 7 and writes output from 8, and A's late write is refused. A replay rebuilds W at any offset from a snapshot and the input." width="1600" height="920" loading="lazy" decoding="async">
+          </picture>
+          <picture class="shot-dark">
+            <source srcset="/assets/img/felixd-dark.webp" type="image/webp">
+            <img src="/assets/img/felixd-dark.jpg" alt="" width="1600" height="920" loading="lazy" decoding="async">
+          </picture>
+        </div>
+      </div>
+      <div class="project-body reveal" style="--d:.08s">
+        <div class="project-title">
+          <h2 id="felixd-title">felixd</h2>
+          <span class="status idea">In design</span>
+        </div>
+        <p>A node agent that runs programs across a cluster, and the first step toward a distributed operating system whose state is a log. Kill a machine and its programs continue on another one from the last input they handled, with no lost or repeated output. Pick any moment in the past and rebuild a program exactly as it was.</p>
+        <h3>Felix features it will use</h3>
+        <ul class="uses"><li>Conditional cache writes with a TTL give each program one owner at a time, and pass it on when a machine stops renewing</li><li>Conditional publish at the stream's tail fences a stale owner, so a frozen machine that wakes up can't write</li><li>Resuming a subscription from an offset picks up a program's input exactly where it stopped</li><li>Quorum replication keeps each program's output and snapshots through a broker's loss</li><li>Time lookup and range reads rebuild a program at any offset or moment</li></ul>
+        <p class="note">Nothing runs yet. Programs are WebAssembly modules with no clock, randomness or I/O of their own, so the same inputs always rebuild the same state. The <a href="https://github.com/GetFelix/felixd/blob/main/docs/design.md">design</a> covers failover, exactly-once output, replay and the longer path to an operating system, the <a href="https://github.com/GetFelix/felixd/milestones">milestones</a> track the build, and the plan is open for <a href="https://github.com/GetFelix/felixd/discussions">discussion</a>.</p>
+        <div class="project-links">
+          <a href="https://github.com/GetFelix/felixd"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>GitHub</a>
+          <a href="https://github.com/GetFelix/felixd/blob/main/docs/design.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v16H6.5A2.5 2.5 0 0 0 4 21.5Z"/><path d="M8 7h8"/></svg>Design<span class="visually-hidden"> for felixd</span></a>
         </div>
       </div>
     </div>
