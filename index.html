@@ -448,7 +448,7 @@ docker compose up -d</code></pre>
           <div class="card-body">
             <div class="card-title">
               <h3><a href="https://github.com/GetFelix/felix-arena">felix-arena</a></h3>
-              <span class="status ok"><!--release:felix-arena:version-->0.1.3<!--/release:felix-arena:version--></span>
+              <span class="status ok"><!--release:felix-arena:version-->0.1.6<!--/release:felix-arena:version--></span>
             </div>
             <p>A browser team deathmatch in 3D, played through Felix with the simulation deciding every hit. A kill cam replayed from the match's log is next.</p>
             <div class="card-links">
@@ -465,8 +465,8 @@ docker compose up -d</code></pre>
                   <button class="icon-btn quick-close" type="button" data-quick-close aria-label="Close the felix-arena quick start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
                 </div>
                 <div class="quick-cmd">
-<pre><code>curl -fsSL https://github.com/GetFelix/felix-arena/releases/download/<!--release:felix-arena:tag-->v0.1.3<!--/release:felix-arena:tag-->/felix-arena-web-<!--release:felix-arena:tag-->v0.1.3<!--/release:felix-arena:tag-->.tar.gz | tar xz
-cd felix-arena-web-<!--release:felix-arena:tag-->v0.1.3<!--/release:felix-arena:tag-->
+<pre><code>curl -fsSL https://github.com/GetFelix/felix-arena/releases/download/<!--release:felix-arena:tag-->v0.1.6<!--/release:felix-arena:tag-->/felix-arena-web-<!--release:felix-arena:tag-->v0.1.6<!--/release:felix-arena:tag-->.tar.gz | tar xz
+cd felix-arena-web-<!--release:felix-arena:tag-->v0.1.6<!--/release:felix-arena:tag-->
 python3 -m http.server 5173</code></pre>
                   <button class="icon-btn" type="button" data-copy aria-label="Copy the felix-arena quick start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
                 </div>
@@ -539,7 +539,7 @@ docker compose up -d --wait</code></pre>
           <div class="card-body">
             <div class="card-title">
               <h3><a href="https://github.com/GetFelix/felix-gateway">felix-gateway</a></h3>
-              <span class="status ok"><!--release:felix-gateway:version-->0.5.0<!--/release:felix-gateway:version--></span>
+              <span class="status ok"><!--release:felix-gateway:version-->0.7.0<!--/release:felix-gateway:version--></span>
             </div>
             <p>A WebSocket gateway between browsers and Felix, with sign-in narrowed to one room or match.</p>
             <div class="card-links">
@@ -556,7 +556,7 @@ docker compose up -d --wait</code></pre>
                   <button class="icon-btn quick-close" type="button" data-quick-close aria-label="Close the felix-gateway quick start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
                 </div>
                 <div class="quick-cmd">
-<pre><code>git clone --depth 1 --branch <!--release:felix-gateway:tag-->v0.5.0<!--/release:felix-gateway:tag--> https://github.com/GetFelix/felix-gateway
+<pre><code>git clone --depth 1 --branch <!--release:felix-gateway:tag-->v0.7.0<!--/release:felix-gateway:tag--> https://github.com/GetFelix/felix-gateway
 cd felix-gateway
 dev/up.sh
 export GATEWAY_FELIX_CA_FILE=dev/state/broker-cert.pem GATEWAY_SCOPE_FILE=dev/scope.toml

@@ -250,6 +250,10 @@
   color: var(--ok);
   background: var(--ok-soft);
 }
+.status.idea {
+  color: var(--idea);
+  background: var(--idea-soft);
+}
 
 @media (max-width: 900px) {
   .project .wrap {
