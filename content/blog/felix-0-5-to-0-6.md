@@ -181,9 +181,9 @@ A short list, each with the ticket that holds the reason: a conditional cache pu
 
 Shards move online while their leaders are alive ([#130](https://github.com/GetFelix/felix/issues/130)), placement spreads a shard's copies across zones, and a stream created with a region stays in it. A broker hands its shards off before it stops. Kafka producers and consumers can use durable streams, which [the Kafka post](/blog/point-your-kafka-client-at-felix.html) explains. `felixctl` is a command-line tool for all of it ([#872](https://github.com/GetFelix/felix/issues/872)). And `docker compose up` brings up a control plane, a broker and development credentials, so that `felixctl pub` and `felixctl sub` work from a fresh clone ([#1345](https://github.com/GetFelix/felix/issues/1345)). We wanted a person to reach a first message in one command, and we run that command in CI so it keeps working.
 
-### Shipped in 0.6.1 {#point-one}
+### Right after 0.6.0 {#after-060}
 
-Four fixes that came out of using 0.6.0 followed it in 0.6.1. A write can name its shard instead of hashing a key, because the city simulation had been salting keys until each district landed on its own shard ([#1465](https://github.com/GetFelix/felix/issues/1465)). A subscribe now joins at the latest record before trailing generation-start markers, after the canvas hung on a log that ends in one ([#1476](https://github.com/GetFelix/felix/pull/1476)). Unacked publishes parked per stream are limited, which fixes the 256 B fire-and-forget slowdown in the known issue ([#1477](https://github.com/GetFelix/felix/pull/1477)). And a busy follower's late answer now counts toward the quorum mark, which removes the stalls of about 1.8 seconds that appeared under load once a new cluster finalized its fleet features ([#1481](https://github.com/GetFelix/felix/pull/1481)).
+Four fixes that came out of using 0.6.0 followed it in a follow-up release. A write can name its shard instead of hashing a key, because the city simulation had been salting keys until each district landed on its own shard ([#1465](https://github.com/GetFelix/felix/issues/1465)). A subscribe now joins at the latest record before trailing generation-start markers, after the canvas hung on a log that ends in one ([#1476](https://github.com/GetFelix/felix/pull/1476)). Unacked publishes parked per stream are limited, which fixes the 256 B fire-and-forget slowdown in the known issue ([#1477](https://github.com/GetFelix/felix/pull/1477)). And a busy follower's late answer now counts toward the quorum mark, which removes the stalls of about 1.8 seconds that appeared under load once a new cluster finalized its fleet features ([#1481](https://github.com/GetFelix/felix/pull/1481)).
 
 ## What the release taught us {#learned}
 
@@ -197,7 +197,7 @@ Four fixes that came out of using 0.6.0 followed it in 0.6.1. A write can name i
 
 **Build things on it.** Thirty-eight of the 192 tickets name an app we built on Felix. An application finds the gap between "the API exists" and "the API is usable" faster than any review.
 
-**Say what you measured.** The 0.6.0 notes list a known issue: fire-and-forget batches of 256 B messages ran about 13% slower than the build the performance runs measured ([#1469](https://github.com/GetFelix/felix/issues/1469)). We found it by comparing a release build against the measured one, and we wrote it down. The fix shipped in 0.6.1 ([#1477](https://github.com/GetFelix/felix/pull/1477)).
+**Say what you measured.** The 0.6.0 notes list a known issue: fire-and-forget batches of 256 B messages ran about 13% slower than the build the performance runs measured ([#1469](https://github.com/GetFelix/felix/issues/1469)). We found it by comparing a release build against the measured one, and we wrote it down. The fix followed in the release after 0.6.0 ([#1477](https://github.com/GetFelix/felix/pull/1477)).
 
 ## Where Felix is heading {#heading}
 
