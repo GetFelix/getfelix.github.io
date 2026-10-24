@@ -1678,6 +1678,7 @@
 }
 .usecase:hover,
 .usecase:focus-visible {
+  text-decoration: none;
   border-color: var(--accent);
 }
 .usecase h3 {

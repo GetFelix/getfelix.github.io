@@ -14,11 +14,22 @@
 }
 .perf-stats {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 16px;
 }
+/* Three cards on the first row, two wider ones on the second. */
 .stat {
+  grid-column: span 2;
+}
+.stat:nth-child(n + 4) {
+  grid-column: span 3;
+}
+.stat {
+  display: flex;
+  flex-direction: column;
   min-width: 0;
+  color: inherit;
+  text-decoration: none;
   padding: 26px 24px;
   border-radius: var(--radius);
   background: var(--bg-raised);
@@ -44,6 +55,126 @@
   letter-spacing: 0;
   color: var(--accent-text);
 }
+.stat-sub {
+  margin-top: 6px;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--accent-text);
+}
+/* Durable tile: Felix's rate as a solid bar on a track that is the disk's
+   fsync ceiling, with the ceiling marked at the right end. */
+.stat-meter {
+  margin-top: 14px;
+}
+.stat-meter-track {
+  position: relative;
+  display: block;
+  height: 10px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+}
+.stat-meter-track::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  right: 0;
+  width: 2px;
+  background: var(--text);
+}
+.stat-meter-track i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: calc(var(--v) / var(--max) * 100%);
+  border-radius: 4px 0 0 4px;
+  background: var(--accent);
+  transform-origin: left center;
+  transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) 0.25s;
+}
+.js .stat:not(.in) .stat-meter-track i {
+  transform: scaleX(0);
+}
+.stat-meter-keys {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 6px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--muted);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+/* Latency tile: three percentiles side by side instead of one value. */
+.stat-pcts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0;
+}
+.stat-pcts > div {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 4px;
+  min-width: 0;
+}
+.stat-pcts dd {
+  margin: 0;
+  font-size: clamp(28px, 3vw, 36px);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.stat-pcts dd .unit {
+  margin-left: 3px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--accent-text);
+}
+.stat-pcts dt {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--accent-text);
+}
+/* Felix against the raw disk, as prominent as the headline it explains. */
+.stat-vs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 14px 0 0;
+}
+.stat-vs > div {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 3px;
+  min-width: 0;
+}
+.stat-vs dd {
+  margin: 0;
+  font-size: clamp(20px, 2.2vw, 26px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.stat-vs dd .unit {
+  margin-left: 3px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--accent-text);
+}
+.stat-vs dt {
+  font-size: 12.5px;
+  color: var(--muted);
+}
 .stat h3 {
   margin-top: 14px;
   font-size: 16px;
@@ -55,6 +186,28 @@
   font-size: 13.5px;
   line-height: 1.55;
   color: var(--muted);
+}
+.stat-src {
+  margin-top: auto;
+  padding-top: 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--accent-text);
+}
+.stat-src::after {
+  content: " \2192";
+}
+.stat:hover,
+.stat:focus-visible {
+  /* Beats the site-wide a:hover underline: only the source line underlines. */
+  text-decoration: none;
+  border-color: var(--accent);
+  box-shadow: var(--shadow-lg);
+}
+.stat:hover .stat-src,
+.stat:focus-visible .stat-src {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 .perf-chart {
   margin: 16px 0 0;
@@ -88,7 +241,7 @@
 .lat-row,
 .lat-axis {
   display: grid;
-  grid-template-columns: 104px minmax(0, 1fr) 96px;
+  grid-template-columns: 104px minmax(0, 1fr) 112px;
   align-items: center;
   gap: 12px;
 }
@@ -106,7 +259,8 @@
   color: var(--text);
   font-variant-numeric: tabular-nums;
 }
-/* Scale is 0 to 500 µs. The solid part ends at the faster run, the tint at the slower one. */
+/* --lo and --hi are p50 and p99 in microseconds on a 0 to 500 scale (0.5 ms).
+   The solid part ends at p50, the tint at p99. */
 .lat-track {
   position: relative;
   height: 14px;
@@ -147,6 +301,12 @@
 .lat-ticks b:last-child {
   transform: translateX(-100%);
 }
+.perf-img img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: 20px;
+}
 .perf-foot {
   margin-top: 22px;
   padding-top: 18px;
@@ -157,6 +317,13 @@
 @media (max-width: 960px) {
   .perf-stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .stat,
+  .stat:nth-child(n + 4) {
+    grid-column: auto;
+  }
+  .stat:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
   }
 }
 @media (max-width: 760px) {
@@ -171,7 +338,7 @@
   /* The label moves above the bar so the bar keeps most of the width. */
   .lat-row,
   .lat-axis {
-    grid-template-columns: minmax(0, 1fr) 80px;
+    grid-template-columns: minmax(0, 1fr) 104px;
     column-gap: 10px;
     row-gap: 4px;
   }
@@ -189,48 +356,3 @@
   }
 }
 
-/* Where the next results go. */
-.perf-next {
-  padding-top: 0;
-}
-.soon {
-  display: grid;
-  grid-template-columns: 48px minmax(0, 1fr);
-  gap: 22px;
-  padding: 30px 32px;
-  border-radius: var(--radius);
-  border: 1.5px dashed var(--line-strong);
-  background: color-mix(in srgb, var(--bg-sunken) 60%, transparent);
-}
-.soon-ic {
-  display: grid;
-  place-items: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  color: var(--accent-text);
-  background: var(--accent-soft);
-  border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
-}
-.soon-ic svg {
-  width: 24px;
-  height: 24px;
-}
-.soon .eyebrow {
-  margin-bottom: 8px;
-}
-.section .soon h2 {
-  font-size: clamp(24px, 3vw, 30px);
-}
-.soon p {
-  margin-top: 10px;
-  max-width: 64ch;
-  color: var(--muted);
-}
-@media (max-width: 520px) {
-  .soon {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 16px;
-    padding: 22px 20px;
-  }
-}
