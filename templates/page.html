@@ -3,7 +3,7 @@
 {% block description %}{{ page.description }}{% endblock description %}
 {% block canonical %}{{ (config.base_url ~ page.path) | trim_end(pat="/") }}{% endblock canonical %}
 {% block head_social %}
-{{<social title={page.title} description={page.description} url={(config.base_url ~ page.path) | trim_end(pat="/")} published={(page.date or "") ~ ""} />}}
+{{<social title={page.title} description={page.description} url={(config.base_url ~ page.path) | trim_end(pat="/")} published={(page.date or "") | date(format="%Y-%m-%d") if page.date else ""} />}}
 {%- endblock head_social %}
 {% block head_css %}
 <link rel="stylesheet" href="{{<asset path="assets/ck.css" />}}">
@@ -28,7 +28,7 @@
         <img src="/assets/img/gabriel-loewen.jpg" alt="" width="40" height="40">
         <div>
           <span class="byline-name">Gabriel Loewen</span>
-          <span class="post-meta"><time datetime="{{ page.date }}">{{ page.date | date(format="%-d %B %Y") }}</time><span>{{ page.extra.read_minutes }} min read</span></span>
+          <span class="post-meta"><time datetime="{{ page.date | date(format="%Y-%m-%d") }}">{{ page.date | date(format="%-d %B %Y") }}</time><span>{{ page.extra.read_minutes }} min read</span></span>
         </div>
       </div>
       {%- endif %}

@@ -5,6 +5,8 @@
 set -eu
 cd "$(dirname "$0")/../.."
 zola build "$@"
+# Zola also writes its own copy; the site loads /assets/elasticlunr.min.js.
+rm -f public/elasticlunr.min.js
 for d in public/blog/*.html; do
   [ -d "$d" ] || continue
   mv "$d/index.html" "$d.flat"

@@ -1,7 +1,7 @@
 +++
 title = "Before you loosen the timeout, run the old commit"
 description = "Intermittent failures in Felix's cluster tests kept turning out to be real bugs in the broker, so before loosening a timeout I now run the test against a commit from before the suspect change; three cases show what that finds."
-date = 2026-10-17
+date = 2026-10-17T12:00:00
 slug = "before-you-loosen-the-timeout"
 path = "blog/before-you-loosen-the-timeout.html"
 [taxonomies]

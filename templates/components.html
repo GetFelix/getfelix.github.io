@@ -36,7 +36,7 @@
 <li><article class="post-card">
   <a class="post-thumb ck {{ page.slug }}" href="{{ page.path | trim_end(pat="/") }}" aria-hidden="true" tabindex="-1">{{ load_data(path=page.extra.card, format="plain") | trim | safe }}</a>
   <div class="post-text">
-  <p class="post-meta"><time datetime="{{ page.date }}">{{ page.date | date(format="%-d %B %Y") }}</time><span>{{ page.extra.read_minutes }} min read</span></p>
+  <p class="post-meta"><time datetime="{{ page.date | date(format="%Y-%m-%d") }}">{{ page.date | date(format="%-d %B %Y") }}</time><span>{{ page.extra.read_minutes }} min read</span></p>
   <h2><a href="{{ page.path | trim_end(pat="/") }}">{{ page.title }}</a></h2>
   <p>{{ page.description }}</p>
   {{<chips terms={page.taxonomies.topics} />}}</div>

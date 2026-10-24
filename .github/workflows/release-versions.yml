@@ -75,6 +75,10 @@ jobs:
             [ "$(gh pr view release-versions/auto --json state --jq .state)" = MERGED ] && break
             sleep 10
           done
+          if [ "$(gh pr view release-versions/auto --json state --jq .state)" != MERGED ]; then
+            echo "::error::The release-versions PR did not merge within 5 minutes, so the page was not deployed. Merge it, then run the Pages workflow."
+            exit 1
+          fi
           gh workflow run pages.yml --ref main
 
       - name: Open a PR for the Felix release channel change
