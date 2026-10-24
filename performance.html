@@ -25,7 +25,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/site.css?v=619227be">
-<link rel="stylesheet" href="/assets/performance.css?v=b420b403">
+<link rel="stylesheet" href="/assets/performance.css?v=0a8f570e">
 <script>
   (function () {
     var d = document.documentElement;
@@ -118,11 +118,14 @@
         </a>
         <a class="stat reveal" style="--d:.06s" href="https://docs.getfelix.dev/features/v060-performance/#throughput-by-shape">
           <p class="stat-value">1.4<span class="unit">GB/s</span></p>
-          <p class="stat-sub">99% of the disk's fsync ceiling</p>
+          <dl class="stat-vs">
+            <div><dt>Felix, fsynced</dt><dd>1,399<span class="unit">MB/s</span></dd></div>
+            <div><dt>Raw disk, <code>fio</code></dt><dd>1,414<span class="unit">MB/s</span></dd></div>
+          </dl>
           <div class="stat-meter" style="--v:1399;--max:1414" role="img" aria-label="Felix 1,399 MB/s against the disk's 1,414 MB/s measured by fio">
             <span class="stat-meter-track"><i></i></span>
-            <span class="stat-meter-keys" aria-hidden="true"><span>Felix 1,399</span><span>disk 1,414 MB/s</span></span>
           </div>
+          <p class="stat-sub">99% of what the disk can do with an fsync per write</p>
           <h3>Durable, fsync before every ack</h3>
           <p class="stat-note">Each 4 KiB batch of 64 is fsynced to NVMe before the ack. The disk itself manages 1,414 MB/s with an fsync per write (<code>fio</code>), so Felix is limited by the disk, not the broker.</p>
           <span class="stat-src">Throughput by shape</span>
@@ -234,8 +237,16 @@
       <div class="perf-stats">
         <a class="stat reveal" href="https://docs.getfelix.dev/features/v060-performance/#cluster-throughput">
           <p class="stat-value">656<span class="unit">MB/s</span></p>
+          <dl class="stat-vs">
+            <div><dt>Each broker writes</dt><dd>663<span class="unit">MB/s</span></dd></div>
+            <div><dt>Its raw disk, <code>fio</code></dt><dd>731<span class="unit">MB/s</span></dd></div>
+          </dl>
+          <div class="stat-meter" style="--v:663;--max:731" role="img" aria-label="Each broker writes 663 MB/s against its disk's 731 MB/s measured by fio">
+            <span class="stat-meter-track"><i></i></span>
+          </div>
+          <p class="stat-sub">90% of each broker's disk</p>
           <h3>Durable, three fsynced copies</h3>
-          <p class="stat-note">4 KiB batches of 64, every record fsynced on all three brokers. Each broker writes about 660 MB/s, 90% of what its disk does in <code>fio</code> with an fsync after each write. 256 B batches of 64 run at 475 MB/s, 1.86 million messages a second.</p>
+          <p class="stat-note">4 KiB batches of 64. Every broker stores every record, so each disk writes the whole stream; a write is acknowledged once two of the three have fsynced it. 256 B batches of 64 run at 475 MB/s, 1.86 million messages a second.</p>
           <span class="stat-src">Cluster throughput</span>
         </a>
         <a class="stat reveal" style="--d:.06s" href="https://docs.getfelix.dev/features/v060-performance/#cluster-throughput">
