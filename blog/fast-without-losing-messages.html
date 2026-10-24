@@ -353,7 +353,7 @@
 
     <h2 id="the-numbers">The numbers</h2>
 
-    <p>One broker on an Azure <code>Standard_L8as_v4</code> (8 vCPU, local NVMe in RAID0), over QUIC with TLS, with 64 publishers on four load generators. Throughput is the payload the broker accepted. These were measured on the final campaign build. The release build matched on every shape it re-measured, except small fire-and-forget messages (<a href="https://github.com/GetFelix/felix/issues/1469">#1469</a>).</p>
+    <p>One broker on an Azure <code>Standard_L8as_v4</code> (8 vCPU, local NVMe in RAID0), over QUIC with TLS, with 64 publishers on four load generators. Throughput is the payload the broker accepted. These were measured on the final campaign build. The release build re-measured batched throughput within 1% of them and latency within about 5%, except small fire-and-forget messages (<a href="https://github.com/GetFelix/felix/issues/1469">#1469</a>).</p>
 
     <div class="table-wrap">
       <table>
