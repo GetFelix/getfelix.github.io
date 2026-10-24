@@ -1,0 +1,176 @@
+/* Illustrations in posts (.ck): colours, text styles and the wide-figure layout. */
+.ck {
+  --cat: #141b23;
+  --cat-edge: #141b23;
+  --fur: #ffffff;
+  --ear: #5b6773;
+  --bad: #b42318;
+  --bad-soft: rgba(180, 35, 24, 0.1);
+  --gold: #f0b429;
+  --paper: #fffdf5;
+  --mouse: #9aa6b2;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .ck {
+    --cat: #121820;
+    --cat-edge: #aebdcb;
+    --fur: #e3eaf1;
+    --ear: #3d4853;
+    --bad: #ff8073;
+    --bad-soft: rgba(255, 128, 115, 0.12);
+    --paper: #18212b;
+    --mouse: #7f8d9b;
+  }
+}
+:root[data-theme="dark"] .ck {
+  --cat: #121820;
+  --cat-edge: #aebdcb;
+  --fur: #e3eaf1;
+  --ear: #3d4853;
+  --bad: #ff8073;
+  --bad-soft: rgba(255, 128, 115, 0.12);
+  --paper: #18212b;
+  --mouse: #7f8d9b;
+}
+:root[data-theme="solarized"] .ck {
+  --cat: #00161c;
+  --cat-edge: #93a1a1;
+  --fur: #eee8d5;
+  --ear: #284b54;
+  --bad: #ef5350;
+  --bad-soft: rgba(239, 83, 80, 0.14);
+  --gold: #e0b43a;
+  --paper: #0b404d;
+  --mouse: #839496;
+}
+.ck .stage {
+  padding: 18px;
+}
+.ck-svg {
+  max-width: 560px;
+  margin: 0 auto;
+}
+.ck-svg text {
+  font-family: var(--sans);
+  font-weight: 600;
+  fill: var(--text);
+}
+.ck-svg .mono {
+  font-family: var(--mono);
+  font-weight: 500;
+}
+.ck-svg .m { fill: var(--muted); font-weight: 500; }
+.ck-svg .a { fill: var(--accent-text); }
+.ck-svg .ok { fill: var(--ok); }
+.ck-svg .bad { fill: var(--bad); }
+.ck-svg .wn { fill: var(--warn); }
+.ck-svg .hand { font-family: "Lobster Two", var(--sans); font-style: italic; font-weight: 700; }
+.ck-svg .cap { font-family: var(--mono); font-weight: 500; letter-spacing: 0.06em; fill: var(--faint); }
+.ck-svg .rough { filter: url(#ck-rough); }
+.ck-svg .ln,
+.ck-svg .lnm,
+.ck-svg .lna,
+.ck-svg .lnb,
+.ck-svg .lnok {
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ck-svg .lnm { stroke: var(--faint); }
+.ck-svg .lna { stroke: var(--accent); stroke-width: 2.2; }
+.ck-svg .lnb { stroke: var(--bad); stroke-width: 2.2; }
+.ck-svg .lnok { stroke: var(--ok); stroke-width: 2.2; }
+.ck-svg .dash { stroke-dasharray: 5 6; }
+.ck-svg .lane { stroke: var(--line-strong); stroke-width: 3; stroke-linecap: round; fill: none; }
+.ck-svg .cf { fill: var(--cat); stroke: var(--cat-edge); stroke-width: 2.4; stroke-linejoin: round; }
+.ck-svg .cw { fill: var(--fur); }
+.ck-svg .ce { fill: var(--ear); }
+.ck-svg .cn { fill: #e58a9a; }
+.ck-svg .cp { fill: #141b23; }
+.ck-svg .wh { fill: none; stroke: var(--faint); stroke-width: 1.6; stroke-linecap: round; }
+.ck-svg .lid { fill: none; stroke: var(--cat); stroke-width: 3.5; stroke-linecap: round; }
+.ck-svg .hap { fill: none; stroke: var(--fur); stroke-width: 3.6; stroke-linecap: round; stroke-linejoin: round; }
+.ck-svg .mo { fill: none; stroke: #141b23; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.ck-svg .tl { fill: none; stroke: var(--cat); stroke-width: 10; stroke-linecap: round; }
+.ck-svg .tl-e { fill: none; stroke: var(--cat-edge); stroke-width: 15; stroke-linecap: round; }
+.ck-svg .crown { fill: var(--gold); stroke: #8a5a00; stroke-width: 2; stroke-linejoin: round; }
+.ck-svg .tg { fill: var(--paper); stroke: var(--accent); stroke-width: 2; }
+.ck-svg .tgb { fill: var(--accent); }
+.ck-svg .tgt { fill: var(--on-accent); font-family: var(--mono); font-weight: 500; letter-spacing: 0.08em; }
+.ck-svg .tgv { fill: var(--text); }
+.ck-svg .tag-new .tg { stroke: var(--warn); }
+.ck-svg .tag-new .tgb { fill: var(--warn); }
+.ck-svg .tag-new .tgt { fill: var(--bg-raised); }
+.ck-svg .chw rect { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; }
+.ck-svg .chw text { fill: var(--accent-text); }
+.ck-svg .chc rect { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; stroke-dasharray: 4 4; }
+.ck-svg .chc text { fill: var(--accent-text); }
+.ck-svg .chr rect { fill: var(--bg-sunken); stroke: var(--line-strong); stroke-width: 2; }
+.ck-svg .chx rect { fill: var(--bad-soft); stroke: var(--bad); stroke-width: 2; }
+.ck-svg .chx text { fill: var(--bad); }
+.ck-svg .chg rect { fill: none; stroke: var(--faint); stroke-width: 2; stroke-dasharray: 4 4; }
+.ck-svg .chg text { fill: var(--faint); }
+.ck-svg .strike { stroke: var(--bad); stroke-width: 2.6; stroke-linecap: round; }
+.ck-svg .bolt { fill: var(--gold); stroke: #8a5a00; stroke-width: 1.6; stroke-linejoin: round; }
+.ck-svg .okp rect { fill: var(--ok-soft); stroke: var(--ok); stroke-width: 2; }
+.ck-svg .okp text { fill: var(--ok); }
+.ck-svg .badp rect { fill: var(--bad-soft); stroke: var(--bad); stroke-width: 2; }
+.ck-svg .badp text { fill: var(--bad); }
+.ck-svg .accp rect { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; }
+.ck-svg .accp text { fill: var(--accent-text); }
+.ck-svg .box { fill: var(--bg-raised); stroke: var(--line-strong); stroke-width: 2; }
+.ck-svg .boxa { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; }
+.ck-svg .note { fill: var(--paper); stroke: var(--warn); stroke-width: 1.6; }
+.ck-svg .paper { fill: var(--paper); stroke: var(--text); stroke-width: 2; stroke-linejoin: round; }
+.ck-svg .bubble { fill: var(--bg-raised); stroke: var(--text); stroke-width: 2; stroke-linejoin: round; }
+.ck-svg .ground { fill: none; stroke: var(--line-strong); stroke-width: 2.5; stroke-linecap: round; }
+.ck-svg .metal { fill: var(--bg-sunken); stroke: var(--text); stroke-width: 2; stroke-linejoin: round; }
+.ck-svg .dark { fill: var(--faint); opacity: 0.35; }
+.ck-svg .mouse { fill: var(--mouse); stroke: var(--text); stroke-width: 1.6; }
+.ck-svg .ear-p { fill: #e8a0ac; }
+.ck-svg .dot { fill: var(--text); }
+.ck-svg .ledok { fill: var(--ok); }
+.ck-svg .panel { fill: none; stroke: var(--line-strong); stroke-width: 2; }
+.ck-svg .panel-bad { fill: var(--bad-soft); stroke: var(--bad); stroke-width: 2; opacity: 0.9; }
+.ck-svg .panel-ok { fill: var(--ok-soft); stroke: var(--ok); stroke-width: 2; }
+.ck-svg .stars { fill: var(--gold); stroke: #8a5a00; stroke-width: 1.2; }
+.ck-svg .ballot { fill: var(--paper); stroke: var(--text); stroke-width: 2; }
+.ck-svg .domino { fill: var(--bg-raised); stroke: var(--text); stroke-width: 2.2; stroke-linejoin: round; }
+.ck-svg .pip { fill: var(--accent); }
+
+/* Wide figures run past the text column on a desktop; narrower screens get the
+   stacked drawing of the same thing. */
+.ck .stage .ck-t { display: none; max-width: 460px; }
+.ck .stage .ck-w { max-width: none; }
+.ck .stage .ck-mid { max-width: 700px; }
+@media (min-width: 940px) {
+  .post-body .ck.wide {
+    margin-left: calc(50% - 440px);
+    margin-right: calc(50% - 440px);
+  }
+  .post-body .ck.wide figcaption {
+    max-width: 660px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+@media (max-width: 939px) {
+  .ck .stage .ck-w { display: none; }
+  .ck .stage .ck-t { display: block; }
+}
+@media (max-width: 760px) {
+  .ck .stage { padding: 10px 8px; }
+}
+.ck-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+.post-body :not(pre) > code { overflow-wrap: anywhere; }
+/* The results table: long headers wrap, runner names do not. */
+.post-body table.perf th { white-space: normal; vertical-align: bottom; }
+.post-body table.perf td:first-child { white-space: nowrap; }
+.post-body table.perf td.num { white-space: normal; }

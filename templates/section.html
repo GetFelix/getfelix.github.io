@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}{{ config.extra.blog_title }}{% if paginator.current_index > 1 %} (page {{ paginator.current_index }}){% endif %}{% endblock title %}
+{% block description %}{{ config.extra.blog_description }}{% endblock description %}
+{% block canonical %}{{ current_url }}{% endblock canonical %}
+{% block head_social %}
+{{<social title={config.extra.blog_title} description={config.extra.blog_description} url={current_url} />}}
+{%- endblock head_social %}
+{% block head_extra %}
+<script defer src="{{<asset path="assets/blog-search.js" />}}"></script>
+{%- endblock head_extra %}
+{% block main %}
+{% set current = "" %}
+  <section class="section page-intro blog-intro" aria-labelledby="blog-title">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow"><picture><source srcset="/assets/img/felix-mark-96.webp" type="image/webp"><img src="/assets/img/felix-mark-96.png" alt="" width="22" height="22"></picture>Blog</span>
+        <h1 id="blog-title">Notes from building Felix</h1>
+        <p>How Felix works, why it is built the way it is, and what testing it against crashes and network splits has turned up.</p>
+        <a class="feed-link" href="/blog/feed.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M5 11a8 8 0 0 1 8 8M5 4a15 15 0 0 1 15 15"/><circle cx="6" cy="18" r="1.6" fill="currentColor" stroke="none"/></svg>Subscribe with RSS</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="blog-tools" aria-label="Find a post">
+    <div class="wrap">
+      <div class="blog-search" id="blog-search" hidden>
+        <form role="search" id="search-form" action="/blog/" autocomplete="off">
+          <label for="search-q">Search posts</label>
+          <div class="search-row">
+            <input type="search" id="search-q" name="q" placeholder="Title, summary or text" aria-describedby="search-status" aria-controls="search-results" spellcheck="false">
+            <button type="submit">Search</button>
+          </div>
+        </form>
+        <p id="search-status" class="search-status" role="status" aria-live="polite"></p>
+        <ol id="search-results" class="search-results" hidden></ol>
+      </div>
+      <nav class="topic-nav" aria-labelledby="topics-label">
+        <h2 id="topics-label" class="topic-nav-label">Topics</h2>
+        {%- set tax = get_taxonomy(kind="topics") %}{% set terms = tax.items %}
+        <ul class="topic-chips">
+          {%- for t in terms %}
+          <li><a class="chip" href="{{ t.path }}"{% if current == t.name %} aria-current="page"{% endif %}>{{ t.name }} <span class="chip-n">{{ t.pages | length }}<span class="sr-only"> posts</span></span></a></li>
+          {%- endfor %}
+        </ul>
+      </nav>
+    </div>
+  </section>
+
+  <section class="blog-list" aria-label="Posts">
+    <div class="wrap">
+      <svg class="ck-defs" aria-hidden="true" focusable="false"><filter id="ck-rough" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="7"/><feDisplacementMap in="SourceGraphic" scale="2"/></filter></svg>
+      <ol class="post-list" id="post-list" reversed>
+        {%- for page in paginator.pages %}
+        {{<card page={page} />}}
+        {%- endfor %}
+      </ol>
+      {{<pager paginator={paginator} base="/blog/" />}}
+    </div>
+  </section>
+{%- endblock main %}

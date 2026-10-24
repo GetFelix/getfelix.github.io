@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}{% endblock title %}</title>
+<meta name="description" content="{% block description %}{% endblock description %}">
+{%- if page?.extra?.noindex %}
+<meta name="robots" content="noindex">
+{%- endif %}
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#f6f8fa" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#070a0e" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="{% block canonical %}{{ current_url }}{% endblock canonical %}">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="alternate" type="application/rss+xml" title="Felix blog" href="/blog/feed.xml">
+{%- block head_social %}{% endblock head_social %}
+<link rel="preload" href="/assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="{{<asset path="assets/site.css" />}}">
+<link rel="stylesheet" href="{{<asset path="assets/blog.css" />}}">
+{%- block head_css %}{% endblock head_css %}
+<script>
+  (function () {
+    var d = document.documentElement;
+    d.classList.add("js");
+    try {
+      var t = localStorage.getItem("theme");
+      if (t === "light" || t === "dark" || t === "solarized") d.setAttribute("data-theme", t);
+    } catch (e) {}
+  })();
+</script>
+<script defer src="{{<asset path="assets/site.js" />}}"></script>
+{%- block head_extra %}{% endblock head_extra %}
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+{% include "header.html" %}
+<main id="main">
+{%- block main %}{% endblock main %}
+</main>
+
+{% include "footer.html" %}
+</body>
+</html>

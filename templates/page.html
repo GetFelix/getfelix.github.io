@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}{{ page.title }} · Felix{% endblock title %}
+{% block description %}{{ page.description }}{% endblock description %}
+{% block canonical %}{{ (config.base_url ~ page.path) | trim_end(pat="/") }}{% endblock canonical %}
+{% block head_social %}
+{{<social title={page.title} description={page.description} url={(config.base_url ~ page.path) | trim_end(pat="/")} published={(page.date or "") ~ ""} />}}
+{%- endblock head_social %}
+{% block head_css %}
+<link rel="stylesheet" href="{{<asset path="assets/ck.css" />}}">
+{%- endblock head_css %}
+{% block main %}
+<article class="post" aria-labelledby="post-title">
+  <header class="post-head">
+    <div class="wrap">
+      <a class="post-back" href="/blog/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>All posts</a>
+      <div>
+      {%- if page.extra.noindex %}
+      <span class="sample-note">Style sample · not a real post</span>
+      {%- endif %}
+      <h1 id="post-title">{{ page.title }}</h1>
+      </div>
+      <p class="post-dek">{{ page.description }}</p>
+      {%- if page.taxonomies.topics %}
+      {{<chips terms={page.taxonomies.topics} />}}
+      {%- endif %}
+      {%- if page.date %}
+      <div class="byline">
+        <img src="/assets/img/gabriel-loewen.jpg" alt="" width="40" height="40">
+        <div>
+          <span class="byline-name">Gabriel Loewen</span>
+          <span class="post-meta"><time datetime="{{ page.date }}">{{ page.date | date(format="%-d %B %Y") }}</time><span>{{ page.extra.read_minutes }} min read</span></span>
+        </div>
+      </div>
+      {%- endif %}
+    </div>
+  </header>
+
+  <div class="post-body">
+    <svg class="ck-defs" aria-hidden="true" focusable="false"><filter id="ck-rough" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="7"/><feDisplacementMap in="SourceGraphic" scale="2"/></filter></svg>
+
+    {{ page.content | safe }}
+  </div>
+{% include "post_end.html" %}
+</article>
+{%- endblock main %}

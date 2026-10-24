@@ -20,6 +20,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  actions: write
 
 concurrency:
   group: release-versions
@@ -64,6 +65,17 @@ jobs:
             echo "Merge path: auto-merge failed, merging directly"
             gh pr merge "$branch" --squash --delete-branch
           fi
+
+      # A merge made with the workflow token does not start the Pages workflow,
+      # so deploy the merged page by hand once the PR has landed.
+      - name: Deploy the merged page
+        if: steps.update.outputs.changed == 'true'
+        run: |
+          for _ in $(seq 1 30); do
+            [ "$(gh pr view release-versions/auto --json state --jq .state)" = MERGED ] && break
+            sleep 10
+          done
+          gh workflow run pages.yml --ref main
 
       - name: Open a PR for the Felix release channel change
         if: steps.update.outputs.held != ''

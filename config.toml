@@ -1,0 +1,42 @@
+base_url = "https://getfelix.dev"
+title = "Felix"
+default_language = "en"
+build_search_index = true
+# Only the blog section and the topic taxonomy get feeds (see content/blog/_index.md).
+generate_feeds = false
+feed_filenames = ["feed.xml"]
+compile_sass = false
+minify_html = false
+
+taxonomies = [
+  { name = "topics", feed = true, paginate_by = 6 },
+]
+
+[markdown]
+# Text stays as written; the old pages had no smart quotes.
+smart_punctuation = false
+render_emoji = false
+external_links_target_blank = false
+external_links_external = false
+
+[search]
+index_format = "elasticlunr_javascript"
+include_title = true
+include_description = true
+include_path = false
+include_content = true
+
+[extra]
+blog_title = "Felix blog: building a replicated log in Rust"
+blog_description = "Notes from building Felix: how it works, why it is built the way it is, and what testing it has turned up."
+# The pages that are plain files in static/. Their sitemap entries live here
+# because Zola does not see them.
+static_pages = [
+  { path = "/", lastmod = "2026-10-11" },
+  { path = "/features.html", lastmod = "2026-10-11" },
+  { path = "/guarantees.html", lastmod = "2026-10-11" },
+  { path = "/performance.html", lastmod = "2026-10-11" },
+  { path = "/projects.html", lastmod = "2026-10-17" },
+  { path = "/status.html", lastmod = "2026-10-11" },
+  { path = "/about.html", lastmod = "2026-10-16" },
+]

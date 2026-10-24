@@ -2,7 +2,7 @@ name: Check versions
 
 # Fails when a version in the hero or a project card is typed in by hand
 # instead of sitting inside a release marker, since the release-versions
-# workflow would never update it. Also checks that links between pages resolve.
+# workflow would never update it. Link checks run on the built site in pages.yml.
 
 on:
   pull_request:
@@ -18,4 +18,3 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: python3 .github/scripts/release_versions.py --check
-      - run: python3 .github/scripts/check_links.py
