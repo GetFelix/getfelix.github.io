@@ -79,6 +79,8 @@
 }
 .stat:hover,
 .stat:focus-visible {
+  /* Beats the site-wide a:hover underline: only the source line underlines. */
+  text-decoration: none;
   border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
 }
 .stat:hover .stat-src {
