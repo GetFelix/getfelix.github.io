@@ -807,7 +807,7 @@ p {
   font-size: 12px;
   color: var(--faint);
 }
-/* 345 of a 500 µs scale, like the latency chart on performance.html. */
+/* 312 of a 500 µs scale, like the latency chart on performance.html. */
 .tz-bar {
   display: block;
   height: 6px;
@@ -819,7 +819,7 @@ p {
 .tz-bar i {
   display: block;
   height: 100%;
-  width: 69%;
+  width: 62%;
   border-radius: inherit;
   background: var(--accent);
 }

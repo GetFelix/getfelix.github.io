@@ -14,11 +14,22 @@
 }
 .perf-stats {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 16px;
 }
+/* Three cards on the first row, two wider ones on the second. */
 .stat {
+  grid-column: span 2;
+}
+.stat:nth-child(n + 4) {
+  grid-column: span 3;
+}
+.stat {
+  display: flex;
+  flex-direction: column;
   min-width: 0;
+  color: inherit;
+  text-decoration: none;
   padding: 26px 24px;
   border-radius: var(--radius);
   background: var(--bg-raised);
@@ -55,6 +66,23 @@
   font-size: 13.5px;
   line-height: 1.55;
   color: var(--muted);
+}
+.stat-src {
+  margin-top: auto;
+  padding-top: 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--accent-text);
+}
+.stat-src::after {
+  content: " \2192";
+}
+.stat:hover,
+.stat:focus-visible {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+}
+.stat:hover .stat-src {
+  text-decoration: underline;
 }
 .perf-chart {
   margin: 16px 0 0;
@@ -106,7 +134,7 @@
   color: var(--text);
   font-variant-numeric: tabular-nums;
 }
-/* Scale is 0 to 500 µs. The solid part ends at the faster run, the tint at the slower one. */
+/* Scale is 0 to 500 µs. The solid part ends at p50, the tint at p99. */
 .lat-track {
   position: relative;
   height: 14px;
@@ -147,6 +175,12 @@
 .lat-ticks b:last-child {
   transform: translateX(-100%);
 }
+.perf-img img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: 20px;
+}
 .perf-foot {
   margin-top: 22px;
   padding-top: 18px;
@@ -157,6 +191,13 @@
 @media (max-width: 960px) {
   .perf-stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .stat,
+  .stat:nth-child(n + 4) {
+    grid-column: auto;
+  }
+  .stat:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
   }
 }
 @media (max-width: 760px) {
