@@ -1,7 +1,7 @@
 +++
 title = "Acknowledged, then forgotten: a crash under periodic fsync"
 description = "Under Felix's default periodic fsync, a crashed broker could come back missing records it had acknowledged while the cluster still counted it as caught up; this is how review and the TLA+ model found it on the follower and leader sides, and what the fix costs."
-date = 2026-10-17
+date = 2026-10-17T11:00:00
 slug = "acknowledged-then-forgotten"
 path = "blog/acknowledged-then-forgotten.html"
 [taxonomies]
