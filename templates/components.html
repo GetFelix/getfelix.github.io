@@ -1,0 +1,67 @@
+{# A site asset URL with a cache key taken from the file's content, so nobody edits ?v= by hand. #}
+{% component asset(path: string) %}/{{ path }}?v={{ get_hash(path=path, sha_type=256, base64=false)[:8] }}{% endcomponent asset %}
+
+{# Open Graph and Twitter tags; published is set for articles. #}
+{% component social(title: string, description: string, url: string, published: string = "") %}
+<meta property="og:type" content="{% if published %}article{% else %}website{% endif %}">
+<meta property="og:site_name" content="Felix">
+<meta property="og:title" content="{{ title }}">
+<meta property="og:description" content="{{ description }}">
+<meta property="og:url" content="{{ url }}">
+<meta property="og:image" content="https://getfelix.dev/assets/img/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Felix logo, a cat in a round badge above the word Felix, beside the headline: One system for your events, state and work. Below it: An open-source, distributed platform for streams, caches, queues and counters, all on one replicated log. Written in Rust. getfelix.dev">
+{%- if published %}
+<meta property="article:published_time" content="{{ published }}">
+<meta property="article:author" content="Gabriel Loewen">
+{%- endif %}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ title }}">
+<meta name="twitter:description" content="{{ description }}">
+<meta name="twitter:image" content="https://getfelix.dev/assets/img/og-image.png">
+{% endcomponent social %}
+
+{# Topic chips. Each links to the topic's page; the list has a name for screen readers. #}
+{% component chips(terms: array, current: string = "") %}
+<ul class="topic-chips" aria-label="Topics">
+  {%- for t in terms %}
+  <li><a class="chip" href="{{ get_taxonomy_url(kind="topics", name=t) | replace(from="https://getfelix.dev", to="") }}"{% if t == current %} aria-current="page"{% endif %}>{{ t }}</a></li>
+  {%- endfor %}
+</ul>
+{% endcomponent chips %}
+
+{# One entry in the post list: the illustration, date, title, summary, topics. #}
+{% component card(page) %}
+<li><article class="post-card">
+  <a class="post-thumb ck {{ page.slug }}" href="{{ page.path | trim_end(pat="/") }}" aria-hidden="true" tabindex="-1">{{ load_data(path=page.extra.card, format="plain") | trim | safe }}</a>
+  <div class="post-text">
+  <p class="post-meta"><time datetime="{{ page.date }}">{{ page.date | date(format="%-d %B %Y") }}</time><span>{{ page.extra.read_minutes }} min read</span></p>
+  <h2><a href="{{ page.path | trim_end(pat="/") }}">{{ page.title }}</a></h2>
+  <p>{{ page.description }}</p>
+  {{<chips terms={page.taxonomies.topics} />}}</div>
+</article></li>
+{% endcomponent card %}
+
+{# Previous, numbered and next links for a paginated list. #}
+{% component pager(paginator, base: string) %}
+{%- if paginator.number_pagers > 1 %}
+<nav class="pager" aria-label="Pagination">
+  {%- if paginator.previous %}
+  <a class="pager-step" href="{% if paginator.current_index == 2 %}{{ base }}{% else %}{{ base }}page/{{ paginator.current_index - 1 }}/{% endif %}" rel="prev"><span aria-hidden="true">&larr;</span> Newer<span class="sr-only"> posts</span></a>
+  {%- else %}
+  <span class="pager-step is-off" aria-hidden="true">&larr; Newer</span>
+  {%- endif %}
+  <ol class="pager-pages">
+    {%- for n in range(start=1, end=paginator.number_pagers + 1) %}
+    <li><a href="{% if n == 1 %}{{ base }}{% else %}{{ base }}page/{{ n }}/{% endif %}"{% if n == paginator.current_index %} aria-current="page" aria-label="Page {{ n }}, current page"{% else %} aria-label="Page {{ n }}"{% endif %}>{{ n }}</a></li>
+    {%- endfor %}
+  </ol>
+  {%- if paginator.next %}
+  <a class="pager-step" href="{{ base }}page/{{ paginator.current_index + 1 }}/" rel="next">Older<span class="sr-only"> posts</span> <span aria-hidden="true">&rarr;</span></a>
+  {%- else %}
+  <span class="pager-step is-off" aria-hidden="true">Older &rarr;</span>
+  {%- endif %}
+</nav>
+{%- endif %}
+{% endcomponent pager %}

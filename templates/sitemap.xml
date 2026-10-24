@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  {%- for p in config.extra.static_pages %}
+  <url>
+    <loc>{{ config.base_url }}{{ p.path }}</loc>
+    <lastmod>{{ p.lastmod }}</lastmod>
+  </url>
+  {%- endfor %}
+  {%- set blog = get_section(path="blog/_index.md") %}
+  <url>
+    <loc>{{ blog.permalink | safe }}</loc>
+    <lastmod>{{ blog.pages | first | get(key="date") }}</lastmod>
+  </url>
+  {%- for page in blog.pages %}
+  <url>
+    <loc>{{ (config.base_url ~ page.path) | trim_end(pat="/") }}</loc>
+    <lastmod>{% if page.updated %}{{ page.updated }}{% else %}{{ page.date }}{% endif %}</lastmod>
+  </url>
+  {%- endfor %}
+</urlset>

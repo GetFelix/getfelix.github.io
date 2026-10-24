@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Felix blog{% if term is defined %}: {{ term.name }}{% endif %}</title>
+    <link>{% if term is defined %}{{ term.permalink }}{% else %}https://getfelix.dev/blog/{% endif %}</link>
+    <description>{% if term is defined %}Felix blog posts about {{ term.name }}.{% else %}Notes from building Felix: how it works, why it is built the way it is, and what testing it has turned up.{% endif %}</description>
+    <language>en</language>
+    <atom:link href="{{ feed_url | safe }}" rel="self" type="application/rss+xml"/>
+    {%- for page in pages %}
+    <item>
+      <title>{{ page.title }}</title>
+      <link>{{ (config.base_url ~ page.path) | trim_end(pat="/") }}</link>
+      <guid isPermaLink="true">{{ (config.base_url ~ page.path) | trim_end(pat="/") }}</guid>
+      <pubDate>{{ page.date | date(format="%a, %d %b %Y 00:00:00 +0000") }}</pubDate>
+      <description>{{ page.description }}</description>
+    </item>
+    {%- endfor %}
+  </channel>
+</rss>

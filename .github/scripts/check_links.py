@@ -1,23 +1,24 @@
 """Fail if a link between the site's pages, or an ARIA reference, points at a
 file or id that doesn't exist, or if a page's header or footer differs from the
-others'. The pages have no build step, so the shared header and footer are
-copied into each one; only aria-current may differ. The blog's post template
-is held to the same header and footer.
+others'. It reads the built site, so it covers the plain pages in static/ and
+the Zola-built blog together. Only aria-current may differ between headers.
 
-Usage: check_links.py
+Usage: check_links.py [built-site-dir]   (default: public)
 """
 
 import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(sys.argv[1] if len(sys.argv) > 1 else Path(__file__).resolve().parents[2] / "public").resolve()
+if not (ROOT / "index.html").exists():
+    sys.exit("%s has no index.html; build the site first (.github/scripts/build.sh)" % ROOT)
 pages = {
     p.relative_to(ROOT).as_posix(): p.read_text(encoding="utf-8")
-    for p in sorted([*ROOT.glob("*.html"), *ROOT.glob("blog/*.html")])
+    for p in sorted(ROOT.rglob("*.html"))
 }
-TEMPLATE = ".github/blog/post-template.html"
-template = (ROOT / TEMPLATE).read_text(encoding="utf-8")
+# Zola leaves a redirect stub at .../page/1/; it is not a page of the site.
+pages = {n: h for n, h in pages.items() if "<title>Redirect</title>" not in h}
 ids = {}
 problems = []
 for name, html in pages.items():
@@ -48,10 +49,14 @@ for name, html in pages.items():
                 if ref not in ids[name]:
                     problems.append("%s: %s names missing id %s" % (name, attr, ref))
 
-# Pages the header nav doesn't list, so their header marks no link as current.
-# Blog posts count: the nav lists the blog's index, not each post.
-NOT_IN_NAV = {"404.html", "about.html", TEMPLATE}
-NOT_IN_NAV |= {n for n in pages if n.startswith("blog/") and n != "blog/index.html"}
+# The nav lists the blog's index, so the index, its further pages and the topic
+# pages mark it as current. Posts, the 404 and the about page mark nothing.
+def in_blog_listing(name):
+    return name == "blog/index.html" or name.startswith(("blog/page/", "topics/"))
+
+
+NOT_IN_NAV = {"404.html", "about.html"}
+NOT_IN_NAV |= {n for n in pages if n.startswith("blog/") and not in_blog_listing(n)}
 
 # Pages kept out of search and so out of the footer and the sitemap: the 404
 # and the blog's unlisted style sample.
@@ -63,7 +68,7 @@ def url_path(name):
 
 
 shared = {}
-for name, html in [*pages.items(), (TEMPLATE, template)]:
+for name, html in pages.items():
     for part in ("header", "footer"):
         m = re.search(r'<%s class="site-%s">.*?</%s>' % (part, part, part), html, re.S)
         if not m:
@@ -79,9 +84,12 @@ for name, html in [*pages.items(), (TEMPLATE, template)]:
             problems.append("%s: the %s differs from %s's" % (name, part, first[0]))
 
 # Every page is in the nav's sitemap counterpart: the footer links them all.
+# Further list pages and topic pages are views of posts, so the sitemap skips them.
 footer = shared.get("footer", ("", ""))[1]
 sitemap = (ROOT / "sitemap.xml").read_text(encoding="utf-8")
 for name in pages:
+    if name.startswith(("blog/page/", "topics/")):
+        continue
     if name in unlisted:
         if "<loc>https://getfelix.dev%s</loc>" % url_path(name) in sitemap:
             problems.append("sitemap.xml lists %s, which is noindex" % name)

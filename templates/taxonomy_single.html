@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}{{ term.name | capitalize }} · Felix blog{% if paginator.current_index > 1 %} (page {{ paginator.current_index }}){% endif %}{% endblock title %}
+{% block description %}Felix blog posts about {{ term.name }}.{% endblock description %}
+{% block head_social %}
+{{<social title={term.name | capitalize ~ " · Felix blog"} description={"Felix blog posts about " ~ term.name ~ "."} url={current_url} />}}
+{%- endblock head_social %}
+{% block head_extra %}{% endblock head_extra %}
+{% block main %}
+{% set current = term.name %}
+  <section class="section page-intro blog-intro" aria-labelledby="blog-title">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow"><picture><source srcset="/assets/img/felix-mark-96.webp" type="image/webp"><img src="/assets/img/felix-mark-96.png" alt="" width="22" height="22"></picture>Blog</span>
+        <h1 id="blog-title">Topic: {{ term.name }}</h1>
+        <p>{{ term.pages | length }} post{% if term.pages | length != 1 %}s{% endif %} about {{ term.name }}, newest first.</p>
+        <a class="feed-link" href="{{ term.path }}feed.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M5 11a8 8 0 0 1 8 8M5 4a15 15 0 0 1 15 15"/><circle cx="6" cy="18" r="1.6" fill="currentColor" stroke="none"/></svg>RSS for this topic</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="blog-tools" aria-label="Topics">
+    <div class="wrap">
+      <nav class="topic-nav" aria-labelledby="topics-label">
+        <h2 id="topics-label" class="topic-nav-label">Topics</h2>
+        {%- set tax = get_taxonomy(kind="topics") %}{% set terms = tax.items %}
+        <ul class="topic-chips">
+          {%- for t in terms %}
+          <li><a class="chip" href="{{ t.path }}"{% if current == t.name %} aria-current="page"{% endif %}>{{ t.name }} <span class="chip-n">{{ t.pages | length }}<span class="sr-only"> posts</span></span></a></li>
+          {%- endfor %}
+        </ul>
+      </nav>
+      <p class="back-line"><a class="post-back" href="/blog/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg> All posts</a></p>
+    </div>
+  </section>
+
+  <section class="blog-list" aria-label="Posts">
+    <div class="wrap">
+      <svg class="ck-defs" aria-hidden="true" focusable="false"><filter id="ck-rough" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="7"/><feDisplacementMap in="SourceGraphic" scale="2"/></filter></svg>
+      <ol class="post-list" reversed>
+        {%- for page in paginator.pages %}
+        {{<card page={page} />}}
+        {%- endfor %}
+      </ol>
+      {{<pager paginator={paginator} base={term.path} />}}
+    </div>
+  </section>
+{%- endblock main %}

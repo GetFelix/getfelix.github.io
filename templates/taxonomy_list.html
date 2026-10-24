@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Topics · Felix blog{% endblock title %}
+{% block description %}Every topic on the Felix blog.{% endblock description %}
+{% block head_social %}
+{{<social title="Topics · Felix blog" description="Every topic on the Felix blog." url={current_url} />}}
+{%- endblock head_social %}
+{% block main %}
+  <section class="section page-intro blog-intro" aria-labelledby="blog-title">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow"><picture><source srcset="/assets/img/felix-mark-96.webp" type="image/webp"><img src="/assets/img/felix-mark-96.png" alt="" width="22" height="22"></picture>Blog</span>
+        <h1 id="blog-title">Topics</h1>
+        <p>Posts grouped by what they are about.</p>
+      </div>
+    </div>
+  </section>
+  <section class="blog-tools" aria-label="Topics">
+    <div class="wrap">
+      <ul class="topic-chips topic-chips-lg">
+        {%- for t in terms %}
+        <li><a class="chip" href="{{ t.path }}">{{ t.name }} <span class="chip-n">{{ t.pages | length }}<span class="sr-only"> posts</span></span></a></li>
+        {%- endfor %}
+      </ul>
+      <p class="back-line"><a class="post-back" href="/blog/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg> All posts</a></p>
+    </div>
+  </section>
+{%- endblock main %}

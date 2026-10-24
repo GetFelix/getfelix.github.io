@@ -37,8 +37,10 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-PAGE = ROOT / "index.html"
-PROJECTS = ROOT / "projects.html"
+# The plain pages live in static/ and are served as they are.
+SITE = ROOT / "static"
+PAGE = SITE / "index.html"
+PROJECTS = SITE / "projects.html"
 ORG = "GetFelix"
 
 MARKER = re.compile(
