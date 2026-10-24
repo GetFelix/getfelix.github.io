@@ -79,7 +79,7 @@ Plan 9 is the closest ancestor, and both a model and a warning. It had one proto
 
 A log in the path of every effect costs milliseconds, not microseconds. This isn't a desktop operating system, and it isn't for tight loops or low-latency request and reply. It's for programs where losing or repeating work is the expensive part: stream processing, ledgers and other state machines, fleets of machines that come and go, game and simulation servers.
 
-None of the pieces are new. Temporal and Azure Durable Functions replay deterministic code from an event history. Golem runs durable Wasm workers. Corfu, Tango and Delos built systems on a shared log. felixd asks whether one replicated log, with conditional writes and leases, is enough on its own: no separate workflow database, no coordinator, no job manager.
+None of the pieces are new. [Temporal](https://github.com/temporalio/temporal) replays deterministic workflow code from an event history. [wasmCloud](https://github.com/wasmCloud/wasmCloud) runs Wasm components across machines. [CorfuDB](https://github.com/CorfuDB/CorfuDB) builds replicated data structures on a shared log. felixd asks whether one replicated log, with conditional writes and leases, is enough on its own: no separate workflow database, no coordinator, no job manager.
 
 ## Join in
 
