@@ -55,6 +55,34 @@
   letter-spacing: 0;
   color: var(--accent-text);
 }
+/* Latency tile: three percentiles side by side instead of one value. */
+.stat-pcts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0;
+}
+.stat-pcts > div {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 4px;
+  min-width: 0;
+}
+.stat-pcts dd {
+  margin: 0;
+  font-size: clamp(28px, 3vw, 36px);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.stat-pcts dt {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--accent-text);
+}
 .stat h3 {
   margin-top: 14px;
   font-size: 16px;
