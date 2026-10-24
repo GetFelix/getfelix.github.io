@@ -30,7 +30,7 @@
 <meta name="twitter:description" content="What Felix is, how a publish travels from a client to disk to every subscriber, why it is built that way, and how to run it on your laptop in five minutes.">
 <meta name="twitter:image" content="https://getfelix.dev/assets/img/og-image.png">
 <link rel="preload" href="/assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/site.css?v=0f7e09e7">
+<link rel="stylesheet" href="/assets/site.css?v=619227be">
 <link rel="stylesheet" href="/assets/blog.css?v=e9776bed">
 <script>
   (function () {
@@ -312,13 +312,13 @@
 
     <p>Next the batch is persisted under the stream's fsync policy, and only then fanned out. Fanout builds one delivery envelope per batch and hands every subscriber a reference to it. The encoded frame is cached in the envelope, so the first subscriber to need it encodes it and everyone else gets a cheap copy of the same bytes. Ten subscribers or five hundred, the publish is encoded once.</p>
 
-    <p>That last part is why fanout is what Felix is best at. On three 4-vCPU Azure brokers, with a real identity provider verifying every token, one stream on one broker delivered 256-byte messages to 500 subscribers at 1,004,273 messages a second with zero loss. The publisher's acknowledgement p50 went from 183 µs with one subscriber to 206 µs with five hundred. The conditions and the full table are on the <a href="https://docs.getfelix.dev/features/real-network-performance/#fanout">real-network performance page</a>.</p>
+    <p>That last part is why fanout is what Felix is best at. On three 4-vCPU Azure brokers, with a real identity provider verifying every token, one stream on one broker delivered 256-byte messages to 500 subscribers at 1,004,273 messages a second with zero loss. The publisher's acknowledgement p50 went from 0.18 ms with one subscriber to 0.21 ms with five hundred. The conditions and the full table are on the <a href="https://docs.getfelix.dev/features/real-network-performance/#fanout">real-network performance page</a>.</p>
 
     <h2 id="slow-subscribers">A slow subscriber only slows itself</h2>
 
     <p>Every subscriber has its own bounded queue on the broker. When one fills, the default policy, <code>DropNew</code>, drops the arriving record for that subscriber alone. The publisher never waits on it, and neither does anyone else. An operator can choose <code>Block</code> instead, which trades that isolation for never dropping.</p>
 
-    <p>In the same Azure setup, 50 subscribers read one stream and 10 of them were slowed to 20 ms per delivery. The publisher's acknowledgement p50 stayed at 198 µs, the 40 healthy subscribers each received all 42,000 messages, and the slow ones dropped about 98% of theirs. The loss landed only where the reader fell behind.</p>
+    <p>In the same Azure setup, 50 subscribers read one stream and 10 of them were slowed to 20 ms per delivery. The publisher's acknowledgement p50 stayed at 0.20 ms, the 40 healthy subscribers each received all 42,000 messages, and the slow ones dropped about 98% of theirs. The loss landed only where the reader fell behind.</p>
 
     <p>Dropping is only safe if you can tell it happened. On a durable stream, every delivered event carries its log offset, so a jump in offsets is exactly a drop. The subscription ends at the first drop with the offset to resume from, and the cluster client resumes there from the log. I wrote up how that path works, and a bug in it, in <a href="/blog/one-slow-subscriber.html">One slow subscriber shouldn't slow anyone else</a>.</p>
 
