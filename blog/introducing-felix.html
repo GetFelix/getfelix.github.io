@@ -379,7 +379,7 @@
 
     <p><a href="https://docs.getfelix.dev/built-on-felix/canvas/">felix-canvas</a> is a multiplayer whiteboard. Every edit goes to a durable stream and the canvas is a fold of that log, while cursors go to an in-memory stream because a cursor from 40 ms ago is worthless. Presence is a cache whose entries expire, and a counter hands out sequence numbers. <a href="https://docs.getfelix.dev/built-on-felix/webhook-relay/">felix-webhook-relay</a> stores each webhook before answering, then delivers it to every endpoint through its own consumer group, with retries, dead letters and replay by offset.</p>
 
-    <p><a href="https://docs.getfelix.dev/built-on-felix/arena/">felix-arena</a> is a browser team deathmatch whose simulator commits every tick to a durable stream, so the kill cam is a replay of the log. <a href="https://docs.getfelix.dev/built-on-felix/metro/">felix-metro</a> and <a href="/projects.html#blocks">felix-blocks</a>, a city simulator with a timeline you can drag back and a voxel builder, are in design and use the same pieces.</p>
+    <p><a href="https://docs.getfelix.dev/built-on-felix/arena/">felix-arena</a> is a browser team deathmatch whose simulator commits every tick to a durable stream, so the kill cam is a replay of the log. <a href="https://docs.getfelix.dev/built-on-felix/metro/">felix-metro</a> is a live 3D city simulator, and <a href="/projects.html#blocks">felix-blocks</a>, a voxel builder, is in design; both use the same pieces.</p>
 
     <h2 id="where-it-fits">Where it fits</h2>
 
