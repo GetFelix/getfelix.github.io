@@ -349,7 +349,7 @@
       <figcaption><b>Figure 4</b>The letter goes straight to the house, not through the sorting office.</figcaption>
     </figure>
 
-    <p>On a three-broker cluster, forwarding added about 0.11 ms to an in-memory publish at the median: 0.58 ms through another broker, against 0.47 ms straight to the leader. Under load the hop costs much more. With two thirds of the publishes forwarded, an in-memory stream ran at 881 MB/s. Sent straight to the leaders, it ran at 1,948 MB/s.</p>
+    <p>On a three-broker cluster, forwarding added about 0.38 ms to an in-memory publish at the median: 0.83 ms through another broker, against 0.45 ms straight to the leader. Under load the hop costs much more. With two thirds of the publishes forwarded, an in-memory stream of 256 B batches ran at 864 MB/s; sent straight to the leaders, it ran at 2.0 GB/s. A replicated, durable stream fell further, from 475 MB/s to 107 MB/s, because each forwarded write holds its place on the link between brokers until a majority has it.</p>
 
     <h2 id="the-numbers">The numbers</h2>
 
