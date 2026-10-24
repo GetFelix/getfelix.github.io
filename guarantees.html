@@ -177,7 +177,7 @@
             <ul>
               <li>Each event on a durable stream carries its offset. Subscribe from <code>earliest</code>, <code>latest</code> or an offset.</li>
               <li>Under the default overflow policy, a slow subscriber is dropped from, never waited on. On a durable stream its subscription ends at the first drop and names the offset to resume from.</li>
-              <li>Under overload, with the defaults, a broker sheds fire-and-forget publishes and refuses an acknowledged publish it has no room for with a retryable <code>overloaded</code> error. With <code>pub_ingress_wait</code>, fire-and-forget publishers wait instead.</li>
+              <li>Under overload, with the defaults, a broker sheds fire-and-forget publishes. An acknowledged publish it has no room for is refused with a retryable <code>overloaded</code> error: at once on an in-memory stream, or on a durable stream (acked on commit, the default) after waiting up to 2 seconds for room (<code>FELIX_PUBLISH_QUEUE_WAIT_MS</code>). With <code>pub_ingress_wait</code>, fire-and-forget publishers wait instead.</li>
               <li>Idempotent producers make a re-sent publish land once. Exactly-once delivery is not offered.</li>
             </ul>
           </article>
