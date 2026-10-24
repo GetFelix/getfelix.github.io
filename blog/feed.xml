@@ -16,6 +16,13 @@
     </item>
     -->
     <item>
+      <title>Fast, without losing messages</title>
+      <link>https://getfelix.dev/blog/fast-without-losing-messages.html</link>
+      <guid isPermaLink="true">https://getfelix.dev/blog/fast-without-losing-messages.html</guid>
+      <pubDate>Fri, 23 Oct 2026 00:00:00 +0000</pubDate>
+      <description>How Felix answers a fsynced publish in a third of a millisecond, writes at the disk&#x27;s full rate under load, and slows publishers down instead of dropping their messages.</description>
+    </item>
+    <item>
       <title>Before you loosen the timeout, run the old commit</title>
       <link>https://getfelix.dev/blog/before-you-loosen-the-timeout.html</link>
       <guid isPermaLink="true">https://getfelix.dev/blog/before-you-loosen-the-timeout.html</guid>

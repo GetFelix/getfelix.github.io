@@ -24,7 +24,7 @@
 <meta property="og:image:alt" content="The Felix logo, a cat in a round badge above the word Felix, beside the headline: One system for your events, state and work. Below it: An open-source, distributed platform for streams, caches, queues and counters, all on one replicated log. Written in Rust. getfelix.dev">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/site.css?v=0f7e09e7">
+<link rel="stylesheet" href="/assets/site.css?v=619227be">
 <link rel="stylesheet" href="/assets/guarantees.css?v=5e44553d">
 <script>
   (function () {
@@ -137,8 +137,8 @@
             <header><code class="gu-name">Leader</code><span class="gu-pips" aria-hidden="true"><i class="on"></i><i></i><i></i></span></header>
             <p class="gu-lede">The shard's leader answers alone.</p>
             <dl>
-              <div><dt>Acknowledged</dt><dd>When the leader has queued the record, or written it with <code>ack_on_commit</code>.</dd></div>
-              <div><dt>Leader lost</dt><dd>Records it had not yet shipped are lost, and with <code>ack_on_commit</code> off, the default, so is a record still queued when it crashes or its lease runs out. Replication lag bounds that window and is exported as a metric.</dd></div>
+              <div><dt>Acknowledged</dt><dd>On a durable stream, when the leader has written the record to its log. On an in-memory stream, when it has queued it.</dd></div>
+              <div><dt>Leader lost</dt><dd>Records it had not yet shipped are lost. With <code>FELIX_ACK_ON_COMMIT=0</code>, so is a record still queued when it crashes or its lease runs out. Replication lag bounds that window and is exported as a metric.</dd></div>
               <div><dt>Failover</dt><dd>Roughly 13 to 26 s after a crash with the defaults. A broker stopped gracefully hands its shards to followers first.</dd></div>
             </dl>
             <p class="gu-note">Closing the loss window would take a majority round on every write, which is what <code>Quorum</code> does.</p>
@@ -149,7 +149,7 @@
             <dl>
               <div><dt>Acknowledged</dt><dd>When a majority of the replica set holds it, the leader counted: 2 of 3, 3 of 5.</dd></div>
               <div><dt>Leader lost</dt><dd>Nothing acknowledged is lost. Only a replica holding every acknowledged record can be promoted.</dd></div>
-              <div><dt>Failover</dt><dd>About 5 s, on its followers' word, once the <code>majority_ack</code> and <code>lease_free_reads</code> fleet features are finalized. Otherwise on the lease.</dd></div>
+              <div><dt>Failover</dt><dd>About 5 s on a durable stream, on its followers' word, once the <code>generation_start</code>, <code>majority_ack</code> and <code>lease_free_reads</code> fleet features are finalized. A new cluster finalizes them when its first broker registers; an upgraded one waits for the operator. Otherwise on the lease.</dd></div>
             </dl>
             <p class="gu-note">With no majority reachable, a publish fails after 5 s with <code>quorum_timeout</code>. The record may still survive, so the outcome is unknown, not refused.</p>
           </article>
@@ -160,7 +160,7 @@
             <ul>
               <li><b>In memory</b>, the default: never on disk and not replicated. Delivery is at most once, and records go with their leader.</li>
               <li><code>durable: true</code>: a checksummed segment log, replicated to the shard's followers and replayable from any retained offset. Delivery is at least once.</li>
-              <li>The broker's fsync mode says when a write is on disk: <code>on_commit</code> before the ack, <code>periodic</code> (the default) within an interval, <code>none</code> when the OS gets to it.</li>
+              <li>The broker's fsync mode says when a write is on disk: <code>on_commit</code> before the ack, <code>periodic</code> (the default) within 250 ms, <code>none</code> when the OS gets to it. By default an acknowledged record is already in the log file, so it survives a broker crash; under <code>periodic</code> a machine crash can lose the last interval.</li>
               <li>With <code>replication_factor: 1</code>, the default, a durable shard has no follower and waits for its broker to return.</li>
             </ul>
           </article>
@@ -177,6 +177,7 @@
             <ul>
               <li>Each event on a durable stream carries its offset. Subscribe from <code>earliest</code>, <code>latest</code> or an offset.</li>
               <li>Under the default overflow policy, a slow subscriber is dropped from, never waited on. On a durable stream its subscription ends at the first drop and names the offset to resume from.</li>
+              <li>Under overload, with the defaults, a broker sheds fire-and-forget publishes. An acknowledged publish it has no room for is refused with a retryable <code>overloaded</code> error: at once on an in-memory stream, or on a durable stream (acked on commit, the default) after waiting up to 2 seconds for room (<code>FELIX_PUBLISH_QUEUE_WAIT_MS</code>). With <code>pub_ingress_wait</code>, fire-and-forget publishers wait instead.</li>
               <li>Idempotent producers make a re-sent publish land once. Exactly-once delivery is not offered.</li>
             </ul>
           </article>
@@ -289,7 +290,7 @@
 
   <nav class="page-next" aria-label="Next steps">
     <div class="wrap next-grid">
-      <a class="next-card primary" href="/performance.html"><span class="next-k">Next</span><span class="next-t">Performance</span><span class="next-d">Throughput and latency, measured on one broker.</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a class="next-card primary" href="/performance.html"><span class="next-k">Next</span><span class="next-t">Performance</span><span class="next-d">Throughput and latency, on one broker and on a three-broker cluster.</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
       <a class="next-card" href="/#get-started"><span class="next-k">Try it</span><span class="next-t">Get started</span><span class="next-d">Install a client, a broker and felixctl.</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
     </div>
   </nav>
