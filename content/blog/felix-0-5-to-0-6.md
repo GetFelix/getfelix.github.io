@@ -181,6 +181,10 @@ A short list, each with the ticket that holds the reason: a conditional cache pu
 
 Shards move online while their leaders are alive ([#130](https://github.com/GetFelix/felix/issues/130)), placement spreads a shard's copies across zones, and a stream created with a region stays in it. A broker hands its shards off before it stops. Kafka producers and consumers can use durable streams, which [the Kafka post](/blog/point-your-kafka-client-at-felix.html) explains. `felixctl` is a command-line tool for all of it ([#872](https://github.com/GetFelix/felix/issues/872)). And `docker compose up` brings up a control plane, a broker and development credentials, so that `felixctl pub` and `felixctl sub` work from a fresh clone ([#1345](https://github.com/GetFelix/felix/issues/1345)). We wanted a person to reach a first message in one command, and we run that command in CI so it keeps working.
 
+### Shipped in 0.6.1 {#point-one}
+
+Four fixes that came out of using 0.6.0 followed it in 0.6.1. A write can name its shard instead of hashing a key, because the city simulation had been salting keys until each district landed on its own shard ([#1465](https://github.com/GetFelix/felix/issues/1465)). A subscribe now joins at the latest record before trailing generation-start markers, after the canvas hung on a log that ends in one ([#1476](https://github.com/GetFelix/felix/pull/1476)). Unacked publishes parked per stream are limited, which fixes the 256 B fire-and-forget slowdown in the known issue ([#1477](https://github.com/GetFelix/felix/pull/1477)). And a busy follower's late answer now counts toward the quorum mark, which removes the stalls of about 1.8 seconds that appeared under load once a new cluster finalized its fleet features ([#1481](https://github.com/GetFelix/felix/pull/1481)).
+
 ## What the release taught us {#learned}
 
 **Write the invalidation, not just the claim.** Every decision here rested on a claim: a storage id, a name, a vote, a fence’s majority, a cursor, a token. Each was true when made, and the bug was that it stayed after the world changed. A good test is to ask of any cached or reported fact: what event makes this false, and who is told?
@@ -193,7 +197,7 @@ Shards move online while their leaders are alive ([#130](https://github.com/GetF
 
 **Build things on it.** Thirty-eight of the 192 tickets name an app we built on Felix. An application finds the gap between "the API exists" and "the API is usable" faster than any review.
 
-**Say what you measured.** The 0.6.0 notes list a known issue: fire-and-forget batches of 256 B messages ran about 13% slower than the build the performance runs measured ([#1469](https://github.com/GetFelix/felix/issues/1469)). We found it by comparing a release build against the measured one, and we wrote it down. A fix landed on main after the tag.
+**Say what you measured.** The 0.6.0 notes list a known issue: fire-and-forget batches of 256 B messages ran about 13% slower than the build the performance runs measured ([#1469](https://github.com/GetFelix/felix/issues/1469)). We found it by comparing a release build against the measured one, and we wrote it down. The fix shipped in 0.6.1 ([#1477](https://github.com/GetFelix/felix/pull/1477)).
 
 ## Where Felix is heading {#heading}
 
@@ -205,8 +209,6 @@ We want an application not to need a broker, a cache and a job queue beside each
     </figure>
 
 The companion apps show the kind of application we have in mind: a shared drawing canvas with live cursors and history you can scrub, an arena game whose every match is a log you can replay, a city simulation you can scrub back through, a swarm of workers that come and go, and a webhook relay that takes in events durably and replays them after an outage. What they share is state that changes fast, many participants who must agree on it, and a past that people want to revisit. We want building and operating those to take much less code and fewer moving parts than it does today.
-
-Work that landed just after the tag points the same way. The city simulation runs one district per shard and commits one record per tick at its expected offset, so two districts on one shard race for the same offsets. The shard always came from hashing the routing key, so the simulation salted keys until each district hashed to its own shard, which put the salt into every reader. A write can now name its shard ([#1465](https://github.com/GetFelix/felix/issues/1465)). And bumping the canvas to 0.6.0 hung on a log that ends in a generation-start record, which takes an offset subscribers never receive, so a client waiting for `live_offset - 1` waited for ever ([#1475](https://github.com/GetFelix/felix/issues/1475)); the fix is on main ([#1476](https://github.com/GetFelix/felix/pull/1476)). Neither is in 0.6.0.
 
 That points at the harder half of Felix's stated purpose: coordination-store semantics, where you read the current value and then receive every change with no gap, at the fanout of a messaging system. Log-backed caches do this already, and the status tables on the docs site say plainly where the claim stops. We would like fewer rows there to say "partial".
 
