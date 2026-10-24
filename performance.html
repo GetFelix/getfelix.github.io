@@ -25,7 +25,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/site.css?v=619227be">
-<link rel="stylesheet" href="/assets/performance.css?v=5b2b026b">
+<link rel="stylesheet" href="/assets/performance.css?v=4d1b3c30">
 <script>
   (function () {
     var d = document.documentElement;
@@ -123,11 +123,11 @@
         </a>
         <a class="stat reveal" style="--d:.12s" href="https://docs.getfelix.dev/features/v060-performance/#unloaded-latency">
           <dl class="stat-pcts" aria-label="Ack latency in milliseconds">
-            <div><dt>p50</dt><dd>0.31</dd></div>
-            <div><dt>p99</dt><dd>0.39</dd></div>
-            <div><dt>p999</dt><dd>0.44</dd></div>
+            <div><dt>p50</dt><dd>0.31<span class="unit">ms</span></dd></div>
+            <div><dt>p99</dt><dd>0.39<span class="unit">ms</span></dd></div>
+            <div><dt>p999</dt><dd>0.44<span class="unit">ms</span></dd></div>
           </dl>
-          <h3>One fsynced publish, acknowledged, in ms</h3>
+          <h3>One fsynced publish, acknowledged</h3>
           <p class="stat-note">A 256 B durable publish, fsynced before the ack, with one in flight. Even the slowest in a thousand stays under half a millisecond. In memory, p50 is 0.16 ms.</p>
           <span class="stat-src">Unloaded latency</span>
         </a>
