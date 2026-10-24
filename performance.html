@@ -25,7 +25,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/site.css?v=619227be">
-<link rel="stylesheet" href="/assets/performance.css?v=4d1b3c30">
+<link rel="stylesheet" href="/assets/performance.css?v=b420b403">
 <script>
   (function () {
     var d = document.documentElement;
@@ -85,12 +85,13 @@
         <div class="section-head">
           <span class="eyebrow"><picture><source srcset="/assets/img/felix-mark-96.webp" type="image/webp"><img src="/assets/img/felix-mark-96.png" alt="" width="22" height="22"></picture>Performance</span>
           <h1 id="perf-page-title">Throughput and latency</h1>
-          <p>One Felix broker accepts 4.4 GB/s with every message acknowledged, writes 1.4 GB/s fsynced to disk, and acknowledges a single fsynced publish in 0.31 ms — about a third of a millisecond. Every number here comes from the <a href="https://docs.getfelix.dev/features/v060-performance/">v0.6.0 performance write-up</a>, which has the exact conditions and how to reproduce them.</p>
+          <p>One Felix broker accepts 4.4 GB/s with every message acknowledged, writes 1.4 GB/s fsynced to disk, and acknowledges a single fsynced publish in 0.31 ms — about a third of a millisecond. Three 4-core brokers keep three fsynced copies of every durable record at 656 MB/s. Every number here comes from the <a href="https://docs.getfelix.dev/features/v060-performance/">v0.6.0 performance write-up</a>, which has the exact conditions and how to reproduce them.</p>
         </div>
         <nav class="page-toc" aria-label="On this page">
         <a href="#performance"><span class="n" aria-hidden="true">1</span>Measured on one broker</a>
         <a href="#latency-regimes"><span class="n" aria-hidden="true">2</span>Idle and saturated latency</a>
         <a href="#against-nats"><span class="n" aria-hidden="true">3</span>Against NATS JetStream</a>
+        <a href="#cluster"><span class="n" aria-hidden="true">4</span>Three brokers, three copies</a>
         </nav>
       </div>
       <figure class="intro-fig">
@@ -117,8 +118,13 @@
         </a>
         <a class="stat reveal" style="--d:.06s" href="https://docs.getfelix.dev/features/v060-performance/#throughput-by-shape">
           <p class="stat-value">1.4<span class="unit">GB/s</span></p>
+          <p class="stat-sub">99% of the disk's fsync ceiling</p>
+          <div class="stat-meter" style="--v:1399;--max:1414" role="img" aria-label="Felix 1,399 MB/s against the disk's 1,414 MB/s measured by fio">
+            <span class="stat-meter-track"><i></i></span>
+            <span class="stat-meter-keys" aria-hidden="true"><span>Felix 1,399</span><span>disk 1,414 MB/s</span></span>
+          </div>
           <h3>Durable, fsync before every ack</h3>
-          <p class="stat-note">4 KiB batches of 64, each fsynced to NVMe before it is acknowledged. That is the disk's own rate: <code>fio</code> with an fsync after each write does 1.4 GB/s too.</p>
+          <p class="stat-note">Each 4 KiB batch of 64 is fsynced to NVMe before the ack. The disk itself manages 1,414 MB/s with an fsync per write (<code>fio</code>), so Felix is limited by the disk, not the broker.</p>
           <span class="stat-src">Throughput by shape</span>
         </a>
         <a class="stat reveal" style="--d:.12s" href="https://docs.getfelix.dev/features/v060-performance/#unloaded-latency">
@@ -143,7 +149,6 @@
           <p class="stat-note">Against NATS JetStream on the same VMs, both fsyncing every write before the ack. Core NATS is faster at fire-and-forget.</p>
           <span class="stat-src">Against NATS JetStream</span>
         </a>
-        <!-- TODO: RF=3 release run. A cluster (three copies of every durable record) card goes here once the release run on the new cluster lands. -->
       </div>
 
       <figure class="perf-chart reveal" style="--d:.1s">
@@ -216,7 +221,48 @@
     </div>
   </section>
 
-  <!-- TODO: RF=3 release run. Add a section for three brokers keeping three copies of every durable record when the release run on the new cluster lands. -->
+  <section class="section" id="cluster" aria-labelledby="cluster-title">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Cluster</span>
+        <h2 id="cluster-title">Three brokers, three copies</h2>
+        <p>On a durable <code>Quorum</code> stream with a replication factor of 3, every record is written to all three brokers and each broker fsyncs its copy. The publisher gets its ack once the shard's leader and at least one follower have fsynced, so an acknowledged record is already on two disks, and the third copy follows. Each stream's shard leaders are spread evenly over the brokers, so every broker carries its share of the writes. Each card links to the table it comes from.</p>
+        <p>Felix 0.6.0 release build on three Azure <code>Standard_L4as_v4</code> brokers (4 vCPU, local NVMe), one in each availability zone, driven by 4 load generators over QUIC with TLS.</p>
+        <span class="perf-status">0.6.0 · three brokers · replication factor 3</span>
+      </div>
+
+      <div class="perf-stats">
+        <a class="stat reveal" href="https://docs.getfelix.dev/features/v060-performance/#cluster-throughput">
+          <p class="stat-value">656<span class="unit">MB/s</span></p>
+          <h3>Durable, three fsynced copies</h3>
+          <p class="stat-note">4 KiB batches of 64, every record fsynced on all three brokers. Each broker writes about 660 MB/s, 90% of what its disk does in <code>fio</code> with an fsync after each write. 256 B batches of 64 run at 475 MB/s, 1.86 million messages a second.</p>
+          <span class="stat-src">Cluster throughput</span>
+        </a>
+        <a class="stat reveal" style="--d:.06s" href="https://docs.getfelix.dev/features/v060-performance/#cluster-throughput">
+          <p class="stat-value">4.6<span class="unit">GB/s</span></p>
+          <h3>In memory, across the cluster</h3>
+          <p class="stat-note">4 KiB batches of 64, acked. An in-memory stream keeps one copy of each record, on its shard's leader, and the shards are spread over the three brokers. Three 4-core brokers move more than the single 8-core broker's 4.4 GB/s.</p>
+          <span class="stat-src">Cluster throughput</span>
+        </a>
+        <a class="stat reveal" style="--d:.12s" href="https://docs.getfelix.dev/features/v060-performance/#forwarding">
+          <p class="stat-value">4.4×<span class="unit">with ClusterClient</span></p>
+          <h3>Straight to the right broker</h3>
+          <p class="stat-note"><code>ClusterClient</code> sends each publish to its shard's owner. Through any broker, two in three publishes take an extra hop: durable 256 B batches run 4.4 times slower and in-memory ones 2.4 times, and one publish in flight acks in 0.83 ms instead of 0.45 ms.</p>
+          <span class="stat-src">Forwarding</span>
+        </a>
+        <!-- TODO: RF=3 durable latency after finalizing (lease-free run) -->
+      </div>
+
+      <figure class="perf-chart perf-img reveal" style="--d:.1s">
+        <figcaption>
+          <h3>Straight to the owner against through any broker</h3>
+          <p>Payload with batches of 64, 64 in flight per publisher. A forwarded publish is decrypted and re-encrypted at every hop, and a durable one holds its shard until the quorum commits. <code>ClusterClient</code> avoids both. <a href="https://docs.getfelix.dev/features/v060-performance/#forwarding">Forwarding</a> has the numbers.</p>
+        </figcaption>
+        <img src="/assets/img/perf/rf3-forwarding.svg" width="648" height="288" loading="lazy" alt="Payload with batch 64, straight to each shard's owner against through any broker: in-memory 256 B 2.0 GB/s against 864 MB/s, in-memory 4 KiB 4.6 against 2.9 GB/s, durable 256 B 475 against 107 MB/s, durable 4 KiB 656 against 512 MB/s.">
+      </figure>
+
+    </div>
+  </section>
 
 
   <nav class="page-next" aria-label="Next steps">

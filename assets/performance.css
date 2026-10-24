@@ -55,6 +55,56 @@
   letter-spacing: 0;
   color: var(--accent-text);
 }
+.stat-sub {
+  margin-top: 6px;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--accent-text);
+}
+/* Durable tile: Felix's rate as a solid bar on a track that is the disk's
+   fsync ceiling, with the ceiling marked at the right end. */
+.stat-meter {
+  margin-top: 14px;
+}
+.stat-meter-track {
+  position: relative;
+  display: block;
+  height: 10px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+}
+.stat-meter-track::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  right: 0;
+  width: 2px;
+  background: var(--text);
+}
+.stat-meter-track i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: calc(var(--v) / var(--max) * 100%);
+  border-radius: 4px 0 0 4px;
+  background: var(--accent);
+  transform-origin: left center;
+  transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) 0.25s;
+}
+.js .stat:not(.in) .stat-meter-track i {
+  transform: scaleX(0);
+}
+.stat-meter-keys {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 6px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--muted);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
 /* Latency tile: three percentiles side by side instead of one value. */
 .stat-pcts {
   display: grid;
