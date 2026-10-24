@@ -1005,6 +1005,63 @@ p {
   }
 }
 
+
+/* Contact (about page) */
+.contact {
+  border-top: 1px solid var(--line);
+  padding-bottom: 72px;
+}
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+.contact-card {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding: 28px;
+  border-radius: var(--radius);
+  background: radial-gradient(ellipse 80% 120% at 0% 0%, var(--accent-soft), transparent 70%), var(--bg-raised);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-md);
+  color: var(--text);
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+.contact-card:hover {
+  text-decoration: none;
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+.contact-card .ficon {
+  margin-bottom: 10px;
+}
+.contact-t {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+.contact-d {
+  color: var(--muted);
+  font-size: 15.5px;
+}
+.contact-v {
+  margin-top: 10px;
+  font-family: var(--mono);
+  font-size: 14px;
+  color: var(--accent-text);
+  overflow-wrap: anywhere;
+}
+@media (max-width: 760px) {
+  .contact-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .contact {
+    padding-bottom: 56px;
+  }
+}
+
 /* Footer */
 .site-footer {
   border-top: 1px solid var(--line);
@@ -1014,7 +1071,7 @@ p {
 }
 .footer-grid {
   display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  grid-template-columns: 1.4fr repeat(4, 1fr);
   gap: 40px;
 }
 .footer-grid h2 {
