@@ -103,7 +103,7 @@
       <div class="section-head reveal">
         <span class="eyebrow">Status table</span>
         <h2 id="status-title">What works today, and what's next</h2>
-        <p>Felix is pre-1.0, so the API can change between previews. The marks follow the status table in the docs, row for row.</p>
+        <p>Felix is pre-1.0, so the API can change between releases. The marks follow the status table in the docs, row for row.</p>
       </div>
 
       <p class="st-key reveal"><span class="st-k"><span class="st-tag today"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4 6.5 11.4 12.5 4.8"/></svg>Today</span> implemented and tested</span> <span class="st-k"><span class="st-tag partial"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8h9"/></svg>Partial</span> real, but incomplete</span> <span class="st-k"><span class="st-tag target"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="4.2"/></svg>Planned</span> not built yet</span></p>
@@ -182,7 +182,7 @@
       <div class="st-road reveal" aria-labelledby="st-road-title">
         <h3 class="gu-title" id="st-road-title">What's next</h3>
         <ol>
-          <li class="now"><span class="st-dot" aria-hidden="true"></span><span class="st-ver">0.6 <em>now, in preview</em></span><p>Moving shards between brokers without downtime, backed by cluster-scale numbers for replicated streams. Memory held to a byte budget: subscriber queues are bounded now, and QUIC receive windows and the cache key index are next.</p></li>
+          <li class="now"><span class="st-dot" aria-hidden="true"></span><span class="st-ver">0.6 <em>now</em></span><p>Moving shards between brokers without downtime, with each stream's leaders spread across them, and numbers for replicated streams on a three-broker cluster. Durable streams acknowledge a publish once it is written, and a new cluster turns on the fleet features its brokers support, publisher identity aside, without an operator step. Subscriber queues are held to a byte budget; QUIC receive windows and the cache key index are next.</p></li>
           <li><span class="st-dot" aria-hidden="true"></span><span class="st-ver">0.7 <em>next</em></span><p>Open in the 0.7 milestone: failover that doesn't wait on the control plane's lease, subscriptions that stop at an end offset, per-key checks on commits, reads from tiered storage, and Go and C# clients.</p></li>
           <li><span class="st-dot" aria-hidden="true"></span><span class="st-ver">1.0 <em>later</em></span><p>A stability promise, backed by a long-running public workload on Felix.</p></li>
         </ol>
@@ -213,7 +213,7 @@
           <header><span class="fit-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></span><h3 id="fit-later">Not yet</h3></header>
           <ul class="fit-list">
             <li><b>You need the Kafka ecosystem.</b> Felix serves Kafka producers and consumers that assign their own partitions, but has no consumer groups or transactions over the Kafka protocol, so Kafka Connect, Kafka Streams and ksqlDB don't run.</li>
-            <li><b>You need proven scale.</b> Published performance is from one broker. Replicated, multi-node results are still to come.</li>
+            <li><b>You need proven scale.</b> Published numbers come from one broker and from a three-broker cluster. Larger clusters and a long-running public workload are still to come.</li>
             <li><b>You need Go or C#.</b> Clients ship for Rust, Python and TypeScript. Go and C# are not started.</li>
             <li><b>You need a 1.0 stability promise.</b> Felix is pre-1.0, and its API, wire protocol and semantics can change between releases.</li>
           </ul>

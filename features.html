@@ -163,7 +163,7 @@
         <article class="tile reveal" style="--d:.08s">
           <div class="ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="5.5" r="2.5"/><circle cx="5.5" cy="17.5" r="2.5"/><circle cx="18.5" cy="17.5" r="2.5"/><path d="M10.7 7.7 6.8 15.3M13.3 7.7l3.9 7.6"/></svg></div>
           <h3>Quorum streams</h3>
-          <p>A <code>Quorum</code> stream acknowledges a publish once a majority of its replicas hold it durably. With no majority reachable, it is never acknowledged: the publish times out and reports its outcome as unknown.</p>
+          <p>A <code>Quorum</code> stream acknowledges a publish once a majority of its replicas, the leader counted, have written it to their logs. With no majority reachable, it is never acknowledged: the publish times out and reports its outcome as unknown.</p>
           <div class="viz quorum" role="img" aria-label="Two of three replicas hold the record, so it is acknowledged.">
             <span class="node has" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>
             <span class="node has" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>
@@ -175,7 +175,7 @@
         <article class="tile reveal" style="--d:.16s">
           <div class="ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 6v6c0 4.5 3.4 8.2 8 9 4.6-.8 8-4.5 8-9V6l-8-3Z"/><path d="m9 12 2 2 4-4"/></svg></div>
           <h3>Failover that keeps acknowledged writes</h3>
-          <p>A lost leader is replaced only by a replica that holds its log, and the new leader fences a majority of the replicas before it serves. Followers report a leader that stops answering, so once the <code>majority_ack</code> and <code>lease_free_reads</code> fleet features are finalized, a durable <code>Quorum</code> stream can fail over in about five seconds.</p>
+          <p>A lost leader is replaced only by a replica that holds its log, and the new leader fences a majority of the replicas before it serves. Followers report a leader that stops answering, so a durable <code>Quorum</code> stream fails over in about five seconds. A new cluster turns this on when its first broker registers; an upgraded one, once an operator finalizes its fleet features.</p>
         </article>
 
         <article class="tile reveal">
