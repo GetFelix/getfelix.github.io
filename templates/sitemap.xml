@@ -9,12 +9,12 @@
   {%- set blog = get_section(path="blog/_index.md") %}
   <url>
     <loc>{{ blog.permalink | safe }}</loc>
-    <lastmod>{{ blog.pages | first | get(key="date") }}</lastmod>
+    <lastmod>{% set newest = blog.pages | first %}{{ newest.date | date(format="%Y-%m-%d") }}</lastmod>
   </url>
   {%- for page in blog.pages %}
   <url>
     <loc>{{ (config.base_url ~ page.path) | trim_end(pat="/") }}</loc>
-    <lastmod>{% if page.updated %}{{ page.updated }}{% else %}{{ page.date }}{% endif %}</lastmod>
+    <lastmod>{% if page.updated %}{{ page.updated }}{% else %}{{ page.date | date(format="%Y-%m-%d") }}{% endif %}</lastmod>
   </url>
   {%- endfor %}
 </urlset>

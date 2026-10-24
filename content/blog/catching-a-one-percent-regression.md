@@ -1,7 +1,7 @@
 +++
 title = "How we catch a 1% regression"
 description = "Felix's rule is that a release must not be measurably slower than the one before it; this is how same-runner A/B runs, a Welch's t-test and throwaway bisect PRs in GitHub Actions find a 1-2% loss, and why a single benchmark run can't."
-date = 2026-10-17
+date = 2026-10-17T10:00:00
 slug = "catching-a-one-percent-regression"
 path = "blog/catching-a-one-percent-regression.html"
 [taxonomies]

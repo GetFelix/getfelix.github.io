@@ -47,8 +47,9 @@ card = "cards/catching-a-one-percent-regression.svg"
 +++
 ```
 
-- `date` sets the order, the byline and the feed's `pubDate`. Posts that share a
-  date are ordered by slug, descending.
+- `date` sets the order, the byline and the feed's `pubDate`. Posts on the same
+  day are ordered by a time in the date (`2026-10-17T12:00:00`, later first);
+  the time is not shown.
 - `path` must be `blog/<slug>.html`. Keep the `.html`: it is the address
   readers and the feed already use.
 - `read_minutes` is the word count divided by 230, rounded.
