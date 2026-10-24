@@ -81,10 +81,13 @@
 .stat:focus-visible {
   /* Beats the site-wide a:hover underline: only the source line underlines. */
   text-decoration: none;
-  border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+  border-color: var(--accent);
+  box-shadow: var(--shadow-lg);
 }
-.stat:hover .stat-src {
+.stat:hover .stat-src,
+.stat:focus-visible .stat-src {
   text-decoration: underline;
+  text-underline-offset: 3px;
 }
 .perf-chart {
   margin: 16px 0 0;
@@ -118,7 +121,7 @@
 .lat-row,
 .lat-axis {
   display: grid;
-  grid-template-columns: 104px minmax(0, 1fr) 96px;
+  grid-template-columns: 104px minmax(0, 1fr) 112px;
   align-items: center;
   gap: 12px;
 }
@@ -136,7 +139,8 @@
   color: var(--text);
   font-variant-numeric: tabular-nums;
 }
-/* Scale is 0 to 500 µs. The solid part ends at p50, the tint at p99. */
+/* --lo and --hi are p50 and p99 in microseconds on a 0 to 500 scale (0.5 ms).
+   The solid part ends at p50, the tint at p99. */
 .lat-track {
   position: relative;
   height: 14px;
@@ -214,7 +218,7 @@
   /* The label moves above the bar so the bar keeps most of the width. */
   .lat-row,
   .lat-axis {
-    grid-template-columns: minmax(0, 1fr) 80px;
+    grid-template-columns: minmax(0, 1fr) 104px;
     column-gap: 10px;
     row-gap: 4px;
   }
@@ -232,48 +236,3 @@
   }
 }
 
-/* Where the next results go. */
-.perf-next {
-  padding-top: 0;
-}
-.soon {
-  display: grid;
-  grid-template-columns: 48px minmax(0, 1fr);
-  gap: 22px;
-  padding: 30px 32px;
-  border-radius: var(--radius);
-  border: 1.5px dashed var(--line-strong);
-  background: color-mix(in srgb, var(--bg-sunken) 60%, transparent);
-}
-.soon-ic {
-  display: grid;
-  place-items: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  color: var(--accent-text);
-  background: var(--accent-soft);
-  border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
-}
-.soon-ic svg {
-  width: 24px;
-  height: 24px;
-}
-.soon .eyebrow {
-  margin-bottom: 8px;
-}
-.section .soon h2 {
-  font-size: clamp(24px, 3vw, 30px);
-}
-.soon p {
-  margin-top: 10px;
-  max-width: 64ch;
-  color: var(--muted);
-}
-@media (max-width: 520px) {
-  .soon {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 16px;
-    padding: 22px 20px;
-  }
-}

@@ -26,7 +26,7 @@
 <link rel="preload" href="/assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" as="image" type="image/webp" imagesrcset="/assets/img/felix-logo-320.webp 320w, /assets/img/felix-logo-640.webp 640w" imagesizes="(max-width: 760px) 156px, 196px">
 <link rel="stylesheet" href="/assets/site.css?v=619227be">
-<link rel="stylesheet" href="/assets/home.css?v=ca959f7d">
+<link rel="stylesheet" href="/assets/home.css?v=c493d9a9">
 <script>
   // Sections that moved to their own pages keep their old links working.
   (function () {
@@ -320,7 +320,7 @@
             <div class="tz-stats" role="img" aria-labelledby="tz-p-t"><span class="visually-hidden" id="tz-p-t">Measured on one broker: 4.4 GB/s acked with nothing lost, 1.4 GB/s fsynced to disk, and 0.31 milliseconds at p50 to acknowledge one fsynced publish.</span><div class="tz-stat" aria-hidden="true"><span class="tz-num">4.4<small>GB/s</small></span><span class="tz-cap">acked, nothing lost</span></div><div class="tz-stat" aria-hidden="true"><span class="tz-num">1.4<small>GB/s</small></span><span class="tz-cap">durable, fsynced</span></div><div class="tz-stat wide" aria-hidden="true"><span class="tz-num">0.31<small>ms p50</small></span><span class="tz-cap">one fsynced publish, acked</span><span class="tz-bar"><i></i></span></div></div>
           </div>
           <h3>Measured on one broker</h3>
-          <p>Felix 0.6.0 on one 8 vCPU Azure VM with local NVMe: gigabytes a second, and sub-millisecond acks when the broker is not saturated. Cluster results are coming.</p>
+          <p>Felix 0.6.0 on one 8 vCPU Azure VM with local NVMe: gigabytes a second, and an fsynced publish acknowledged in about a third of a millisecond when the broker is not saturated.</p>
           <a class="text-link" href="/performance.html">Throughput and latency<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
         </article>
       </div>

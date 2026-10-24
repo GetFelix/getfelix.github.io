@@ -25,7 +25,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/site.css?v=619227be">
-<link rel="stylesheet" href="/assets/performance.css?v=540d1a13">
+<link rel="stylesheet" href="/assets/performance.css?v=7dfecfc4">
 <script>
   (function () {
     var d = document.documentElement;
@@ -85,13 +85,12 @@
         <div class="section-head">
           <span class="eyebrow"><picture><source srcset="/assets/img/felix-mark-96.webp" type="image/webp"><img src="/assets/img/felix-mark-96.png" alt="" width="22" height="22"></picture>Performance</span>
           <h1 id="perf-page-title">Throughput and latency</h1>
-          <p>One Felix broker accepts 4.4 GB/s with every message acknowledged, writes 1.4 GB/s fsynced to disk, and acknowledges a single fsynced publish in 0.31 ms. Every number here comes from the <a href="https://docs.getfelix.dev/features/v060-performance/">v0.6.0 performance write-up</a>, which has the exact conditions and how to reproduce them.</p>
+          <p>One Felix broker accepts 4.4 GB/s with every message acknowledged, writes 1.4 GB/s fsynced to disk, and acknowledges a single fsynced publish in 0.31 ms — about a third of a millisecond. Every number here comes from the <a href="https://docs.getfelix.dev/features/v060-performance/">v0.6.0 performance write-up</a>, which has the exact conditions and how to reproduce them.</p>
         </div>
         <nav class="page-toc" aria-label="On this page">
         <a href="#performance"><span class="n" aria-hidden="true">1</span>Measured on one broker</a>
-        <a href="#latency-regimes"><span class="n" aria-hidden="true">2</span>Two kinds of latency</a>
+        <a href="#latency-regimes"><span class="n" aria-hidden="true">2</span>Idle and saturated latency</a>
         <a href="#against-nats"><span class="n" aria-hidden="true">3</span>Against NATS JetStream</a>
-        <a href="#next-results"><span class="n" aria-hidden="true">4</span>Coming next</a>
         </nav>
       </div>
       <figure class="intro-fig">
@@ -106,20 +105,20 @@
         <span class="eyebrow">Single broker</span>
         <h2 id="perf-title">Measured on one broker</h2>
         <p>Felix 0.6.0 on an Azure <code>Standard_L8as_v4</code> broker (8 vCPU, local NVMe), driven by 4 load generators in the same region over QUIC with TLS. "Durable" means the broker fsyncs before it acks. Each card links to the table it comes from.</p>
-        <span class="perf-status">0.6.0 · one broker · cluster results coming</span>
+        <span class="perf-status">0.6.0 · one broker · QUIC with TLS</span>
       </div>
 
       <div class="perf-stats">
         <a class="stat reveal" href="https://docs.getfelix.dev/features/v060-performance/#lossless-throughput-and-why-fire-and-forget-trailed-acked">
           <p class="stat-value">4.4<span class="unit">GB/s</span></p>
           <h3>Acked, nothing lost</h3>
-          <p class="stat-note">4 KiB messages in batches of 64, in memory. Every publish acknowledged and nothing shed: 4403 MB/s of payload, 1.07 million messages a second.</p>
+          <p class="stat-note">4 KiB messages in batches of 64, in memory. Every publish acknowledged and nothing shed: 1.07 million messages a second.</p>
           <span class="stat-src">Lossless throughput</span>
         </a>
         <a class="stat reveal" style="--d:.06s" href="https://docs.getfelix.dev/features/v060-performance/#throughput-by-shape">
           <p class="stat-value">1.4<span class="unit">GB/s</span></p>
-          <h3>Durable, fsynced before the ack</h3>
-          <p class="stat-note">4 KiB batches of 64, each fsynced to NVMe before it is acknowledged: 1399 MB/s of payload. That is the disk's own rate; <code>fio</code> with an fsync after each write does 1414 MB/s.</p>
+          <h3>Durable, fsync before every ack</h3>
+          <p class="stat-note">4 KiB batches of 64, each fsynced to NVMe before it is acknowledged. That is the disk's own rate: <code>fio</code> with an fsync after each write does 1.4 GB/s too.</p>
           <span class="stat-src">Throughput by shape</span>
         </a>
         <a class="stat reveal" style="--d:.12s" href="https://docs.getfelix.dev/features/v060-performance/#unloaded-latency">
@@ -131,14 +130,14 @@
         <a class="stat reveal" style="--d:.06s" href="https://docs.getfelix.dev/features/v060-performance/#throughput-by-shape">
           <p class="stat-value">8.78<span class="unit">M messages/s</span></p>
           <h3>Small messages, acked</h3>
-          <p class="stat-note">256 B messages in batches of 64, in memory, every batch acknowledged: 2248 MB/s of payload. Batching lifts the small-message rate 22 times over one message per request.</p>
+          <p class="stat-note">256 B messages in batches of 64, in memory, every batch acknowledged: 2.2 GB/s of payload. Batching lifts the small-message rate 22 times over one message per request.</p>
           <span class="stat-src">Throughput by shape</span>
         </a>
         <a class="stat reveal" style="--d:.12s" href="#against-nats">
           <p class="stat-value">1.8–3.5×<span class="unit">vs JetStream</span></p>
           <h3>Faster on durable writes</h3>
           <p class="stat-note">Against NATS JetStream on the same VMs, both fsyncing every write before the ack. Core NATS is faster at fire-and-forget.</p>
-          <span class="stat-src">Felix against NATS JetStream</span>
+          <span class="stat-src">Against NATS JetStream</span>
         </a>
         <!-- TODO: RF=3 release run. A cluster (three copies of every durable record) card goes here once the release run on the new cluster lands. -->
       </div>
@@ -150,29 +149,29 @@
         </figcaption>
         <div class="lat-group">
           <span class="lat-mode">In memory</span>
-          <div class="lat-row" style="--lo:163;--hi:202"><span class="lat-label">ack</span><span class="lat-track"><i></i></span><span class="lat-val">163 / 202 µs</span></div>
-          <div class="lat-row" style="--lo:155;--hi:197"><span class="lat-label">delivery</span><span class="lat-track"><i></i></span><span class="lat-val">155 / 197 µs</span></div>
+          <div class="lat-row" style="--lo:163;--hi:202"><span class="lat-label">ack</span><span class="lat-track"><i></i></span><span class="lat-val">0.16 / 0.20 ms</span></div>
+          <div class="lat-row" style="--lo:155;--hi:197"><span class="lat-label">delivery</span><span class="lat-track"><i></i></span><span class="lat-val">0.16 / 0.20 ms</span></div>
         </div>
         <div class="lat-group">
           <span class="lat-mode">Durable, fsync every 250 ms (the default)</span>
-          <div class="lat-row" style="--lo:180;--hi:220"><span class="lat-label">ack</span><span class="lat-track"><i></i></span><span class="lat-val">180 / 220 µs</span></div>
-          <div class="lat-row" style="--lo:173;--hi:228"><span class="lat-label">delivery</span><span class="lat-track"><i></i></span><span class="lat-val">173 / 228 µs</span></div>
+          <div class="lat-row" style="--lo:180;--hi:220"><span class="lat-label">ack</span><span class="lat-track"><i></i></span><span class="lat-val">0.18 / 0.22 ms</span></div>
+          <div class="lat-row" style="--lo:173;--hi:228"><span class="lat-label">delivery</span><span class="lat-track"><i></i></span><span class="lat-val">0.17 / 0.23 ms</span></div>
         </div>
         <div class="lat-group">
           <span class="lat-mode">Durable, fsync before every ack</span>
-          <div class="lat-row" style="--lo:312;--hi:393"><span class="lat-label">ack</span><span class="lat-track"><i></i></span><span class="lat-val">312 / 393 µs</span></div>
-          <div class="lat-row" style="--lo:313;--hi:392"><span class="lat-label">delivery</span><span class="lat-track"><i></i></span><span class="lat-val">313 / 392 µs</span></div>
+          <div class="lat-row" style="--lo:312;--hi:393"><span class="lat-label">ack</span><span class="lat-track"><i></i></span><span class="lat-val">0.31 / 0.39 ms</span></div>
+          <div class="lat-row" style="--lo:313;--hi:392"><span class="lat-label">delivery</span><span class="lat-track"><i></i></span><span class="lat-val">0.31 / 0.39 ms</span></div>
         </div>
-        <div class="lat-axis" aria-hidden="true"><span></span><span class="lat-ticks"><b style="--t:0">0</b><b style="--t:100">100</b><b style="--t:200">200</b><b style="--t:300">300</b><b style="--t:400">400</b><b style="--t:500">500 µs</b></span><span></span></div>
-        <p class="perf-foot">The fsync costs about 130 µs at 256 B. The tail stays tight: p999 is within 50% of p50 in every row. <a href="https://docs.getfelix.dev/features/v060-performance/#unloaded-latency">Unloaded latency</a> has 4 KiB too.</p>
+        <div class="lat-axis" aria-hidden="true"><span></span><span class="lat-ticks"><b style="--t:0">0</b><b style="--t:100">0.1</b><b style="--t:200">0.2</b><b style="--t:300">0.3</b><b style="--t:400">0.4</b><b style="--t:500">0.5 ms</b></span><span></span></div>
+        <p class="perf-foot">The fsync costs about 0.13 ms at 256 B. The tail stays tight: p999 is within 50% of p50 in every row. <a href="https://docs.getfelix.dev/features/v060-performance/#unloaded-latency">Unloaded latency</a> has 4 KiB too.</p>
       </figure>
 
       <figure class="perf-chart perf-img reveal" style="--d:.1s">
         <figcaption>
           <h3>Acked throughput by shape</h3>
-          <p>Batches of 64 lift 256 B messages from 102 to 2248 MB/s in memory, and durable 4 KiB and 64 KiB batches run at the disk's fsync rate. <a href="https://docs.getfelix.dev/features/v060-performance/#throughput-by-shape">Throughput by shape</a> has every cell.</p>
+          <p>Batches of 64 lift 256 B messages from 102 MB/s to 2.2 GB/s in memory, and durable 4 KiB and 64 KiB batches run at the disk's fsync rate. <a href="https://docs.getfelix.dev/features/v060-performance/#throughput-by-shape">Throughput by shape</a> has every cell.</p>
         </figcaption>
-        <img src="/assets/img/perf/throughput.svg" width="648" height="317" loading="lazy" alt="Acked payload throughput on a log scale for in-memory and durable streams, batch 1 and 64, at 256 B, 4 KiB and 64 KiB, with the disk's fsync rate marked. Batch 64 lifts 256 B in-memory from 102 to 2248 MB/s and durable from 53 to 482 MB/s; durable 4 KiB and 64 KiB batches sit on the disk line.">
+        <img src="/assets/img/perf/throughput.svg" width="648" height="317" loading="lazy" alt="Acked payload throughput on a log scale for in-memory and durable streams: batch 1 and 64 at 256 B and 4 KiB, batch 64 at 64 KiB, with the disk's fsync rate as a dotted line. Batch 64 lifts 256 B in-memory from 102 MB/s to 2.2 GB/s and durable from 53 to 482 MB/s; durable 4 KiB and 64 KiB batches sit on the disk line at 1.4 and 1.5 GB/s.">
       </figure>
 
     </div>
@@ -190,7 +189,7 @@
           <h3>Ack latency against publishes outstanding</h3>
           <p>With one publish outstanding, latency is service time: 0.16 to 0.38 ms. Every point to the right is queueing, and sits close to the cross that Little's law predicts from throughput alone.</p>
         </figcaption>
-        <img src="/assets/img/perf/latency-regimes.svg" width="648" height="346" loading="lazy" alt="Ack latency p50 against the number of publishes outstanding, log-log, for in-memory and durable streams at 256 B and 4 KiB. Every line rises from 0.16 to 0.38 ms with one publish outstanding to 10 to 48 ms with 4,096, and each loaded point sits close to Little's law's prediction.">
+        <img src="/assets/img/perf/latency-regimes.svg" width="648" height="346" loading="lazy" alt="Ack latency p50 against the number of publishes outstanding, log-log, for in-memory and durable streams at 256 B and 4 KiB. Every line rises from 0.16 to 0.38 ms with one publish outstanding to 10 to 49 ms with 4,096, and each loaded point sits close to Little's law's prediction.">
       </figure>
     </div>
   </section>
@@ -201,31 +200,20 @@
         <span class="eyebrow">Comparison</span>
         <h2 id="nats-title">Against NATS JetStream</h2>
         <p>NATS ran tuned, on the same VMs, with the same 64 publishers and payloads, interleaved with Felix. With both fsyncing every write before the ack, Felix is 1.8 to 3.5 times faster. With periodic fsync on both sides it is 1.25 times faster at 4 KiB and 9.5 times at 256 B, and 1.2 times in memory. Core NATS is 1.34 to 1.39 times faster at fire-and-forget, where it discards messages nobody is subscribed to.</p>
-        <p>The two systems are built differently, so no pair is an exact match. Read each ratio with <a href="https://docs.getfelix.dev/features/v060-performance/#how-each-pair-is-matched-and-where-it-still-differs">where it still differs</a>. The 14.7× durable batch pair is partly the benchmark tool: <code>nats bench</code> sends one atomic batch at a time, while Felix keeps 64 in flight. Full results are in <a href="https://docs.getfelix.dev/features/v060-performance/#felix-against-nats-jetstream">Felix against NATS JetStream</a>.</p>
+        <p>The two systems are built differently, so no pair is an exact match. Read each ratio with <a href="https://docs.getfelix.dev/features/v060-performance/#how-each-pair-is-matched-and-where-it-still-differs">where it still differs</a>. The 14.8× durable batch pair is partly the benchmark tool: <code>nats bench</code> sends one atomic batch at a time, while Felix keeps 64 in flight. Full results are in <a href="https://docs.getfelix.dev/features/v060-performance/#felix-against-nats-jetstream">Felix against NATS JetStream</a>.</p>
       </div>
       <figure class="perf-chart perf-img reveal">
         <figcaption>
           <h3>Felix rate divided by NATS rate</h3>
           <p>Ten pairs, payload at the server, log scale centred on 1×. Each bar names the pair's main caveat.</p>
         </figcaption>
-        <img src="/assets/img/perf/nats.svg" width="648" height="374" loading="lazy" alt="Felix's payload rate divided by NATS JetStream's for ten pairs on a log scale centred on 1x. Felix is faster in every acked and durable pair, from 1.19x to 14.7x; core NATS is faster for fire-and-forget, by 1.34x and 1.39x. Each bar names the pair's main caveat.">
+        <img src="/assets/img/perf/nats.svg" width="648" height="374" loading="lazy" alt="Felix's payload rate divided by NATS JetStream's for ten pairs on a log scale centred on 1×. Felix is faster in every acked and durable pair, from 1.19× to 14.8×; core NATS is faster for fire-and-forget, by 1.34× and 1.39×. Each bar names the pair's main caveat.">
       </figure>
     </div>
   </section>
 
-  <section class="section perf-next" id="next-results" aria-labelledby="next-results-title">
-    <div class="wrap">
-      <div class="soon reveal">
-        <span class="soon-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5.5" r="2.5"/><circle cx="5.5" cy="17.5" r="2.5"/><circle cx="18.5" cy="17.5" r="2.5"/><path d="M10.7 7.7 6.8 15.3M13.3 7.7l3.9 7.6M8 17.5h8"/></svg></span>
-        <div>
-          <span class="eyebrow">Coming next</span>
-          <h2 id="next-results-title">Three brokers, three copies</h2>
-          <!-- TODO: RF=3 release run. Replace this section with the three-broker results when the release run on the new cluster lands. -->
-          <p>The numbers above are from one broker. Results from three brokers keeping three copies of every durable record are being measured on the release build and will be added here.</p>
-        </div>
-      </div>
-    </div>
-  </section>
+  <!-- TODO: RF=3 release run. Add a section for three brokers keeping three copies of every durable record when the release run on the new cluster lands. -->
+
 
   <nav class="page-next" aria-label="Next steps">
     <div class="wrap next-grid">
