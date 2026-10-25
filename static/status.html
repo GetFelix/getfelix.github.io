@@ -172,7 +172,7 @@
             <li><span class="st-tag today"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4 6.5 11.4 12.5 4.8"/></svg>Today</span><span class="st-n">Kubernetes packaging</span></li>
             <li><span class="st-tag partial"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8h9"/></svg>Partial</span><span class="st-n">Per-tenant quotas<span class="st-why">No quotas on subscriptions, cache or storage yet</span></span></li>
             <li><span class="st-tag partial"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8h9"/></svg>Partial</span><span class="st-n">Tiered storage<span class="st-why">Offload only, nothing reads it back yet</span></span></li>
-            <li><span class="st-tag partial"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8h9"/></svg>Partial</span><span class="st-n">Clients beyond Rust<span class="st-why">Python and TypeScript ship; Go and C# are not started</span></span></li>
+            <li><span class="st-tag partial"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8h9"/></svg>Partial</span><span class="st-n">Clients beyond Rust<span class="st-why">Python, TypeScript and C# ship; Go is not started</span></span></li>
             <li><span class="st-tag partial"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8h9"/></svg>Partial</span><span class="st-n">felixctl<span class="st-why">State reads are not built yet</span></span></li>
             <li><span class="st-tag partial"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8h9"/></svg>Partial</span><span class="st-n">Operator inspection<span class="st-why">No connection listing or offline record decoding yet</span></span></li>
           </ul>
@@ -183,7 +183,7 @@
         <h3 class="gu-title" id="st-road-title">What's next</h3>
         <ol>
           <li class="now"><span class="st-dot" aria-hidden="true"></span><span class="st-ver">0.6 <em>now</em></span><p>Moving shards between brokers without downtime, with each stream's leaders spread across them, and numbers for replicated streams on a three-broker cluster. Durable streams acknowledge a publish once it is written, and a new cluster turns on the fleet features its brokers support, publisher identity aside, without an operator step. Subscriber queues are held to a byte budget; QUIC receive windows and the cache key index are next.</p></li>
-          <li><span class="st-dot" aria-hidden="true"></span><span class="st-ver">0.7 <em>next</em></span><p>Open in the 0.7 milestone: failover that doesn't wait on the control plane's lease, subscriptions that stop at an end offset, per-key checks on commits, reads from tiered storage, and Go and C# clients.</p></li>
+          <li><span class="st-dot" aria-hidden="true"></span><span class="st-ver">0.7 <em>next</em></span><p>Open in the 0.7 milestone: failover that doesn't wait on the control plane's lease, subscriptions that stop at an end offset, per-key checks on commits, reads from tiered storage, and a Go client.</p></li>
           <li><span class="st-dot" aria-hidden="true"></span><span class="st-ver">1.0 <em>later</em></span><p>A stability promise, backed by a long-running public workload on Felix.</p></li>
         </ol>
       </div>
@@ -214,7 +214,7 @@
           <ul class="fit-list">
             <li><b>You need the Kafka ecosystem.</b> Felix serves Kafka producers and consumers that assign their own partitions, but has no consumer groups or transactions over the Kafka protocol, so Kafka Connect, Kafka Streams and ksqlDB don't run.</li>
             <li><b>You need proven scale.</b> Published numbers come from one broker and from a three-broker cluster. Larger clusters and a long-running public workload are still to come.</li>
-            <li><b>You need Go or C#.</b> Clients ship for Rust, Python and TypeScript. Go and C# are not started.</li>
+            <li><b>You need Go.</b> Clients ship for Rust, Python, TypeScript and C#. Go is not started.</li>
             <li><b>You need a 1.0 stability promise.</b> Felix is pre-1.0, and its API, wire protocol and semantics can change between releases.</li>
           </ul>
         </article>

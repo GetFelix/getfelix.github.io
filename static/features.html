@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Felix features: streams, caches, queues and Kafka clients</title>
-<meta name="description" content="What Felix does: streams, caches, queues and counters on one replicated log, Kafka clients, and clients for Rust, Python and TypeScript.">
+<meta name="description" content="What Felix does: streams, caches, queues and counters on one replicated log, Kafka clients, and clients for Rust, Python, TypeScript and C#.">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#f6f8fa" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#070a0e" media="(prefers-color-scheme: dark)">
@@ -238,17 +238,18 @@
     <div class="wrap split">
       <div class="section-head reveal">
         <span class="eyebrow">Clients</span>
-        <h2 id="clients-title">Clients for Rust, Python and TypeScript</h2>
-        <p>All three speak QUIC through one shared implementation and pass every required scenario in the same conformance catalogue. felixctl covers the command line.</p>
+        <h2 id="clients-title">Clients for Rust, Python, TypeScript and C#</h2>
+        <p>All four speak QUIC through one shared implementation and pass every required scenario in the same conformance catalogue. felixctl covers the command line.</p>
         <a class="text-link" href="/#get-started">Install commands<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
       </div>
       <ul class="client-list reveal" style="--d:.08s">
         <li><span class="ficon mono-ic" aria-hidden="true">rs</span><span><b>Rust</b><small><code>felix-client</code> on crates.io</small></span><a href="https://docs.getfelix.dev/clients/rust/">Docs<span class="visually-hidden"> for the Rust client</span></a></li>
         <li><span class="ficon mono-ic" aria-hidden="true">py</span><span><b>Python</b><small><code>felix-client</code> on PyPI</small></span><a href="https://docs.getfelix.dev/clients/python/">Docs<span class="visually-hidden"> for the Python client</span></a></li>
         <li><span class="ficon mono-ic" aria-hidden="true">ts</span><span><b>TypeScript</b><small><code>felix-client</code> on npm</small></span><a href="https://docs.getfelix.dev/clients/typescript/">Docs<span class="visually-hidden"> for the TypeScript client</span></a></li>
+        <li><span class="ficon mono-ic" aria-hidden="true">cs</span><span><b>C#</b><small><code>Felix.Client</code> on NuGet</small></span><a href="https://docs.getfelix.dev/clients/csharp/">Docs<span class="visually-hidden"> for the C# client</span></a></li>
         <li><span class="ficon mono-ic" aria-hidden="true">www</span><span><b>Browsers</b><small>Through felix-gateway, over WebSocket</small></span><a href="https://docs.getfelix.dev/clients/browsers/">Docs<span class="visually-hidden"> for browsers</span></a></li>
         <li><span class="ficon mono-ic" aria-hidden="true">cli</span><span><b>felixctl</b><small>Homebrew, crates.io, releases, image</small></span><a href="https://docs.getfelix.dev/getting-started/felixctl/">Docs<span class="visually-hidden"> for felixctl</span></a></li>
-        <li class="later"><span class="ficon mono-ic" aria-hidden="true">…</span><span><b>Go and C#</b><small>Not started. Work on a C ABI has begun.</small></span></li>
+        <li class="later"><span class="ficon mono-ic" aria-hidden="true">…</span><span><b>Go</b><small>Not started. It will bind the same C ABI as C#.</small></span></li>
       </ul>
     </div>
   </section>

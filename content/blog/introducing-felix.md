@@ -104,7 +104,7 @@ Consumer groups and transactions are refused on purpose, with an error that says
 
 Browsers can't open QUIC connections to a broker, so [felix-gateway](https://docs.getfelix.dev/clients/browsers/) sits between them. A browser opens a WebSocket, names one scope, such as a room or a board, and signs in. The gateway exchanges that sign-in for a Felix token that reaches only that scope's streams, caches and counters, and relays messages both ways without decoding payloads. It holds no application state, so one binary serves any app built from those pieces.
 
-For everything else there are native clients. The Rust client is the reference, and Python and TypeScript bind to it rather than reimplement it. All three are published as `felix-client` on crates.io, PyPI and npm.
+For everything else there are native clients. The Rust client is the reference, and Python, TypeScript and C# bind to it rather than reimplement it. The first three are published as `felix-client` on crates.io, PyPI and npm, and the C# client as `Felix.Client` on NuGet.
 
 ## What people build on it {#what-people-build}
 
