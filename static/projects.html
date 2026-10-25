@@ -275,15 +275,15 @@ cargo run -p felix-gateway</code></pre>
       <div class="project-body reveal" style="--d:.08s">
         <div class="project-title">
           <h2 id="metro-title">felix-metro</h2>
-          <span class="status ok"><!--release:felix-metro:version-->0.2.0<!--/release:felix-metro:version--></span>
+          <span class="status ok"><!--release:felix-metro:version-->0.2.1<!--/release:felix-metro:version--></span>
         </div>
         <p>A live 3D city simulated on Felix. Each district is a shard, residents commute, and day and night follow the simulation clock. Switch between cities, and a reconnecting browser picks up without losing a tick. Time travel, dragging the timeline back to any earlier moment, is next.</p>
         <h3>Felix features it uses</h3>
         <ul class="uses"><li>A durable stream per city with one shard per district, a record per simulation tick</li><li>Atomic commits write each tick, with keyframes pointed to by stream state</li><li>Bounded range reads will load a past moment from the nearest keyframe for time travel</li><li>Subscribing from an offset plays forward into live with no gap</li><li>An expected-offset commit keeps a single simulation writing each city</li></ul>
         <h3>Quick start</h3>
         <div class="quick-cmd">
-<pre><code>curl -fsSL https://github.com/GetFelix/felix-metro/releases/download/<!--release:felix-metro:tag-->v0.2.0<!--/release:felix-metro:tag-->/felix-metro-compose-<!--release:felix-metro:version-->0.2.0<!--/release:felix-metro:version-->.tar.gz | tar xz
-cd felix-metro-compose-<!--release:felix-metro:version-->0.2.0<!--/release:felix-metro:version-->
+<pre><code>curl -fsSL https://github.com/GetFelix/felix-metro/releases/download/<!--release:felix-metro:tag-->v0.2.1<!--/release:felix-metro:tag-->/felix-metro-compose-<!--release:felix-metro:version-->0.2.1<!--/release:felix-metro:version-->.tar.gz | tar xz
+cd felix-metro-compose-<!--release:felix-metro:version-->0.2.1<!--/release:felix-metro:version-->
 ./up.sh</code></pre>
           <button class="icon-btn" type="button" data-copy aria-label="Copy the felix-metro quick start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
         </div>
