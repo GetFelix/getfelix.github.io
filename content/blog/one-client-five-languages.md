@@ -42,9 +42,7 @@ The last rule is that no exception crosses into native code. A managed exception
 
 A Felix token lasts 15 minutes by default, and the broker checks it each time a stream authenticates, including the streams a reconnect opens. A process that outlives one token needs a way to get the next. In C# that is a delegate on the connect options:
 
-```csharp
-TokenProvider = async ct => await myIdentity.FreshFelixTokenAsync(ct)
-```
+<pre class="code" data-lang="C#" tabindex="0"><code>TokenProvider = async ct =&gt; await myIdentity.FreshFelixTokenAsync(ct)</code></pre>
 
 The type is `Func<CancellationToken, ValueTask<string>>`. The timing is not C#'s business. The Rust core calls the provider lazily: when a stream is about to authenticate and the client holds no token, the held one has used two thirds of its life, or the broker has just refused it. An idle client makes no calls and runs no timer. Only one call is in flight at a time, so streams that open together wait on it and share the token. That is what makes it safe to rotate a refresh token inside the provider, which is how Felix's control plane issues them: every refresh spends the token you sent and returns a replacement.
 
@@ -62,14 +60,11 @@ A library that builds but can't load passes every compile-time check, so CI load
 
 ## Try it
 
-```bash
-dotnet add package Felix.Client
-```
+<pre class="code" data-lang="Shell" tabindex="0"><code>dotnet add package Felix.Client</code></pre>
 
 This subscribes before it publishes, so the record isn't missed, and bounds the whole exchange with one cancellation token:
 
-```csharp
-using System.Text;
+<pre class="code" data-lang="C#" tabindex="0"><code>using System.Text;
 using Felix;
 
 using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
@@ -101,7 +96,6 @@ catch (FelixException e) when (e.IsRetryable)
 catch (OperationCanceledException)
 {
     Console.Error.WriteLine("gave up after 30 seconds");
-}
-```
+}</code></pre>
 
 Both handles are `await using`, so the subscription and the client are released on every path, including the exceptions. A broker that is down or a shard that is moving surfaces as a `FelixException` with `IsRetryable` set; anything else propagates. The [C# client page](https://docs.getfelix.dev/clients/csharp/) covers sharded subscriptions, consumer groups, caches, counters, conditional publishes and the token provider in full, and the [C ABI page](https://docs.getfelix.dev/clients/c/) describes the layer underneath, for a language that doesn't have an SDK yet.
