@@ -13,3 +13,6 @@ for d in public/blog/*.html; do
   rmdir "$d"
   mv "$d.flat" "$d"
 done
+# Pages under static/ are copied as written; give their asset URLs the same
+# content keys the templates compute, so a changed stylesheet is fetched again.
+python3 .github/scripts/stamp_assets.py public
