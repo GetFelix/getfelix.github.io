@@ -104,7 +104,7 @@
       <p>Live worlds simulated on Felix and rebuilt from its logs.</p>
     </div>
   </section>
-  <section class="section project" data-type="games" data-tags="multiplayer 3d replay released" id="arena" aria-labelledby="arena-title">
+  <section class="section project lead" data-type="games" data-tags="multiplayer 3d replay released" id="arena" aria-labelledby="arena-title">
     <div class="wrap">
       <div class="project-media reveal">
         <div class="pm framed">
@@ -170,7 +170,7 @@ cd felix-metro-compose-<!--release:felix-metro:version-->0.2.2<!--/release:felix
       </div>
     </div>
   </section>
-  <section class="section project" data-type="games" data-tags="multiplayer 3d design" id="blocks" aria-labelledby="blocks-title">
+  <section class="section project" data-type="games" data-tags="multiplayer 3d access design" id="blocks" aria-labelledby="blocks-title">
     <div class="wrap">
       <div class="project-media reveal">
         <div class="pm framed">
@@ -189,7 +189,7 @@ cd felix-metro-compose-<!--release:felix-metro:version-->0.2.2<!--/release:felix
           <h3 id="blocks-title">felix-blocks</h3>
           <span class="status idea">In design</span>
         </div>
-        <ul class="project-tags" aria-label="Tags"><li>Multiplayer</li><li>3D</li></ul>
+        <ul class="project-tags" aria-label="Tags"><li>Multiplayer</li><li>3D</li><li>Access control</li></ul>
         <p>A voxel building game in the browser. Dig and build alone, or open your world to friends and build in it together, each of you seeing the other's blocks as they land.</p>
         <h4>Felix features it will use</h4>
         <ul class="uses"><li>A log-backed cache holds the world, one key per edited chunk, so untouched terrain is never stored</li><li>Conditional writes let two players edit one chunk at once without either losing a block</li><li>A retained cache watch shows a joining player the whole world, then every change</li><li>Compaction keeps a world at its current blocks however many edits it has seen</li><li>Permissions in Felix separate builders from visitors</li></ul>
@@ -207,7 +207,7 @@ cd felix-metro-compose-<!--release:felix-metro:version-->0.2.2<!--/release:felix
       <p>Software people use together, with Felix holding every change.</p>
     </div>
   </section>
-  <section class="section project" data-type="apps" data-tags="multiplayer replay access released" id="canvas" aria-labelledby="canvas-title">
+  <section class="section project lead" data-type="apps" data-tags="multiplayer replay access released" id="canvas" aria-labelledby="canvas-title">
     <div class="wrap">
       <div class="project-media reveal">
         <div class="pm framed">
@@ -252,7 +252,7 @@ docker compose up -d</code></pre>
       <p>Pieces that connect Felix to browsers and to the services around it.</p>
     </div>
   </section>
-  <section class="section project" data-type="infrastructure" data-tags="access released" id="gateway" aria-labelledby="gateway-title">
+  <section class="section project lead" data-type="infrastructure" data-tags="access released" id="gateway" aria-labelledby="gateway-title">
     <div class="wrap">
       <div class="project-media reveal">
         <div class="pm art">
@@ -300,7 +300,7 @@ cargo run -p felix-gateway</code></pre>
       </div>
     </div>
   </section>
-  <section class="section project alt" data-type="infrastructure" data-tags="replay released" id="webhook-relay" aria-labelledby="webhook-relay-title">
+  <section class="section project alt" data-type="infrastructure" data-tags="replay access released" id="webhook-relay" aria-labelledby="webhook-relay-title">
     <div class="wrap">
       <div class="project-media reveal">
         <div class="pm art relay">
@@ -315,7 +315,7 @@ cargo run -p felix-gateway</code></pre>
           <h3 id="webhook-relay-title">felix-webhook-relay</h3>
           <span class="status ok"><!--release:felix-webhook-relay:version-->0.2.0<!--/release:felix-webhook-relay:version--></span>
         </div>
-        <ul class="project-tags" aria-label="Tags"><li>Replays history</li></ul>
+        <ul class="project-tags" aria-label="Tags"><li>Replays history</li><li>Access control</li></ul>
         <p>A webhook relay that stores each webhook durably, delivers it with retries, and replays any endpoint after an outage.</p>
         <h4>Felix features it uses</h4>
         <ul class="uses"><li>A durable stream per source, with one shard so every endpoint sees one total order</li><li>A consumer group per endpoint, each an independent cursor over the same log</li><li>The idempotent producer, so a lost answer never stores a webhook twice</li><li>A cache for best-effort deduplication of a sender's retries</li><li>A Felix namespace per relay tenant, enforced by the broker</li></ul>
@@ -344,7 +344,7 @@ docker compose up -d --wait</code></pre>
       <p>Larger systems that keep their state in Felix logs.</p>
     </div>
   </section>
-  <section class="section project" data-type="systems" data-tags="replay design" id="felixd" aria-labelledby="felixd-title">
+  <section class="section project lead" data-type="systems" data-tags="replay design" id="felixd" aria-labelledby="felixd-title">
     <div class="wrap">
       <div class="project-media reveal">
         <div class="pm framed">

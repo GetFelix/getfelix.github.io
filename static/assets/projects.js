@@ -90,14 +90,14 @@
   var tagChips = nav.querySelectorAll("[data-filter-tag]");
   var count = nav.querySelector(".filter-count");
   var empty = document.querySelector(".filter-empty");
-  var known = {};
+  var known = Object.create(null);
   typeChips.forEach(function (c) { known[c.dataset.filterType] = true; });
   var state = { type: "all", tags: [] };
 
   var params = new URLSearchParams(location.search);
   if (known[params.get("type")]) state.type = params.get("type");
   (params.get("tags") || "").split(",").forEach(function (t) {
-    if (nav.querySelector('[data-filter-tag="' + CSS.escape(t) + '"]')) state.tags.push(t);
+    if (state.tags.indexOf(t) < 0 && nav.querySelector('[data-filter-tag="' + CSS.escape(t) + '"]')) state.tags.push(t);
   });
 
   function apply(push) {
@@ -114,7 +114,10 @@
       g.hidden = visible.length === 0;
       g.querySelector(".group-n").textContent = visible.length;
       // Media sides alternate within a group, whatever is filtered out.
-      visible.forEach(function (p, i) { p.classList.toggle("alt", i % 2 === 1); });
+      visible.forEach(function (p, i) {
+        p.classList.toggle("alt", i % 2 === 1);
+        p.classList.toggle("lead", i === 0);
+      });
     });
     typeChips.forEach(function (c) {
       if (c.dataset.filterType === state.type) c.setAttribute("aria-current", "true");
@@ -132,7 +135,7 @@
       if (state.type !== "all") q.set("type", state.type);
       if (state.tags.length) q.set("tags", state.tags.join(","));
       var qs = q.toString();
-      history.replaceState(null, "", location.pathname + (qs ? "?" + qs : ""));
+      history.replaceState(null, "", location.pathname + (qs ? "?" + qs : "") + location.hash);
     }
   }
 
@@ -162,4 +165,13 @@
   document.getElementById("filter-tag-label").hidden = false;
   nav.setAttribute("aria-label", "Filter projects");
   apply(false);
+
+  // A link to a project the filter hides would scroll to nothing: show
+  // everything and go to it.
+  var target = location.hash && document.getElementById(location.hash.slice(1));
+  if (target && target.closest("[hidden]")) {
+    state = { type: "all", tags: [] };
+    apply(true);
+    target.scrollIntoView();
+  }
 })();

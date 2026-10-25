@@ -256,6 +256,9 @@
 }
 
 /* Projects are grouped by type; the filter narrows by type and tag. */
+.project-filter [hidden] {
+  display: none !important;
+}
 .project-filter {
   margin-top: 28px;
   display: grid;
@@ -338,7 +341,7 @@
   margin-top: 6px;
   color: var(--muted);
 }
-.project-group + .project {
+.project.lead {
   padding-top: 40px;
 }
 
