@@ -13,7 +13,7 @@ card = "cards/introducing-felix.svg"
 
 Felix is a replicated log that serves streams, caches, counters and consumer groups from one system, over QUIC. You publish to it, subscribe to it, read the newest value for a key from it and add to a counter in it, with one client, one wire protocol and one set of permissions.
 
-I built it because most services I've worked on end up running three systems for what is really one job, and the bugs live in the gaps between them. This post is the introduction I'd give an engineer who has never heard of Felix: what problem it removes, how a publish gets through it, why it is built the way it is, and how to have it running on your laptop in about five minutes.
+I built it because most services I've worked on end up running three systems for what is really one job, and the bugs live in the gaps between them. This post is the introduction I'd give an engineer who has never heard of Felix. It ends with Felix running on your laptop in about five minutes.
 
 ## One log, three readings
 
@@ -94,7 +94,7 @@ New features are added as bits that both sides agree on, not as protocol version
 <pre class="code" data-lang="JSON" tabindex="0"><code>{<span class="tok-s">"type"</span>:<span class="tok-s">"auth"</span>,<span class="tok-s">"tenant_id"</span>:<span class="tok-s">"t1"</span>,<span class="tok-s">"token"</span>:<span class="tok-s">"..."</span>,<span class="tok-s">"client_flags"</span>:<span class="tok-m">25</span>}
 {<span class="tok-s">"type"</span>:<span class="tok-s">"auth_ok"</span>,<span class="tok-s">"server_flags"</span>:<span class="tok-m">25</span>}</code></pre>
 
-A broker that predates negotiation ignores the field and replies with a plain `ok`. The only safe reading of that silence is the original three flag bits, so that set is frozen and nothing is ever added to it. Optional fields default to the old behaviour, so an old peer and a new one exchange identical bytes. The result is that a newer client runs against older brokers without whatever they predate, and nobody has to upgrade in lockstep. The full rules are in the [wire protocol reference](https://docs.getfelix.dev/architecture/wire-protocol/).
+A broker that predates negotiation ignores the field and replies with a plain `ok`. The only safe reading of that silence is the original three flag bits, so that set is frozen and nothing is ever added to it. Optional fields default to the old behaviour, so an old peer and a new one exchange identical bytes. So a newer client runs against older brokers without whatever they predate, and nobody has to upgrade in lockstep. The full rules are in the [wire protocol reference](https://docs.getfelix.dev/architecture/wire-protocol/).
 
 ## Kafka clients and browsers {#kafka-and-browsers}
 

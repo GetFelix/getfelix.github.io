@@ -11,7 +11,7 @@ read_minutes = 7
 card = "cards/catching-a-one-percent-regression.svg"
 +++
 
-Felix has one rule about performance: a new release must not be measurably slower than the previous one. Not “no big regressions”. No regression we can measure, in any cell we measure.
+Felix has one rule about performance: a new release must not be measurably slower than the previous one. That means any regression we can measure, in any cell we measure, and not only the big ones.
 
 That sounds simple until you try to measure 1% on a shared cloud machine. The same commit, benchmarked twice on GitHub Actions, came back with a median latency of 68 us one time and 184 us the next. Against noise like that, a 1% loss is invisible unless you design for it.
 

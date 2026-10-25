@@ -71,13 +71,13 @@ felixd covers the first kind of program, deterministic ones. The longer path add
 | Files and a namespace | Streams and caches under a tree of names, with per-program views |
 | Boot | Reading the desired state and claiming leases |
 
-Programs that can't be made deterministic, like existing binaries and databases, would get checkpoint-and-restart with their I/O recorded. They're the escape hatch, not the model.
+Programs that can't be made deterministic, like existing binaries and databases, would get checkpoint-and-restart with their I/O recorded. They're an escape hatch.
 
 Plan 9 is the closest ancestor, and both a model and a warning. It had one protocol for everything, per-process namespaces, and a file system you could browse as it was on any past day. It also asked people to leave Unix behind, and a dead file server hung every machine that had mounted it. The [design](https://github.com/GetFelix/felixd/blob/main/docs/design.md#lessons-from-plan-9) lists what to take from it and what to avoid.
 
 ## What it isn't
 
-A log in the path of every effect costs milliseconds, not microseconds. This isn't a desktop operating system, and it isn't for tight loops or low-latency request and reply. It's for programs where losing or repeating work is the expensive part: stream processing, ledgers and other state machines, fleets of machines that come and go, game and simulation servers.
+A log in the path of every effect costs milliseconds, not microseconds. It is not a desktop operating system and not for tight loops or low-latency request and reply. It's for programs where losing or repeating work is the expensive part: stream processing, ledgers and other state machines, fleets of machines that come and go, game and simulation servers.
 
 None of the pieces are new. [Temporal](https://github.com/temporalio/temporal) replays deterministic workflow code from an event history. [wasmCloud](https://github.com/wasmCloud/wasmCloud) runs Wasm components across machines. [CorfuDB](https://github.com/CorfuDB/CorfuDB) builds replicated data structures on a shared log. felixd asks whether one replicated log, with conditional writes and leases, is enough on its own: no separate workflow database, no coordinator, no job manager.
 
