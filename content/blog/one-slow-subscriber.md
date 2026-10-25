@@ -124,7 +124,7 @@ The release was in the chain. It ran after the feeder took the batch and before 
 
 That fits the lock-free result. Making the release cheaper didn't help, because the problem wasn't that it was expensive. It was that the message had to wait for it. I didn't profile it down to the exact instructions, and I'd rather say that than make up a cache-line story.
 
-One honest caveat. A later experiment showed that Felix's build is sensitive to code layout: adding a single call that does nothing to a cold startup function moved one benchmark cell by about 2% in either direction. Both the loss and the recovery here are inside that range. The consistent direction across both cells, the lock-free result and the clean bisect point make me believe the release placement was the cause, but I can't fully separate it from layout.
+One caveat: a later experiment showed that Felix's build is sensitive to code layout: adding a single call that does nothing to a cold startup function moved one benchmark cell by about 2% in either direction. Both the loss and the recovery here are inside that range. The consistent direction across both cells, the lock-free result and the clean bisect point make me believe the release placement was the cause, but I can't fully separate it from layout.
 
 ## What it costs
 

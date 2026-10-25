@@ -124,7 +124,7 @@ A twin is only as good as the step it fails through. The `Reclaim` twin removed 
 
 Bounds bite in both directions. One write made the crash model cheap enough to check, and it also made the interesting crash impossible. The model's choices about what a fault can do need the same scrutiny as the code's.
 
-Finally, the model and the code drift apart unless something forces them together. Early on, a protocol change ([#268](https://github.com/GetFelix/felix/pull/268)) shipped without touching the model, and for three weeks CI pinned a violation the code no longer had. So `scripts/check_spec_pairing.py` fails any PR that touches the code the model describes but not a `.tla` or `.cfg` beyond comments. The way out is a `Spec-Unaffected: <reason>` line in a commit message or the PR description. It's blunt on purpose. Most edits to those files don't change the protocol, but nobody changes the protocol without being asked.
+The model and the code also drift apart unless something forces them together. Early on, a protocol change ([#268](https://github.com/GetFelix/felix/pull/268)) shipped without touching the model, and for three weeks CI pinned a violation the code no longer had. So `scripts/check_spec_pairing.py` fails any PR that touches the code the model describes but not a `.tla` or `.cfg` beyond comments. The way out is a `Spec-Unaffected: <reason>` line in a commit message or the PR description. It's blunt on purpose. Most edits to those files don't change the protocol, but nobody changes the protocol without being asked.
 
 The rule that goes with it: when the model and the docs disagree, we don't edit the model to match. We fix the code, or we keep the model's finding as an expected violation and open an issue.
 

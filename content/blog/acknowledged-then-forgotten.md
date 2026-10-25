@@ -175,7 +175,7 @@ A model that passes can still be checking nothing. One spec change left part of 
 
 It also matters which mode the model checks. The crash actions were first modelled only in the report-and-lease path, while Felix ships majority acknowledgement plus the fence. A review spotted that gap, and the same review found the fence bug in exactly the mode the model had skipped.
 
-Finally, being too careful has a cost. Treating every process crash like a power loss kept data safe but left shards waiting for an operator. A process crash keeps the page cache. Telling the two apart with the boot id kept the safety without the stall.
+Being too careful has a cost too. Treating every process crash like a power loss kept data safe but left shards waiting for an operator. A process crash keeps the page cache. Telling the two apart with the boot id kept the safety without the stall.
 
 ## What we'll do differently {#differently}
 
