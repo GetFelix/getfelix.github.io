@@ -194,15 +194,41 @@
   }
 }
 
-/* Code section */
-.code-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-  gap: 64px;
-  align-items: center;
+/* Get started */
+.step {
+  max-width: 980px;
+  margin: 0 auto 48px;
 }
-.code-grid .section-head {
+.step:last-child {
   margin-bottom: 0;
+}
+.step-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 8px;
+  font-size: 21px;
+}
+.step-n {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  font-size: 14px;
+  font-weight: 700;
+}
+.step-note {
+  margin: 0 0 18px;
+  color: var(--muted);
+}
+.step-note code {
+  font-family: var(--mono);
+  font-size: 0.9em;
+  color: var(--accent-text);
 }
 .window {
   position: relative;
@@ -298,8 +324,64 @@
   line-height: 1.75;
   tab-size: 4;
 }
-.window pre[hidden] {
-  display: none;
+.window pre {
+  max-height: 540px;
+  overflow: auto;
+}
+.panel-install {
+  position: relative;
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(200, 225, 245, 0.08);
+}
+.panel-src {
+  color: #d8e2ec;
+  font-size: 14.5px;
+  font-weight: 600;
+}
+.panel-src small {
+  display: block;
+  color: #8796a8;
+  font-size: 12.5px;
+  font-weight: 500;
+}
+.panel-install .cmd {
+  background: rgba(200, 225, 245, 0.05);
+  border-color: rgba(200, 225, 245, 0.12);
+}
+.panel-install .cmd code {
+  color: var(--code-text);
+}
+.panel-install .cmd code::before {
+  color: #6c7d90;
+}
+.panel-install .icon-btn {
+  color: #8796a8;
+}
+.panel-install .icon-btn:hover {
+  color: #e9f6fb;
+}
+.panel-foot {
+  position: relative;
+  margin: 0;
+  padding: 0 18px 16px;
+  border-top: 1px solid rgba(200, 225, 245, 0.08);
+  padding-top: 12px;
+  font-size: 14.5px;
+  font-weight: 600;
+}
+.panel-foot a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--accent);
+}
+.panel-foot svg {
+  width: 15px;
+  height: 15px;
 }
 .tok-c {
   color: #6c7d90;
@@ -1506,10 +1588,6 @@
   padding-top: 18px;
 }
 @media (max-width: 960px) {
-  .code-grid {
-    grid-template-columns: 1fr;
-    gap: 40px;
-  }
   .install-row {
     grid-template-columns: 1fr auto;
   }
@@ -1519,6 +1597,20 @@
   }
 }
 @media (max-width: 760px) {
+  .panel-install {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+    padding: 14px;
+  }
+  .panel-foot {
+    padding: 12px 14px 8px;
+  }
+  .panel-foot a {
+    min-height: 44px;
+  }
+  .step {
+    margin-bottom: 36px;
+  }
   .hero {
     padding: 56px 0 80px;
   }

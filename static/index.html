@@ -86,6 +86,7 @@
         <svg class="shut" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
       </button>
       <ul class="nav-links" id="nav-links">
+        <li><a href="/#get-started"><span class="nav-l">Get started</span><span class="nav-hint">Install and publish</span></a></li>
         <li><a href="/features.html"><span class="nav-l">Features</span><span class="nav-hint">What Felix does</span></a></li>
         <li><a href="/projects.html"><span class="nav-l">Projects</span><span class="nav-hint">Apps built on Felix</span></a></li>
         <li><a href="/guarantees.html"><span class="nav-l">Guarantees</span><span class="nav-hint">Replication, failover and testing</span></a></li>
@@ -133,7 +134,11 @@
       <h1 class="hero-title" id="hero-title"><span class="accent">One system</span> for your events, state and&nbsp;work.</h1>
       <p class="lede">Felix is an open-source, distributed platform for streams, caches, queues and counters, all on one replicated log. Written in Rust.</p>
       <div class="hero-actions">
-        <a class="btn btn-primary" href="https://docs.getfelix.dev">
+        <a class="btn btn-primary" href="#get-started">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+          Get started
+        </a>
+        <a class="btn btn-ghost" href="https://docs.getfelix.dev">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h13v16H6.5A2.5 2.5 0 0 0 4 21.5v-2Z"/><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H19"/></svg>
           Read the docs
         </a>
@@ -141,6 +146,317 @@
           <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
           GitHub
         </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section start" id="get-started" aria-labelledby="start-title">
+    <div class="wrap">
+      <div class="section-head center reveal">
+        <span class="eyebrow">Get started</span>
+        <h2 id="start-title">Run Felix, then publish and subscribe</h2>
+        <p>One command starts a broker and a control plane. Then pick a language, install its client and send a record.</p>
+      </div>
+
+      <div class="step reveal">
+        <h3 class="step-title"><span class="step-n" aria-hidden="true">1</span>Run Felix</h3>
+        <p class="step-note">With Docker or Podman, this runs a control plane, a broker and development credentials from the released images. It creates the tenant <code>dev</code> and the stream <code>orders</code> that the examples below use.</p>
+        <div class="install">
+          <div class="install-row">
+            <div class="install-name"><span class="ficon mono-ic" aria-hidden="true">oci</span><span>Broker and control plane<small>Container images</small></span></div>
+            <div class="cmd"><code>curl -fsSLO https://raw.githubusercontent.com/GetFelix/felix/main/compose.yaml &amp;&amp; docker compose up</code><button class="icon-btn" type="button" data-copy aria-label="Copy the quick start command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
+            <a href="https://docs.getfelix.dev/getting-started/quickstart/">Docs <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span class="visually-hidden"> for the quickstart</span></a>
+          </div>
+          <div class="install-row">
+            <div class="install-name"><span class="ficon mono-ic" aria-hidden="true">oci</span><span>Images only<small>ghcr.io</small></span></div>
+            <div class="cmd"><code>docker pull ghcr.io/getfelix/felix-broker:<!--release:felix:version-->0.6.2<!--/release:felix:version--></code><button class="icon-btn" type="button" data-copy aria-label="Copy the docker pull command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
+            <a href="https://docs.getfelix.dev/deployment/docker-compose/">Docs <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span class="visually-hidden"> for the container images</span></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="step reveal">
+        <h3 class="step-title"><span class="step-n" aria-hidden="true">2</span>Pick your language</h3>
+        <p class="step-note">The broker prints its address and connection settings when it is ready. Set <code>FELIX_TOKEN</code> to the token it shows. Each example subscribes, publishes one record and reads it back.</p>
+        <div class="window">
+          <div class="window-bar">
+            <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
+            <div class="tabs" role="tablist" aria-label="Language">
+            <button class="tab" role="tab" id="tab-rust" aria-controls="panel-rust" aria-selected="true">Rust</button>
+            <button class="tab" role="tab" id="tab-py" aria-controls="panel-py" aria-selected="false" tabindex="-1">Python</button>
+            <button class="tab" role="tab" id="tab-ts" aria-controls="panel-ts" aria-selected="false" tabindex="-1">TypeScript</button>
+            <button class="tab" role="tab" id="tab-cs" aria-controls="panel-cs" aria-selected="false" tabindex="-1">C#</button>
+            <button class="tab" role="tab" id="tab-c" aria-controls="panel-c" aria-selected="false" tabindex="-1">C</button>
+            <button class="tab" role="tab" id="tab-cli" aria-controls="panel-cli" aria-selected="false" tabindex="-1">felixctl</button>
+            </div>
+            <button class="copy" type="button" data-copy="panel" aria-label="Copy example">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+              <span class="copy-label">Copy</span>
+            </button>
+          </div>
+        <div id="panel-rust" role="tabpanel" aria-labelledby="tab-rust">
+          <div class="panel-install">
+            <span class="panel-src">Install<small>crates.io</small></span>
+            <div class="cmd"><code>cargo add felix-client@<!--release:felix:version-->0.6.2<!--/release:felix:version--> anyhow tokio -F tokio/full</code><button class="icon-btn" type="button" data-copy aria-label="Copy the Rust command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
+          </div>
+<pre class="code" data-lang="Rust" tabindex="0" aria-label="Rust example"><code><span class="tok-k">use</span> std::net::<span class="tok-t">SocketAddr</span>;
+<span class="tok-k">use</span> std::sync::<span class="tok-t">Arc</span>;
+<span class="tok-k">use</span> std::time::<span class="tok-t">Duration</span>;
+
+<span class="tok-k">use</span> anyhow::{<span class="tok-t">Context</span>, <span class="tok-t">Result</span>};
+<span class="tok-k">use</span> felix_client::{<span class="tok-t">AckMode</span>, <span class="tok-t">ClientConfig</span>, <span class="tok-t">ClusterClient</span>, quic_client_config};
+
+<span class="tok-m">#[tokio::main]</span>
+<span class="tok-k">async</span> <span class="tok-k">fn</span> <span class="tok-f">main</span>() -&gt; <span class="tok-t">Result</span>&lt;()&gt; {
+    <span class="tok-k">let</span> <span class="tok-k">mut</span> config = <span class="tok-t">ClientConfig</span>::<span class="tok-f">from_env_or_yaml</span>(<span class="tok-f">quic_client_config</span>(<span class="tok-t">None</span>, false)?, <span class="tok-t">None</span>)?;
+    config.auth_tenant_id = <span class="tok-f">Some</span>(<span class="tok-s">"dev"</span>.<span class="tok-f">into</span>());
+    config.auth_token = <span class="tok-f">Some</span>(std::env::<span class="tok-f">var</span>(<span class="tok-s">"FELIX_TOKEN"</span>).<span class="tok-f">context</span>(<span class="tok-s">"set FELIX_TOKEN"</span>)?);
+
+    <span class="tok-k">let</span> seeds: <span class="tok-t">Vec</span>&lt;<span class="tok-t">SocketAddr</span>&gt; = vec![<span class="tok-s">"127.0.0.1:5000"</span>.<span class="tok-f">parse</span>()?];
+    <span class="tok-k">let</span> client = <span class="tok-t">Arc</span>::<span class="tok-f">new</span>(<span class="tok-t">ClusterClient</span>::<span class="tok-f">connect</span>(&amp;seeds, <span class="tok-s">"localhost"</span>, config).<span class="tok-k">await</span>?);
+
+    <span class="tok-c">// Subscribe before publishing: a subscription starts at the stream's tail.</span>
+    <span class="tok-k">let</span> <span class="tok-k">mut</span> subscription = client.<span class="tok-f">subscribe</span>(<span class="tok-s">"dev"</span>, <span class="tok-s">"default"</span>, <span class="tok-s">"orders"</span>).<span class="tok-k">await</span>?;
+    client
+        .<span class="tok-f">publish</span>(<span class="tok-s">"dev"</span>, <span class="tok-s">"default"</span>, <span class="tok-s">"orders"</span>, <span class="tok-s">b"hello"</span>.<span class="tok-f">to_vec</span>(), <span class="tok-t">AckMode</span>::<span class="tok-t">PerMessage</span>)
+        .<span class="tok-k">await</span>?;
+
+    <span class="tok-k">let</span> event = tokio::time::<span class="tok-f">timeout</span>(<span class="tok-t">Duration</span>::<span class="tok-f">from_secs</span>(5), subscription.<span class="tok-f">next_event</span>())
+        .<span class="tok-k">await</span>
+        .<span class="tok-f">context</span>(<span class="tok-s">"no event within 5 seconds"</span>)??
+        .<span class="tok-f">context</span>(<span class="tok-s">"the broker ended the subscription"</span>)?;
+    <span class="tok-f">println!</span>(<span class="tok-s">"received {:?}"</span>, event.payload);
+    <span class="tok-f">Ok</span>(())
+}</code></pre>
+          <p class="panel-foot"><a href="https://docs.getfelix.dev/clients/rust/">Docs <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span class="visually-hidden"> for the Rust client</span></a></p>
+        </div>
+        <div id="panel-py" role="tabpanel" aria-labelledby="tab-py" hidden>
+          <div class="panel-install">
+            <span class="panel-src">Install<small>PyPI</small></span>
+            <div class="cmd"><code>pip install felix-client</code><button class="icon-btn" type="button" data-copy aria-label="Copy the Python command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
+          </div>
+<pre class="code" data-lang="Python" tabindex="0" aria-label="Python example"><code><span class="tok-k">import</span> os
+
+<span class="tok-k">import</span> felix
+
+<span class="tok-k">with</span> felix.<span class="tok-f">Client</span>(
+    <span class="tok-s">"127.0.0.1:5000"</span>, tenant_id=<span class="tok-s">"dev"</span>, token=os.environ[<span class="tok-s">"FELIX_TOKEN"</span>]
+) <span class="tok-k">as</span> client:
+    <span class="tok-c"># Subscribe first, so the publish below is not missed.</span>
+    <span class="tok-k">with</span> client.<span class="tok-f">subscribe</span>(<span class="tok-s">"dev"</span>, <span class="tok-s">"default"</span>, <span class="tok-s">"orders"</span>) <span class="tok-k">as</span> events:
+        client.<span class="tok-f">publish</span>(<span class="tok-s">"dev"</span>, <span class="tok-s">"default"</span>, <span class="tok-s">"orders"</span>, <span class="tok-s">b"hello"</span>)
+        event = events.<span class="tok-f">next_event</span>(timeout=5)
+        <span class="tok-k">if</span> event <span class="tok-k">is</span> <span class="tok-k">None</span>:
+            <span class="tok-k">raise</span> <span class="tok-f">SystemExit</span>(<span class="tok-s">"no event within 5 seconds"</span>)
+        <span class="tok-f">print</span>(<span class="tok-s">"received"</span>, event.payload)</code></pre>
+          <p class="panel-foot"><a href="https://docs.getfelix.dev/clients/python/">Docs <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span class="visually-hidden"> for the Python client</span></a></p>
+        </div>
+        <div id="panel-ts" role="tabpanel" aria-labelledby="tab-ts" hidden>
+          <div class="panel-install">
+            <span class="panel-src">Install<small>npm</small></span>
+            <div class="cmd"><code>npm install felix-client</code><button class="icon-btn" type="button" data-copy aria-label="Copy the npm command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
+          </div>
+<pre class="code" data-lang="TypeScript" tabindex="0" aria-label="TypeScript example"><code><span class="tok-k">import</span> { <span class="tok-t">Client</span> } <span class="tok-k">from</span> <span class="tok-s">"felix-client"</span>;
+
+<span class="tok-k">const</span> token = process.env.<span class="tok-t">FELIX_TOKEN</span>;
+<span class="tok-k">if</span> (!token) <span class="tok-k">throw</span> <span class="tok-k">new</span> <span class="tok-f">Error</span>(<span class="tok-s">"set FELIX_TOKEN"</span>);
+
+<span class="tok-k">const</span> client = <span class="tok-k">await</span> <span class="tok-t">Client</span>.<span class="tok-f">connect</span>(<span class="tok-s">"127.0.0.1:5000"</span>, <span class="tok-s">"dev"</span>, { token });
+<span class="tok-k">try</span> {
+  <span class="tok-c">// Subscribe first, so the publish below is not missed.</span>
+  <span class="tok-k">const</span> events = <span class="tok-k">await</span> client.<span class="tok-f">subscribe</span>(<span class="tok-s">"dev"</span>, <span class="tok-s">"default"</span>, <span class="tok-s">"orders"</span>);
+  <span class="tok-k">try</span> {
+    <span class="tok-k">await</span> client.<span class="tok-f">publish</span>(<span class="tok-s">"dev"</span>, <span class="tok-s">"default"</span>, <span class="tok-s">"orders"</span>, <span class="tok-t">Buffer</span>.<span class="tok-k">from</span>(<span class="tok-s">"hello"</span>));
+    <span class="tok-k">const</span> event = <span class="tok-k">await</span> events.<span class="tok-f">nextEvent</span>();
+    <span class="tok-k">if</span> (event === <span class="tok-k">null</span>) <span class="tok-k">throw</span> <span class="tok-k">new</span> <span class="tok-f">Error</span>(<span class="tok-s">"the subscription ended"</span>);
+    console.<span class="tok-f">log</span>(<span class="tok-s">"received"</span>, event.payload.<span class="tok-f">toString</span>());
+  } <span class="tok-k">finally</span> {
+    <span class="tok-k">await</span> events.<span class="tok-f">close</span>();
+  }
+} <span class="tok-k">finally</span> {
+  client.<span class="tok-f">close</span>();
+}</code></pre>
+          <p class="panel-foot"><a href="https://docs.getfelix.dev/clients/typescript/">Docs <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span class="visually-hidden"> for the TypeScript client</span></a></p>
+        </div>
+        <div id="panel-cs" role="tabpanel" aria-labelledby="tab-cs" hidden>
+          <div class="panel-install">
+            <span class="panel-src">Install<small>NuGet</small></span>
+            <div class="cmd"><code>dotnet add package Felix.Client</code><button class="icon-btn" type="button" data-copy aria-label="Copy the .NET command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
+          </div>
+<pre class="code" data-lang="C#" tabindex="0" aria-label="C# example"><code><span class="tok-k">using</span> <span class="tok-t">Felix</span>;
+
+<span class="tok-k">var</span> token = <span class="tok-t">Environment</span>.<span class="tok-f">GetEnvironmentVariable</span>(<span class="tok-s">"FELIX_TOKEN"</span>)
+    ?? <span class="tok-k">throw</span> <span class="tok-k">new</span> <span class="tok-f">InvalidOperationException</span>(<span class="tok-s">"set FELIX_TOKEN"</span>);
+
+<span class="tok-k">await</span> <span class="tok-k">using</span> <span class="tok-k">var</span> client = <span class="tok-k">await</span> <span class="tok-t">FelixClient</span>.<span class="tok-f">ConnectAsync</span>(<span class="tok-k">new</span> <span class="tok-t">FelixClientOptions</span>
+{
+    <span class="tok-t">Addrs</span> = [<span class="tok-s">"127.0.0.1:5000"</span>],
+    <span class="tok-t">TenantId</span> = <span class="tok-s">"dev"</span>,
+    <span class="tok-t">Token</span> = token,
+});
+
+<span class="tok-c">// Subscribe first, so the publish below is not missed.</span>
+<span class="tok-k">await</span> <span class="tok-k">using</span> <span class="tok-k">var</span> sub = <span class="tok-k">await</span> client.<span class="tok-f">SubscribeAsync</span>(
+    <span class="tok-s">"dev"</span>, <span class="tok-s">"default"</span>, <span class="tok-s">"orders"</span>, shard: 0, <span class="tok-t">StartPosition</span>.<span class="tok-t">Latest</span>);
+
+<span class="tok-k">await</span> client.<span class="tok-f">PublishAsync</span>(<span class="tok-s">"dev"</span>, <span class="tok-s">"default"</span>, <span class="tok-s">"orders"</span>, <span class="tok-s">"hello"u8</span>.<span class="tok-f">ToArray</span>());
+
+<span class="tok-k">var</span> ev = <span class="tok-k">await</span> sub.<span class="tok-f">ReadAsync</span>(<span class="tok-t">TimeSpan</span>.<span class="tok-f">FromSeconds</span>(5))
+    ?? <span class="tok-k">throw</span> <span class="tok-k">new</span> <span class="tok-f">TimeoutException</span>(<span class="tok-s">"no event within 5 seconds"</span>);
+<span class="tok-t">Console</span>.<span class="tok-f">WriteLine</span>(<span class="tok-s">$"{ev.Offset}: {ev.Payload.Length} bytes"</span>);</code></pre>
+          <p class="panel-foot"><a href="https://docs.getfelix.dev/clients/csharp/">Docs <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span class="visually-hidden"> for the C# client</span></a></p>
+        </div>
+        <div id="panel-c" role="tabpanel" aria-labelledby="tab-c" hidden>
+          <div class="panel-install">
+            <span class="panel-src">Install<small>GitHub releases</small></span>
+            <div class="cmd"><code>gh release download -R GetFelix/felix -p 'libfelix-*'</code><button class="icon-btn" type="button" data-copy aria-label="Copy the C download command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
+          </div>
+<pre class="code" data-lang="C" tabindex="0" aria-label="C example"><code><span class="tok-m">#include &lt;pthread.h&gt;</span>
+<span class="tok-m">#include &lt;stdbool.h&gt;</span>
+<span class="tok-m">#include &lt;stdio.h&gt;</span>
+<span class="tok-m">#include &lt;stdlib.h&gt;</span>
+<span class="tok-m">#include &lt;string.h&gt;</span>
+
+<span class="tok-m">#include "felix.h"</span>
+
+<span class="tok-k">struct</span> waiter {
+    pthread_mutex_t mu;
+    pthread_cond_t cv;
+    <span class="tok-k">bool</span> done;
+    <span class="tok-t">FelixStatus</span> status;
+    <span class="tok-k">void</span> *handle;      <span class="tok-c">/* the new client, subscription or event */</span>
+    <span class="tok-k">char</span> message[256]; <span class="tok-c">/* copied: the callback's message dies with the callback */</span>
+};
+
+<span class="tok-k">static</span> <span class="tok-k">void</span> <span class="tok-f">finish</span>(<span class="tok-k">struct</span> waiter *w, <span class="tok-t">FelixStatus</span> status, <span class="tok-k">const</span> <span class="tok-k">char</span> *message, <span class="tok-k">void</span> *handle) {
+    <span class="tok-f">pthread_mutex_lock</span>(&amp;w-&gt;mu);
+    w-&gt;done = <span class="tok-k">true</span>;
+    w-&gt;status = status;
+    w-&gt;handle = handle;
+    <span class="tok-f">snprintf</span>(w-&gt;message, <span class="tok-k">sizeof</span> w-&gt;message, <span class="tok-s">"%s"</span>, message ? message : <span class="tok-s">""</span>);
+    <span class="tok-f">pthread_cond_signal</span>(&amp;w-&gt;cv);
+    <span class="tok-f">pthread_mutex_unlock</span>(&amp;w-&gt;mu);
+}
+
+<span class="tok-c">/* Waits for the callback of a call that returned `started`. A refused call
+   never runs its callback, so its error is taken from the thread instead. */</span>
+<span class="tok-k">static</span> <span class="tok-t">FelixStatus</span> <span class="tok-f">wait_for</span>(<span class="tok-k">struct</span> waiter *w, <span class="tok-t">FelixStatus</span> started) {
+    <span class="tok-k">if</span> (started != <span class="tok-t">FELIX_STATUS_OK</span>) {
+        <span class="tok-f">snprintf</span>(w-&gt;message, <span class="tok-k">sizeof</span> w-&gt;message, <span class="tok-s">"%s"</span>, <span class="tok-f">felix_last_error_message</span>());
+        <span class="tok-k">return</span> started;
+    }
+    <span class="tok-f">pthread_mutex_lock</span>(&amp;w-&gt;mu);
+    <span class="tok-k">while</span> (!w-&gt;done) <span class="tok-f">pthread_cond_wait</span>(&amp;w-&gt;cv, &amp;w-&gt;mu);
+    w-&gt;done = <span class="tok-k">false</span>;
+    <span class="tok-t">FelixStatus</span> status = w-&gt;status;
+    <span class="tok-f">pthread_mutex_unlock</span>(&amp;w-&gt;mu);
+    <span class="tok-k">return</span> status;
+}
+
+<span class="tok-k">static</span> <span class="tok-k">void</span> <span class="tok-f">on_connect</span>(<span class="tok-k">void</span> *user_data, <span class="tok-t">FelixStatus</span> status, <span class="tok-k">const</span> <span class="tok-k">char</span> *message,
+                       <span class="tok-t">FelixClient</span> *client) {
+    <span class="tok-f">finish</span>(user_data, status, message, client);
+}
+<span class="tok-k">static</span> <span class="tok-k">void</span> <span class="tok-f">on_subscribe</span>(<span class="tok-k">void</span> *user_data, <span class="tok-t">FelixStatus</span> status, <span class="tok-k">const</span> <span class="tok-k">char</span> *message,
+                         <span class="tok-t">FelixSubscription</span> *subscription) {
+    <span class="tok-f">finish</span>(user_data, status, message, subscription);
+}
+<span class="tok-k">static</span> <span class="tok-k">void</span> <span class="tok-f">on_publish</span>(<span class="tok-k">void</span> *user_data, <span class="tok-t">FelixStatus</span> status, <span class="tok-k">const</span> <span class="tok-k">char</span> *message,
+                       <span class="tok-k">bool</span> has_offset, uint64_t offset) {
+    (<span class="tok-k">void</span>)has_offset;
+    (<span class="tok-k">void</span>)offset;
+    <span class="tok-f">finish</span>(user_data, status, message, <span class="tok-k">NULL</span>);
+}
+<span class="tok-k">static</span> <span class="tok-k">void</span> <span class="tok-f">on_event</span>(<span class="tok-k">void</span> *user_data, <span class="tok-t">FelixStatus</span> status, <span class="tok-k">const</span> <span class="tok-k">char</span> *message,
+                     <span class="tok-t">FelixEvent</span> *event) {
+    <span class="tok-f">finish</span>(user_data, status, message, event);
+}
+
+<span class="tok-k">int</span> <span class="tok-f">main</span>(<span class="tok-k">void</span>) {
+    <span class="tok-k">const</span> <span class="tok-k">char</span> *token = <span class="tok-f">getenv</span>(<span class="tok-s">"FELIX_TOKEN"</span>);
+    <span class="tok-k">if</span> (!token || !*token) {
+        <span class="tok-f">fprintf</span>(stderr, <span class="tok-s">"set FELIX_TOKEN\n"</span>);
+        <span class="tok-k">return</span> 1;
+    }
+
+    <span class="tok-k">struct</span> waiter w = {.done = <span class="tok-k">false</span>};
+    <span class="tok-f">pthread_mutex_init</span>(&amp;w.mu, <span class="tok-k">NULL</span>);
+    <span class="tok-f">pthread_cond_init</span>(&amp;w.cv, <span class="tok-k">NULL</span>);
+    <span class="tok-t">FelixClient</span> *client = <span class="tok-k">NULL</span>;
+    <span class="tok-t">FelixSubscription</span> *sub = <span class="tok-k">NULL</span>;
+    <span class="tok-t">FelixEvent</span> *event = <span class="tok-k">NULL</span>;
+    <span class="tok-k">const</span> uint8_t *data = <span class="tok-k">NULL</span>;
+    size_t len = 0;
+    <span class="tok-k">int</span> exit_code = 1;
+    <span class="tok-t">FelixStatus</span> status;
+
+    status = <span class="tok-f">felix_client_connect</span>(<span class="tok-s">"127.0.0.1:5000"</span>, <span class="tok-s">"dev"</span>, token, <span class="tok-s">"localhost"</span>,
+                                  <span class="tok-k">NULL</span> <span class="tok-c">/* system CAs */</span>, <span class="tok-k">NULL</span>, on_connect, &amp;w);
+    <span class="tok-k">if</span> (<span class="tok-f">wait_for</span>(&amp;w, status) != <span class="tok-t">FELIX_STATUS_OK</span>) {
+        <span class="tok-f">fprintf</span>(stderr, <span class="tok-s">"connect: %s\n"</span>, w.message);
+        <span class="tok-k">goto</span> cleanup;
+    }
+    client = w.handle;
+
+    <span class="tok-c">/* Subscribe first, so the publish below is not missed. */</span>
+    status = <span class="tok-f">felix_client_subscribe</span>(client, <span class="tok-s">"dev"</span>, <span class="tok-s">"default"</span>, <span class="tok-s">"orders"</span>, 0,
+                                    <span class="tok-t">FELIX_START_LATEST</span>, 0, <span class="tok-k">NULL</span>, on_subscribe, &amp;w);
+    <span class="tok-k">if</span> (<span class="tok-f">wait_for</span>(&amp;w, status) != <span class="tok-t">FELIX_STATUS_OK</span>) {
+        <span class="tok-f">fprintf</span>(stderr, <span class="tok-s">"subscribe: %s\n"</span>, w.message);
+        <span class="tok-k">goto</span> cleanup;
+    }
+    sub = w.handle;
+
+    <span class="tok-k">static</span> <span class="tok-k">const</span> uint8_t payload[] = <span class="tok-s">"hello"</span>;
+    status = <span class="tok-f">felix_client_publish</span>(client, <span class="tok-s">"dev"</span>, <span class="tok-s">"default"</span>, <span class="tok-s">"orders"</span>, payload,
+                                  <span class="tok-k">sizeof</span> payload - 1, <span class="tok-k">NULL</span>, 0, <span class="tok-t">FELIX_ACK_PER_MESSAGE</span>,
+                                  <span class="tok-t">FELIX_DELIVERY_AT_MOST_ONCE</span>, <span class="tok-k">NULL</span>, on_publish, &amp;w);
+    <span class="tok-k">if</span> (<span class="tok-f">wait_for</span>(&amp;w, status) != <span class="tok-t">FELIX_STATUS_OK</span>) {
+        <span class="tok-f">fprintf</span>(stderr, <span class="tok-s">"publish: %s\n"</span>, w.message);
+        <span class="tok-k">goto</span> cleanup;
+    }
+
+    status = <span class="tok-f">felix_subscription_next</span>(sub, 5000 <span class="tok-c">/* ms */</span>, <span class="tok-k">NULL</span>, on_event, &amp;w);
+    status = <span class="tok-f">wait_for</span>(&amp;w, status);
+    <span class="tok-k">if</span> (status != <span class="tok-t">FELIX_STATUS_OK</span>) {
+        <span class="tok-f">fprintf</span>(stderr, <span class="tok-s">"read: %s\n"</span>, status == <span class="tok-t">FELIX_STATUS_TIMEOUT</span> ? <span class="tok-s">"timed out"</span> : w.message);
+        <span class="tok-k">goto</span> cleanup;
+    }
+    event = w.handle;
+    <span class="tok-k">if</span> (<span class="tok-f">felix_event_payload</span>(event, &amp;data, &amp;len) != <span class="tok-t">FELIX_STATUS_OK</span>) {
+        <span class="tok-f">fprintf</span>(stderr, <span class="tok-s">"payload: %s\n"</span>, <span class="tok-f">felix_last_error_message</span>());
+        <span class="tok-k">goto</span> cleanup;
+    }
+    <span class="tok-f">printf</span>(<span class="tok-s">"%.*s\n"</span>, (<span class="tok-k">int</span>)len, (<span class="tok-k">const</span> <span class="tok-k">char</span> *)data);
+    exit_code = 0;
+
+cleanup:
+    <span class="tok-c">/* Every call has completed by here, so no callback still holds &amp;w. */</span>
+    <span class="tok-f">felix_event_free</span>(event);
+    <span class="tok-f">felix_subscription_free</span>(sub);
+    <span class="tok-f">felix_client_free</span>(client);
+    <span class="tok-f">pthread_cond_destroy</span>(&amp;w.cv);
+    <span class="tok-f">pthread_mutex_destroy</span>(&amp;w.mu);
+    <span class="tok-k">return</span> exit_code;
+}</code></pre>
+          <p class="panel-foot"><a href="https://docs.getfelix.dev/clients/c/">Docs <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span class="visually-hidden"> for the C client</span></a></p>
+        </div>
+        <div id="panel-cli" role="tabpanel" aria-labelledby="tab-cli" hidden>
+          <div class="panel-install">
+            <span class="panel-src">Install<small>Homebrew, crates.io, releases, image</small></span>
+            <div class="cmd"><code>brew install getfelix/tap/felixctl</code><button class="icon-btn" type="button" data-copy aria-label="Copy the felixctl install command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
+          </div>
+<pre class="code" data-lang="Shell" tabindex="0" aria-label="Shell example"><code><span class="tok-c"># one terminal</span>
+<span class="tok-f">felixctl</span> sub orders
+
+<span class="tok-c"># another</span>
+<span class="tok-f">felixctl</span> pub orders <span class="tok-s">'hello'</span>
+<span class="tok-f">felixctl</span> cache put users alice <span class="tok-s">'online'</span>
+<span class="tok-f">felixctl</span> cache get users alice
+<span class="tok-f">felixctl</span> topology orders</code></pre>
+          <p class="panel-foot"><a href="https://docs.getfelix.dev/getting-started/felixctl/#install">Docs <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span class="visually-hidden"> for felixctl</span></a></p>
+        </div>
+        </div>
       </div>
     </div>
   </section>
@@ -203,85 +519,6 @@
     </div>
   </section>
 
-
-  <section class="section" id="code" aria-labelledby="code-title">
-    <div class="wrap code-grid">
-      <div class="section-head reveal">
-        <span class="eyebrow">Quickstart</span>
-        <h2 id="code-title">Publish and subscribe</h2>
-        <p>Once <code>felixctl</code> has a context for your cluster, each step is one command. The guide starts a local cluster with a stream named <code>orders</code> and a cache named <code>users</code>.</p>
-        <a class="text-link" href="https://docs.getfelix.dev/getting-started/felixctl/">Try it with felixctl
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </a>
-      </div>
-
-      <div class="window reveal" style="--d:.1s">
-        <div class="window-bar">
-          <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
-          <div class="tabs" role="tablist" aria-label="Example">
-            <button class="tab" role="tab" id="tab-cli" aria-controls="panel-cli" aria-selected="true">felixctl</button>
-            <button class="tab" role="tab" id="tab-rust" aria-controls="panel-rust" aria-selected="false" tabindex="-1">main.rs</button>
-            <button class="tab" role="tab" id="tab-py" aria-controls="panel-py" aria-selected="false" tabindex="-1">main.py</button>
-            <button class="tab" role="tab" id="tab-ts" aria-controls="panel-ts" aria-selected="false" tabindex="-1">main.ts</button>
-          </div>
-          <button class="copy" type="button" data-copy="panel" aria-label="Copy example">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
-            <span class="copy-label">Copy</span>
-          </button>
-        </div>
-<pre id="panel-cli" role="tabpanel" aria-labelledby="tab-cli" tabindex="0"><code><span class="tok-c"># one terminal</span>
-<span class="tok-f">felixctl</span> sub orders
-
-<span class="tok-c"># another</span>
-<span class="tok-f">felixctl</span> pub orders <span class="tok-s">'hello'</span>
-<span class="tok-f">felixctl</span> cache put users alice <span class="tok-s">'online'</span>
-<span class="tok-f">felixctl</span> cache get users alice
-<span class="tok-f">felixctl</span> topology orders</code></pre>
-<pre id="panel-rust" role="tabpanel" aria-labelledby="tab-rust" tabindex="0" hidden><code><span class="tok-k">use</span> felix_client::{<span class="tok-t">AckMode</span>, <span class="tok-t">Client</span>, <span class="tok-t">ClientConfig</span>};
-<span class="tok-k">use</span> std::net::<span class="tok-t">SocketAddr</span>;
-
-<span class="tok-m">#[tokio::main]</span>
-<span class="tok-k">async fn</span> <span class="tok-f">main</span>() -&gt; anyhow::<span class="tok-t">Result</span>&lt;()&gt; {
-    <span class="tok-k">let</span> quinn = quinn::<span class="tok-t">ClientConfig</span>::<span class="tok-f">with_platform_verifier</span>();
-    <span class="tok-k">let</span> config = <span class="tok-t">ClientConfig</span>::<span class="tok-f">optimized_defaults</span>(quinn);
-    <span class="tok-k">let</span> addr: <span class="tok-t">SocketAddr</span> = <span class="tok-s">"127.0.0.1:5000"</span>.<span class="tok-f">parse</span>()?;
-    <span class="tok-k">let</span> client = <span class="tok-t">Client</span>::<span class="tok-f">connect</span>(addr, <span class="tok-s">"localhost"</span>, config).<span class="tok-k">await</span>?;
-
-    <span class="tok-k">let</span> publisher = client.<span class="tok-f">publisher</span>().<span class="tok-k">await</span>?;
-    publisher
-        .<span class="tok-f">publish</span>(<span class="tok-s">"acme"</span>, <span class="tok-s">"prod"</span>, <span class="tok-s">"events"</span>, <span class="tok-s">b"Hello Felix"</span>.<span class="tok-f">to_vec</span>(), <span class="tok-t">AckMode</span>::None)
-        .<span class="tok-k">await</span>?;
-
-    <span class="tok-k">let mut</span> subscription = client.<span class="tok-f">subscribe</span>(<span class="tok-s">"acme"</span>, <span class="tok-s">"prod"</span>, <span class="tok-s">"events"</span>).<span class="tok-k">await</span>?;
-    <span class="tok-k">while let</span> <span class="tok-t">Some</span>(event) = subscription.<span class="tok-f">next_event</span>().<span class="tok-k">await</span>? {
-        <span class="tok-f">println!</span>(<span class="tok-s">"Received: {:?}"</span>, event.payload);
-    }
-    <span class="tok-t">Ok</span>(())
-}</code></pre>
-<pre id="panel-py" role="tabpanel" aria-labelledby="tab-py" tabindex="0" hidden><code><span class="tok-k">import</span> os
-<span class="tok-k">import</span> felix
-
-<span class="tok-k">with</span> felix.<span class="tok-t">Client</span>(
-    <span class="tok-s">"127.0.0.1:5000"</span>, tenant_id=<span class="tok-s">"acme"</span>, token=os.environ[<span class="tok-s">"FELIX_TOKEN"</span>]
-) <span class="tok-k">as</span> client:
-    <span class="tok-k">with</span> client.<span class="tok-f">subscribe</span>(<span class="tok-s">"acme"</span>, <span class="tok-s">"prod"</span>, <span class="tok-s">"events"</span>) <span class="tok-k">as</span> events:
-        client.<span class="tok-f">publish</span>(<span class="tok-s">"acme"</span>, <span class="tok-s">"prod"</span>, <span class="tok-s">"events"</span>, <span class="tok-s">b"Hello Felix"</span>)
-        <span class="tok-k">for</span> event <span class="tok-k">in</span> events:
-            <span class="tok-f">print</span>(<span class="tok-s">"Received:"</span>, event.payload)</code></pre>
-<pre id="panel-ts" role="tabpanel" aria-labelledby="tab-ts" tabindex="0" hidden><code><span class="tok-k">import</span> { <span class="tok-t">Client</span> } <span class="tok-k">from</span> <span class="tok-s">"felix-client"</span>;
-
-<span class="tok-k">const</span> client = <span class="tok-k">await</span> <span class="tok-t">Client</span>.<span class="tok-f">connect</span>(<span class="tok-s">"127.0.0.1:5000"</span>, <span class="tok-s">"acme"</span>, process.env.FELIX_TOKEN!);
-<span class="tok-k">const</span> events = <span class="tok-k">await</span> client.<span class="tok-f">subscribe</span>(<span class="tok-s">"acme"</span>, <span class="tok-s">"prod"</span>, <span class="tok-s">"events"</span>);
-<span class="tok-k">await</span> client.<span class="tok-f">publish</span>(<span class="tok-s">"acme"</span>, <span class="tok-s">"prod"</span>, <span class="tok-s">"events"</span>, <span class="tok-t">Buffer</span>.<span class="tok-f">from</span>(<span class="tok-s">"Hello Felix"</span>));
-
-<span class="tok-k">for</span> (;;) {
-  <span class="tok-k">const</span> event = <span class="tok-k">await</span> events.<span class="tok-f">nextEvent</span>();
-  <span class="tok-k">if</span> (event === <span class="tok-k">null</span>) <span class="tok-k">break</span>;
-  console.<span class="tok-f">log</span>(<span class="tok-s">"Received:"</span>, event.payload.<span class="tok-f">toString</span>());
-}</code></pre>
-      </div>
-    </div>
-  </section>
 
   <section class="section teasers" id="explore" aria-labelledby="teasers-title">
     <div class="wrap">
@@ -571,56 +808,6 @@ cargo run -p felix-gateway</code></pre>
         </article>
       </div>
       <p class="projects-more"><a class="text-link" href="/projects.html">All projects<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></p>
-    </div>
-  </section>
-
-
-
-  <section class="section" id="get-started" aria-labelledby="start-title">
-    <div class="wrap">
-      <div class="section-head center reveal">
-        <span class="eyebrow">Install</span>
-        <h2 id="start-title">Get started</h2>
-        <p>Install <!--release:felix:version-->0.6.2<!--/release:felix:version--> from your package manager:</p>
-      </div>
-
-      <div class="install reveal">
-        <div class="install-row">
-          <div class="install-name"><span class="ficon mono-ic" aria-hidden="true">rs</span><span>Rust client<small>crates.io</small></span></div>
-          <div class="cmd"><code>cargo add felix-client@<!--release:felix:version-->0.6.2<!--/release:felix:version--></code><button class="icon-btn" type="button" data-copy aria-label="Copy the Rust install command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
-          <a href="https://docs.getfelix.dev/clients/rust/">Docs <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span class="visually-hidden"> for the Rust client</span></a>
-        </div>
-        <div class="install-row">
-          <div class="install-name"><span class="ficon mono-ic" aria-hidden="true">py</span><span>Python client<small>PyPI</small></span></div>
-          <div class="cmd"><code>pip install felix-client</code><button class="icon-btn" type="button" data-copy aria-label="Copy the Python install command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
-          <a href="https://docs.getfelix.dev/clients/python/">Docs <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span class="visually-hidden"> for the Python client</span></a>
-        </div>
-        <div class="install-row">
-          <div class="install-name"><span class="ficon mono-ic" aria-hidden="true">ts</span><span>TypeScript client<small>npm</small></span></div>
-          <div class="cmd"><code>npm install felix-client</code><button class="icon-btn" type="button" data-copy aria-label="Copy the npm install command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
-          <a href="https://docs.getfelix.dev/clients/typescript/">Docs <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span class="visually-hidden"> for the TypeScript client</span></a>
-        </div>
-        <div class="install-row">
-          <div class="install-name"><span class="ficon mono-ic" aria-hidden="true">cs</span><span>C# client<small>NuGet</small></span></div>
-          <div class="cmd"><code>dotnet add package Felix.Client</code><button class="icon-btn" type="button" data-copy aria-label="Copy the .NET install command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
-          <a href="https://docs.getfelix.dev/clients/csharp/">Docs <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span class="visually-hidden"> for the C# client</span></a>
-        </div>
-        <div class="install-row">
-          <div class="install-name"><span class="ficon mono-ic" aria-hidden="true">c</span><span>C client<small>GitHub releases</small></span></div>
-          <div class="cmd"><code>gh release download -R GetFelix/felix -p 'libfelix-*'</code><button class="icon-btn" type="button" data-copy aria-label="Copy the C download command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
-          <a href="https://docs.getfelix.dev/clients/c/">Docs <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span class="visually-hidden"> for the C client</span></a>
-        </div>
-        <div class="install-row">
-          <div class="install-name"><span class="ficon mono-ic" aria-hidden="true">oci</span><span>Broker and control plane<small>Container images</small></span></div>
-          <div class="cmd"><code>docker pull ghcr.io/getfelix/felix-broker:<!--release:felix:version-->0.6.2<!--/release:felix:version--></code><button class="icon-btn" type="button" data-copy aria-label="Copy the docker pull command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
-          <a href="https://docs.getfelix.dev/deployment/docker-compose/">Docs <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span class="visually-hidden"> for the container images</span></a>
-        </div>
-        <div class="install-row">
-          <div class="install-name"><span class="ficon mono-ic" aria-hidden="true">cli</span><span>felixctl<small>Homebrew, crates.io, releases, image</small></span></div>
-          <div class="cmd"><code>brew install getfelix/tap/felixctl</code><button class="icon-btn" type="button" data-copy aria-label="Copy the felixctl install command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
-          <a href="https://docs.getfelix.dev/getting-started/felixctl/#install">Docs <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span class="visually-hidden"> for felixctl</span></a>
-        </div>
-      </div>
     </div>
   </section>
 
