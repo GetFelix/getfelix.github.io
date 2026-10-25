@@ -77,3 +77,101 @@
   var scheme = matchMedia("(prefers-color-scheme: dark)");
   if (scheme.addEventListener) scheme.addEventListener("change", swap);
 })();
+
+// Filter by type (one at a time) and tags (every one picked). Without JS the
+// type chips are links to each group, and every project shows. The choice is
+// kept in the URL so a filtered view can be shared.
+(function () {
+  var nav = document.querySelector(".project-filter");
+  if (!nav) return;
+  var projects = Array.prototype.slice.call(document.querySelectorAll(".project[data-type]"));
+  var groups = Array.prototype.slice.call(document.querySelectorAll(".project-group"));
+  var typeChips = nav.querySelectorAll("[data-filter-type]");
+  var tagChips = nav.querySelectorAll("[data-filter-tag]");
+  var count = nav.querySelector(".filter-count");
+  var empty = document.querySelector(".filter-empty");
+  var known = Object.create(null);
+  typeChips.forEach(function (c) { known[c.dataset.filterType] = true; });
+  var state = { type: "all", tags: [] };
+
+  var params = new URLSearchParams(location.search);
+  if (known[params.get("type")]) state.type = params.get("type");
+  (params.get("tags") || "").split(",").forEach(function (t) {
+    if (state.tags.indexOf(t) < 0 && nav.querySelector('[data-filter-tag="' + CSS.escape(t) + '"]')) state.tags.push(t);
+  });
+
+  function apply(push) {
+    var shown = 0;
+    projects.forEach(function (p) {
+      var tags = p.dataset.tags.split(" ");
+      var ok = (state.type === "all" || p.dataset.type === state.type) &&
+        state.tags.every(function (t) { return tags.indexOf(t) >= 0; });
+      p.hidden = !ok;
+      if (ok) shown++;
+    });
+    groups.forEach(function (g) {
+      var visible = projects.filter(function (p) { return p.dataset.type === g.dataset.group && !p.hidden; });
+      g.hidden = visible.length === 0;
+      g.querySelector(".group-n").textContent = visible.length;
+      // Media sides alternate within a group, whatever is filtered out.
+      visible.forEach(function (p, i) {
+        p.classList.toggle("alt", i % 2 === 1);
+        p.classList.toggle("lead", i === 0);
+      });
+    });
+    typeChips.forEach(function (c) {
+      if (c.dataset.filterType === state.type) c.setAttribute("aria-current", "true");
+      else c.removeAttribute("aria-current");
+    });
+    tagChips.forEach(function (c) {
+      c.setAttribute("aria-pressed", state.tags.indexOf(c.dataset.filterTag) >= 0 ? "true" : "false");
+    });
+    var filtered = state.type !== "all" || state.tags.length > 0;
+    count.hidden = !filtered;
+    count.textContent = "Showing " + shown + " of " + projects.length + " projects";
+    empty.hidden = shown > 0;
+    if (push) {
+      var q = new URLSearchParams();
+      if (state.type !== "all") q.set("type", state.type);
+      if (state.tags.length) q.set("tags", state.tags.join(","));
+      var qs = q.toString();
+      history.replaceState(null, "", location.pathname + (qs ? "?" + qs : "") + location.hash);
+    }
+  }
+
+  typeChips.forEach(function (c) {
+    c.hidden = false;
+    c.addEventListener("click", function (e) {
+      e.preventDefault();
+      var t = c.dataset.filterType;
+      state.type = state.type === t ? "all" : t;
+      apply(true);
+    });
+  });
+  tagChips.forEach(function (c) {
+    c.addEventListener("click", function () {
+      var t = c.dataset.filterTag;
+      var i = state.tags.indexOf(t);
+      if (i >= 0) state.tags.splice(i, 1);
+      else state.tags.push(t);
+      apply(true);
+    });
+  });
+  document.querySelector("[data-filter-reset]").addEventListener("click", function () {
+    state = { type: "all", tags: [] };
+    apply(true);
+  });
+  nav.querySelector('[data-row="tag"]').hidden = false;
+  document.getElementById("filter-tag-label").hidden = false;
+  nav.setAttribute("aria-label", "Filter projects");
+  apply(false);
+
+  // A link to a project the filter hides would scroll to nothing: show
+  // everything and go to it.
+  var target = location.hash && document.getElementById(location.hash.slice(1));
+  if (target && target.closest("[hidden]")) {
+    state = { type: "all", tags: [] };
+    apply(true);
+    target.scrollIntoView();
+  }
+})();

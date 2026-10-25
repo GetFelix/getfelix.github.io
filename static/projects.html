@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Projects built on Felix</title>
-<meta name="description" content="Open-source apps built only on Felix: a multiplayer canvas, a 3D arena game, a webhook relay, a browser gateway, and a 3D city simulator.">
+<meta name="description" content="Open-source projects built only on Felix, by type: games and simulations, apps, infrastructure, and distributed systems. Filter them by what they do.">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#f6f8fa" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#070a0e" media="(prefers-color-scheme: dark)">
@@ -88,20 +88,126 @@
         <h1 id="projects-page-title">Built on Felix</h1>
         <p>Real apps that keep all of their state in Felix, with no other datastore, and can be self-hosted. Each one exercises a different part of it.</p>
       </div>
-      <nav class="page-toc" aria-label="On this page">
-        <a href="#canvas"><span class="n" aria-hidden="true">1</span>Canvas</a>
-        <a href="#arena"><span class="n" aria-hidden="true">2</span>Arena</a>
-        <a href="#webhook-relay"><span class="n" aria-hidden="true">3</span>Webhook relay</a>
-        <a href="#gateway"><span class="n" aria-hidden="true">4</span>Gateway</a>
-        <a href="#metro"><span class="n" aria-hidden="true">5</span>Metro</a>
-        <a href="#blocks"><span class="n" aria-hidden="true">6</span>Blocks</a>
-        <a href="#agents"><span class="n" aria-hidden="true">7</span>Agents</a>
-        <a href="#felixd"><span class="n" aria-hidden="true">8</span>felixd</a>
+      <nav class="project-filter" aria-label="Project types">
+        <p class="filter-label" id="filter-type-label">Type</p>
+        <ul class="filter-row" data-row="type" aria-labelledby="filter-type-label"><li><a class="chip" href="#main" data-filter-type="all" aria-current="true" hidden>All <span class="chip-n">8</span></a></li><li><a class="chip" href="#games" data-filter-type="games">Games <span class="chip-n">3</span></a></li><li><a class="chip" href="#apps" data-filter-type="apps">Apps <span class="chip-n">1</span></a></li><li><a class="chip" href="#infrastructure" data-filter-type="infrastructure">Infrastructure <span class="chip-n">2</span></a></li><li><a class="chip" href="#systems" data-filter-type="systems">Distributed systems <span class="chip-n">2</span></a></li></ul>
+        <p class="filter-label" id="filter-tag-label" hidden>Tags</p>
+        <ul class="filter-row" data-row="tag" aria-labelledby="filter-tag-label" hidden><li><button class="chip" type="button" data-filter-tag="multiplayer" aria-pressed="false">Multiplayer</button></li><li><button class="chip" type="button" data-filter-tag="3d" aria-pressed="false">3D</button></li><li><button class="chip" type="button" data-filter-tag="replay" aria-pressed="false">Replays history</button></li><li><button class="chip" type="button" data-filter-tag="access" aria-pressed="false">Access control</button></li><li><button class="chip" type="button" data-filter-tag="released" aria-pressed="false">Released</button></li><li><button class="chip" type="button" data-filter-tag="design" aria-pressed="false">In design</button></li></ul>
+        <p class="filter-count" aria-live="polite" hidden></p>
       </nav>
     </div>
   </section>
 
-  <section class="section project" id="canvas" aria-labelledby="canvas-title">
+  <section class="project-group" id="games" data-group="games" aria-labelledby="games-heading">
+    <div class="wrap group-head">
+      <h2 id="games-heading">Games and simulations <span class="group-n">3</span></h2>
+      <p>Live worlds simulated on Felix and rebuilt from its logs.</p>
+    </div>
+  </section>
+  <section class="section project lead" data-type="games" data-tags="multiplayer 3d replay released" id="arena" aria-labelledby="arena-title">
+    <div class="wrap">
+      <div class="project-media reveal">
+        <div class="pm framed">
+          <video class="clip" muted loop playsinline preload="none" poster="/assets/img/arena-match.webp?v=d8a0e568" width="1280" height="720" aria-label="A Felix Arena match: eight hover-craft trading fire around the crystal, then one is destroyed and the kill cam replays its last seconds, read back from the match's log in Felix, ending on the explosion and who destroyed whom">
+            <source src="/assets/img/arena-match.mp4?v=2afc3bda" type="video/mp4">
+          </video>
+        </div>
+      </div>
+      <div class="project-body reveal" style="--d:.08s">
+        <div class="project-title">
+          <h3 id="arena-title">felix-arena</h3>
+          <span class="status ok"><!--release:felix-arena:version-->0.1.6<!--/release:felix-arena:version--></span>
+        </div>
+        <ul class="project-tags" aria-label="Tags"><li>Multiplayer</li><li>3D</li><li>Replays history</li></ul>
+        <p>A browser team deathmatch in 3D, played through Felix with the simulation deciding every hit. When you are destroyed, the kill cam replays the last seconds from the match's log in Felix.</p>
+        <h4>Felix features it uses</h4>
+        <ul class="uses"><li>One durable stream holds the match, a record per simulation tick, replicated with <code>Quorum</code></li><li>Atomic commits write each tick together with its keyframe pointer</li><li>An in-memory stream carries player inputs</li><li>TTL caches track who is connected and each arena's status</li><li>A counter holds the simulator's epoch</li></ul>
+        <h4>Quick start</h4>
+        <div class="quick-cmd">
+<pre><code>curl -fsSL https://github.com/GetFelix/felix-arena/releases/download/<!--release:felix-arena:tag-->v0.1.6<!--/release:felix-arena:tag-->/felix-arena-web-<!--release:felix-arena:tag-->v0.1.6<!--/release:felix-arena:tag-->.tar.gz | tar xz
+cd felix-arena-web-<!--release:felix-arena:tag-->v0.1.6<!--/release:felix-arena:tag-->
+python3 -m http.server 5173</code></pre>
+          <button class="icon-btn" type="button" data-copy aria-label="Copy the felix-arena quick start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+        </div>
+        <p class="note">Open <code>localhost:5173/play.html?offline</code> to play against bots in the page. To play through Felix, start the development stack from the <a href="https://github.com/GetFelix/felix-arena#development-stack">repository</a> first.</p>
+        <div class="project-links">
+          <a href="https://github.com/GetFelix/felix-arena"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>GitHub</a>
+          <a href="https://docs.getfelix.dev/built-on-felix/arena/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v16H6.5A2.5 2.5 0 0 0 4 21.5Z"/><path d="M8 7h8"/></svg>Docs<span class="visually-hidden"> for felix-arena</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section project alt" data-type="games" data-tags="3d replay released" id="metro" aria-labelledby="metro-title">
+    <div class="wrap">
+      <div class="project-media reveal">
+        <div class="pm framed">
+          <video class="clip" muted loop playsinline preload="none" poster="/assets/img/metro-city.webp" width="1280" height="720" aria-label="Felix Metro at dusk: the camera follows a car down a harbor street, rises over downtown, and watches a builder bot raise houses on empty lots. The timeline is dragged back six hours and the new houses are gone, then it races forward through the evening rush to live, where the city is lit for the night">
+            <source src="/assets/img/metro-city.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+      <div class="project-body reveal" style="--d:.08s">
+        <div class="project-title">
+          <h3 id="metro-title">felix-metro</h3>
+          <span class="status ok"><!--release:felix-metro:version-->0.2.2<!--/release:felix-metro:version--></span>
+        </div>
+        <ul class="project-tags" aria-label="Tags"><li>3D</li><li>Replays history</li></ul>
+        <p>A live 3D city simulated on Felix. Each district is a shard, residents commute, and day and night follow the simulation clock. Drag the timeline back to any earlier moment and the city is rebuilt from its log in Felix, then play it forward or jump back to live. A builder bot adds buildings through a command stream that records who sent each one.</p>
+        <h4>Felix features it uses</h4>
+        <ul class="uses"><li>A durable stream per city with one shard per district, a record per simulation tick</li><li>Atomic commits write each tick, with keyframes pointed to by stream state</li><li>Bounded range reads load a past moment from the nearest keyframe for time travel</li><li>Subscribing from an offset plays forward into live with no gap</li><li>An expected-offset commit keeps a single simulation writing each city</li><li>A command stream stamps each build with the identity of whoever sent it</li></ul>
+        <h4>Quick start</h4>
+        <div class="quick-cmd">
+<pre><code>curl -fsSL https://github.com/GetFelix/felix-metro/releases/download/<!--release:felix-metro:tag-->v0.2.2<!--/release:felix-metro:tag-->/felix-metro-compose-<!--release:felix-metro:version-->0.2.2<!--/release:felix-metro:version-->.tar.gz | tar xz
+cd felix-metro-compose-<!--release:felix-metro:version-->0.2.2<!--/release:felix-metro:version-->
+./up.sh</code></pre>
+          <button class="icon-btn" type="button" data-copy aria-label="Copy the felix-metro quick start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+        </div>
+        <p class="note">Needs Docker or Podman. <code>up.sh</code> returns once the cities are serving; then open <code>localhost:8088/#harbor</code>. The <a href="https://github.com/GetFelix/felix-metro/blob/main/docs/design.md">design</a> covers the data model and how seeking works.</p>
+        <div class="project-links">
+          <a href="https://github.com/GetFelix/felix-metro"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>GitHub</a>
+          <a href="https://github.com/GetFelix/felix-metro/blob/main/docs/design.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v16H6.5A2.5 2.5 0 0 0 4 21.5Z"/><path d="M8 7h8"/></svg>Design<span class="visually-hidden"> for felix-metro</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section project" data-type="games" data-tags="multiplayer 3d access design" id="blocks" aria-labelledby="blocks-title">
+    <div class="wrap">
+      <div class="project-media reveal">
+        <div class="pm framed">
+          <picture class="shot-light">
+            <source srcset="/assets/img/blocks-day.webp" type="image/webp">
+            <img src="/assets/img/blocks-day.jpg" alt="Felix Blocks style frame: a first-person view across a meadow to a wooden house with a red roof, two other players with name tags, the block hotbar and the builders list" width="1600" height="900" loading="lazy" decoding="async">
+          </picture>
+          <picture class="shot-dark">
+            <source srcset="/assets/img/blocks-night.webp" type="image/webp">
+            <img src="/assets/img/blocks-night.jpg" alt="" width="1600" height="900" loading="lazy" decoding="async">
+          </picture>
+        </div>
+      </div>
+      <div class="project-body reveal" style="--d:.08s">
+        <div class="project-title">
+          <h3 id="blocks-title">felix-blocks</h3>
+          <span class="status idea">In design</span>
+        </div>
+        <ul class="project-tags" aria-label="Tags"><li>Multiplayer</li><li>3D</li><li>Access control</li></ul>
+        <p>A voxel building game in the browser. Dig and build alone, or open your world to friends and build in it together, each of you seeing the other's blocks as they land.</p>
+        <h4>Felix features it will use</h4>
+        <ul class="uses"><li>A log-backed cache holds the world, one key per edited chunk, so untouched terrain is never stored</li><li>Conditional writes let two players edit one chunk at once without either losing a block</li><li>A retained cache watch shows a joining player the whole world, then every change</li><li>Compaction keeps a world at its current blocks however many edits it has seen</li><li>Permissions in Felix separate builders from visitors</li></ul>
+        <p class="note">Nothing runs yet. Multiplayer waits on conditional writes through felix-gateway, which are planned. The <a href="https://github.com/GetFelix/felix-blocks/blob/main/docs/design.md">design</a> covers the data model and how edits resolve, and the <a href="https://github.com/GetFelix/felix-blocks/milestones">milestones</a> track the build.</p>
+        <div class="project-links">
+          <a href="https://github.com/GetFelix/felix-blocks"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>GitHub</a>
+          <a href="https://github.com/GetFelix/felix-blocks/blob/main/docs/design.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v16H6.5A2.5 2.5 0 0 0 4 21.5Z"/><path d="M8 7h8"/></svg>Design<span class="visually-hidden"> for felix-blocks</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="project-group" id="apps" data-group="apps" aria-labelledby="apps-heading">
+    <div class="wrap group-head">
+      <h2 id="apps-heading">Apps <span class="group-n">1</span></h2>
+      <p>Software people use together, with Felix holding every change.</p>
+    </div>
+  </section>
+  <section class="section project lead" data-type="apps" data-tags="multiplayer replay access released" id="canvas" aria-labelledby="canvas-title">
     <div class="wrap">
       <div class="project-media reveal">
         <div class="pm framed">
@@ -115,13 +221,14 @@
       </div>
       <div class="project-body reveal" style="--d:.08s">
         <div class="project-title">
-          <h2 id="canvas-title">felix-canvas</h2>
+          <h3 id="canvas-title">felix-canvas</h3>
           <span class="status ok"><!--release:felix-canvas:version-->0.3.2<!--/release:felix-canvas:version--></span>
         </div>
+        <ul class="project-tags" aria-label="Tags"><li>Multiplayer</li><li>Replays history</li><li>Access control</li></ul>
         <p>A multiplayer drawing canvas with live cursors, rich text, history you can scrub, and per-room sign-in.</p>
-        <h3>Felix features it uses</h3>
+        <h4>Felix features it uses</h4>
         <ul class="uses"><li>A durable stream per room holds every edit; the board is a fold of it</li><li>An in-memory stream carries cursors and selections</li><li>A cache holds snapshots, and another holds who is in the room, with a TTL</li><li>Counters hand out per-session sequence numbers</li><li>Replicated with <code>Quorum</code> consistency when you run more than one replica</li></ul>
-        <h3>Quick start</h3>
+        <h4>Quick start</h4>
         <div class="quick-cmd">
 <pre><code>curl -fsSL https://github.com/GetFelix/felix-canvas/releases/download/<!--release:felix-canvas:tag-->v0.3.2<!--/release:felix-canvas:tag-->/felix-canvas-compose-<!--release:felix-canvas:version-->0.3.2<!--/release:felix-canvas:version-->.tar.gz | tar xz
 cd felix-canvas-compose-<!--release:felix-canvas:version-->0.3.2<!--/release:felix-canvas:version-->
@@ -139,79 +246,13 @@ docker compose up -d</code></pre>
       </div>
     </div>
   </section>
-
-  <section class="section project alt" id="arena" aria-labelledby="arena-title">
-    <div class="wrap">
-      <div class="project-media reveal">
-        <div class="pm framed">
-          <video class="clip" muted loop playsinline preload="none" poster="/assets/img/arena-match.webp?v=d8a0e568" width="1280" height="720" aria-label="A Felix Arena match: eight hover-craft trading fire around the crystal, then one is destroyed and the kill cam replays its last seconds, read back from the match's log in Felix, ending on the explosion and who destroyed whom">
-            <source src="/assets/img/arena-match.mp4?v=2afc3bda" type="video/mp4">
-          </video>
-        </div>
-      </div>
-      <div class="project-body reveal" style="--d:.08s">
-        <div class="project-title">
-          <h2 id="arena-title">felix-arena</h2>
-          <span class="status ok"><!--release:felix-arena:version-->0.1.6<!--/release:felix-arena:version--></span>
-        </div>
-        <p>A browser team deathmatch in 3D, played through Felix with the simulation deciding every hit. When you are destroyed, the kill cam replays the last seconds from the match's log in Felix.</p>
-        <h3>Felix features it uses</h3>
-        <ul class="uses"><li>One durable stream holds the match, a record per simulation tick, replicated with <code>Quorum</code></li><li>Atomic commits write each tick together with its keyframe pointer</li><li>An in-memory stream carries player inputs</li><li>TTL caches track who is connected and each arena's status</li><li>A counter holds the simulator's epoch</li></ul>
-        <h3>Quick start</h3>
-        <div class="quick-cmd">
-<pre><code>curl -fsSL https://github.com/GetFelix/felix-arena/releases/download/<!--release:felix-arena:tag-->v0.1.6<!--/release:felix-arena:tag-->/felix-arena-web-<!--release:felix-arena:tag-->v0.1.6<!--/release:felix-arena:tag-->.tar.gz | tar xz
-cd felix-arena-web-<!--release:felix-arena:tag-->v0.1.6<!--/release:felix-arena:tag-->
-python3 -m http.server 5173</code></pre>
-          <button class="icon-btn" type="button" data-copy aria-label="Copy the felix-arena quick start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
-        </div>
-        <p class="note">Open <code>localhost:5173/play.html?offline</code> to play against bots in the page. To play through Felix, start the development stack from the <a href="https://github.com/GetFelix/felix-arena#development-stack">repository</a> first.</p>
-        <div class="project-links">
-          <a href="https://github.com/GetFelix/felix-arena"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>GitHub</a>
-          <a href="https://docs.getfelix.dev/built-on-felix/arena/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v16H6.5A2.5 2.5 0 0 0 4 21.5Z"/><path d="M8 7h8"/></svg>Docs<span class="visually-hidden"> for felix-arena</span></a>
-        </div>
-      </div>
+  <section class="project-group" id="infrastructure" data-group="infrastructure" aria-labelledby="infrastructure-heading">
+    <div class="wrap group-head">
+      <h2 id="infrastructure-heading">Infrastructure <span class="group-n">2</span></h2>
+      <p>Pieces that connect Felix to browsers and to the services around it.</p>
     </div>
   </section>
-
-  <section class="section project" id="webhook-relay" aria-labelledby="webhook-relay-title">
-    <div class="wrap">
-      <div class="project-media reveal">
-        <div class="pm art relay">
-          <picture>
-            <source srcset="/assets/img/relay-mark.webp" type="image/webp">
-            <img src="/assets/img/relay-mark.png" alt="Felix Webhook Relay mark: the Felix cat with one webhook coming in and three deliveries going out, one retrying" width="420" height="229" loading="lazy" decoding="async">
-          </picture>
-        </div>
-      </div>
-      <div class="project-body reveal" style="--d:.08s">
-        <div class="project-title">
-          <h2 id="webhook-relay-title">felix-webhook-relay</h2>
-          <span class="status ok"><!--release:felix-webhook-relay:version-->0.2.0<!--/release:felix-webhook-relay:version--></span>
-        </div>
-        <p>A webhook relay that stores each webhook durably, delivers it with retries, and replays any endpoint after an outage.</p>
-        <h3>Felix features it uses</h3>
-        <ul class="uses"><li>A durable stream per source, with one shard so every endpoint sees one total order</li><li>A consumer group per endpoint, each an independent cursor over the same log</li><li>The idempotent producer, so a lost answer never stores a webhook twice</li><li>A cache for best-effort deduplication of a sender's retries</li><li>A Felix namespace per relay tenant, enforced by the broker</li></ul>
-        <h3>Quick start</h3>
-        <div class="quick-cmd">
-<pre><code>curl -fsSL https://github.com/GetFelix/felix-webhook-relay/releases/download/<!--release:felix-webhook-relay:tag-->v0.2.0<!--/release:felix-webhook-relay:tag-->/felix-webhook-relay-compose-<!--release:felix-webhook-relay:version-->0.2.0<!--/release:felix-webhook-relay:version-->.tar.gz | tar xz
-cd felix-webhook-relay-compose-<!--release:felix-webhook-relay:version-->0.2.0<!--/release:felix-webhook-relay:version-->
-sed -i.bak \
-  -e "s|^FELIX_BOOTSTRAP_TOKEN=.*|FELIX_BOOTSTRAP_TOKEN=$(openssl rand -base64 32)|" \
-  -e "s|^FELIX_RAFT_PEER_TOKEN=.*|FELIX_RAFT_PEER_TOKEN=$(openssl rand -base64 32)|" \
-  -e "s|^RELAY_SECRET_KEY=.*|RELAY_SECRET_KEY=$(openssl rand -base64 32)|" .env
-docker compose up -d --wait</code></pre>
-          <button class="icon-btn" type="button" data-copy aria-label="Copy the felix-webhook-relay quick start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
-        </div>
-        <p class="note">Needs Docker or Podman with Compose 2.20 or later; with Podman, run <code>podman compose up -d --wait</code> (see <a href="https://docs.getfelix.dev/getting-started/containers/">Docker or Podman</a>). Keep <code>.env</code>, since the relay cannot open its stored secrets without <code>RELAY_SECRET_KEY</code>. Open <code>localhost:8090/admin/acme</code> to sign in; the <a href="https://github.com/GetFelix/felix-webhook-relay#quick-start">README</a> walks through the first endpoint.</p>
-        <div class="project-links">
-          <a href="https://github.com/GetFelix/felix-webhook-relay"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>GitHub</a>
-          <a href="https://docs.getfelix.dev/built-on-felix/webhook-relay/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v16H6.5A2.5 2.5 0 0 0 4 21.5Z"/><path d="M8 7h8"/></svg>Docs<span class="visually-hidden"> for felix-webhook-relay</span></a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section project alt" id="gateway" aria-labelledby="gateway-title">
+  <section class="section project lead" data-type="infrastructure" data-tags="access released" id="gateway" aria-labelledby="gateway-title">
     <div class="wrap">
       <div class="project-media reveal">
         <div class="pm art">
@@ -234,13 +275,14 @@ docker compose up -d --wait</code></pre>
       </div>
       <div class="project-body reveal" style="--d:.08s">
         <div class="project-title">
-          <h2 id="gateway-title">felix-gateway</h2>
+          <h3 id="gateway-title">felix-gateway</h3>
           <span class="status ok"><!--release:felix-gateway:version-->0.7.0<!--/release:felix-gateway:version--></span>
         </div>
+        <ul class="project-tags" aria-label="Tags"><li>Access control</li></ul>
         <p>A WebSocket gateway between browsers and Felix, with sign-in narrowed to one room or match.</p>
-        <h3>Felix features it uses</h3>
+        <h4>Felix features it uses</h4>
         <ul class="uses"><li>Stream publish and subscribe from an offset or from live, with each event's offset</li><li>Cache reads, writes and watches, with a TTL per cache</li><li>Counter adds</li><li>Tokens narrowed to one scope, exchanged at the control plane and enforced by the broker</li><li>Sender stamping on streams, so a browser cannot speak for someone else</li></ul>
-        <h3>Quick start</h3>
+        <h4>Quick start</h4>
         <div class="quick-cmd">
 <pre><code>git clone --depth 1 --branch <!--release:felix-gateway:tag-->v0.7.0<!--/release:felix-gateway:tag--> https://github.com/GetFelix/felix-gateway
 cd felix-gateway
@@ -258,98 +300,51 @@ cargo run -p felix-gateway</code></pre>
       </div>
     </div>
   </section>
-
-  <section class="section project" id="metro" aria-labelledby="metro-title">
+  <section class="section project alt" data-type="infrastructure" data-tags="replay access released" id="webhook-relay" aria-labelledby="webhook-relay-title">
     <div class="wrap">
       <div class="project-media reveal">
-        <div class="pm framed">
-          <video class="clip" muted loop playsinline preload="none" poster="/assets/img/metro-city.webp" width="1280" height="720" aria-label="Felix Metro at dusk: the camera follows a car down a harbor street, rises over downtown, and watches a builder bot raise houses on empty lots. The timeline is dragged back six hours and the new houses are gone, then it races forward through the evening rush to live, where the city is lit for the night">
-            <source src="/assets/img/metro-city.mp4" type="video/mp4">
-          </video>
+        <div class="pm art relay">
+          <picture>
+            <source srcset="/assets/img/relay-mark.webp" type="image/webp">
+            <img src="/assets/img/relay-mark.png" alt="Felix Webhook Relay mark: the Felix cat with one webhook coming in and three deliveries going out, one retrying" width="420" height="229" loading="lazy" decoding="async">
+          </picture>
         </div>
       </div>
       <div class="project-body reveal" style="--d:.08s">
         <div class="project-title">
-          <h2 id="metro-title">felix-metro</h2>
-          <span class="status ok"><!--release:felix-metro:version-->0.2.2<!--/release:felix-metro:version--></span>
+          <h3 id="webhook-relay-title">felix-webhook-relay</h3>
+          <span class="status ok"><!--release:felix-webhook-relay:version-->0.2.0<!--/release:felix-webhook-relay:version--></span>
         </div>
-        <p>A live 3D city simulated on Felix. Each district is a shard, residents commute, and day and night follow the simulation clock. Drag the timeline back to any earlier moment and the city is rebuilt from its log in Felix, then play it forward or jump back to live. A builder bot adds buildings through a command stream that records who sent each one.</p>
-        <h3>Felix features it uses</h3>
-        <ul class="uses"><li>A durable stream per city with one shard per district, a record per simulation tick</li><li>Atomic commits write each tick, with keyframes pointed to by stream state</li><li>Bounded range reads load a past moment from the nearest keyframe for time travel</li><li>Subscribing from an offset plays forward into live with no gap</li><li>An expected-offset commit keeps a single simulation writing each city</li><li>A command stream stamps each build with the identity of whoever sent it</li></ul>
-        <h3>Quick start</h3>
+        <ul class="project-tags" aria-label="Tags"><li>Replays history</li><li>Access control</li></ul>
+        <p>A webhook relay that stores each webhook durably, delivers it with retries, and replays any endpoint after an outage.</p>
+        <h4>Felix features it uses</h4>
+        <ul class="uses"><li>A durable stream per source, with one shard so every endpoint sees one total order</li><li>A consumer group per endpoint, each an independent cursor over the same log</li><li>The idempotent producer, so a lost answer never stores a webhook twice</li><li>A cache for best-effort deduplication of a sender's retries</li><li>A Felix namespace per relay tenant, enforced by the broker</li></ul>
+        <h4>Quick start</h4>
         <div class="quick-cmd">
-<pre><code>curl -fsSL https://github.com/GetFelix/felix-metro/releases/download/<!--release:felix-metro:tag-->v0.2.2<!--/release:felix-metro:tag-->/felix-metro-compose-<!--release:felix-metro:version-->0.2.2<!--/release:felix-metro:version-->.tar.gz | tar xz
-cd felix-metro-compose-<!--release:felix-metro:version-->0.2.2<!--/release:felix-metro:version-->
-./up.sh</code></pre>
-          <button class="icon-btn" type="button" data-copy aria-label="Copy the felix-metro quick start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+<pre><code>curl -fsSL https://github.com/GetFelix/felix-webhook-relay/releases/download/<!--release:felix-webhook-relay:tag-->v0.2.0<!--/release:felix-webhook-relay:tag-->/felix-webhook-relay-compose-<!--release:felix-webhook-relay:version-->0.2.0<!--/release:felix-webhook-relay:version-->.tar.gz | tar xz
+cd felix-webhook-relay-compose-<!--release:felix-webhook-relay:version-->0.2.0<!--/release:felix-webhook-relay:version-->
+sed -i.bak \
+  -e "s|^FELIX_BOOTSTRAP_TOKEN=.*|FELIX_BOOTSTRAP_TOKEN=$(openssl rand -base64 32)|" \
+  -e "s|^FELIX_RAFT_PEER_TOKEN=.*|FELIX_RAFT_PEER_TOKEN=$(openssl rand -base64 32)|" \
+  -e "s|^RELAY_SECRET_KEY=.*|RELAY_SECRET_KEY=$(openssl rand -base64 32)|" .env
+docker compose up -d --wait</code></pre>
+          <button class="icon-btn" type="button" data-copy aria-label="Copy the felix-webhook-relay quick start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
         </div>
-        <p class="note">Needs Docker or Podman. <code>up.sh</code> returns once the cities are serving; then open <code>localhost:8088/#harbor</code>. The <a href="https://github.com/GetFelix/felix-metro/blob/main/docs/design.md">design</a> covers the data model and how seeking works.</p>
+        <p class="note">Needs Docker or Podman with Compose 2.20 or later; with Podman, run <code>podman compose up -d --wait</code> (see <a href="https://docs.getfelix.dev/getting-started/containers/">Docker or Podman</a>). Keep <code>.env</code>, since the relay cannot open its stored secrets without <code>RELAY_SECRET_KEY</code>. Open <code>localhost:8090/admin/acme</code> to sign in; the <a href="https://github.com/GetFelix/felix-webhook-relay#quick-start">README</a> walks through the first endpoint.</p>
         <div class="project-links">
-          <a href="https://github.com/GetFelix/felix-metro"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>GitHub</a>
-          <a href="https://github.com/GetFelix/felix-metro/blob/main/docs/design.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v16H6.5A2.5 2.5 0 0 0 4 21.5Z"/><path d="M8 7h8"/></svg>Design<span class="visually-hidden"> for felix-metro</span></a>
+          <a href="https://github.com/GetFelix/felix-webhook-relay"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>GitHub</a>
+          <a href="https://docs.getfelix.dev/built-on-felix/webhook-relay/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v16H6.5A2.5 2.5 0 0 0 4 21.5Z"/><path d="M8 7h8"/></svg>Docs<span class="visually-hidden"> for felix-webhook-relay</span></a>
         </div>
       </div>
     </div>
   </section>
-
-  <section class="section project alt" id="blocks" aria-labelledby="blocks-title">
-    <div class="wrap">
-      <div class="project-media reveal">
-        <div class="pm framed">
-          <picture class="shot-light">
-            <source srcset="/assets/img/blocks-day.webp" type="image/webp">
-            <img src="/assets/img/blocks-day.jpg" alt="Felix Blocks style frame: a first-person view across a meadow to a wooden house with a red roof, two other players with name tags, the block hotbar and the builders list" width="1600" height="900" loading="lazy" decoding="async">
-          </picture>
-          <picture class="shot-dark">
-            <source srcset="/assets/img/blocks-night.webp" type="image/webp">
-            <img src="/assets/img/blocks-night.jpg" alt="" width="1600" height="900" loading="lazy" decoding="async">
-          </picture>
-        </div>
-      </div>
-      <div class="project-body reveal" style="--d:.08s">
-        <div class="project-title">
-          <h2 id="blocks-title">felix-blocks</h2>
-          <span class="status idea">In design</span>
-        </div>
-        <p>A voxel building game in the browser. Dig and build alone, or open your world to friends and build in it together, each of you seeing the other's blocks as they land.</p>
-        <h3>Felix features it will use</h3>
-        <ul class="uses"><li>A log-backed cache holds the world, one key per edited chunk, so untouched terrain is never stored</li><li>Conditional writes let two players edit one chunk at once without either losing a block</li><li>A retained cache watch shows a joining player the whole world, then every change</li><li>Compaction keeps a world at its current blocks however many edits it has seen</li><li>Permissions in Felix separate builders from visitors</li></ul>
-        <p class="note">Nothing runs yet. Multiplayer waits on conditional writes through felix-gateway, which are planned. The <a href="https://github.com/GetFelix/felix-blocks/blob/main/docs/design.md">design</a> covers the data model and how edits resolve, and the <a href="https://github.com/GetFelix/felix-blocks/milestones">milestones</a> track the build.</p>
-        <div class="project-links">
-          <a href="https://github.com/GetFelix/felix-blocks"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>GitHub</a>
-          <a href="https://github.com/GetFelix/felix-blocks/blob/main/docs/design.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v16H6.5A2.5 2.5 0 0 0 4 21.5Z"/><path d="M8 7h8"/></svg>Design<span class="visually-hidden"> for felix-blocks</span></a>
-        </div>
-      </div>
+  <section class="project-group" id="systems" data-group="systems" aria-labelledby="systems-heading">
+    <div class="wrap group-head">
+      <h2 id="systems-heading">Distributed systems <span class="group-n">2</span></h2>
+      <p>Larger systems that keep their state in Felix logs.</p>
     </div>
   </section>
-
-  <section class="section project" id="agents" aria-labelledby="agents-title">
-    <div class="wrap">
-      <div class="project-media reveal">
-        <div class="pm framed">
-          <video class="clip" muted loop playsinline preload="none" poster="/assets/img/agents-swarm.webp" width="1600" height="900" aria-label="Felix Agents style frame: fifty workers in a ring around the planner's task queue, tasks flowing out and results flowing back, beside the board, the run log and a timeline of every worker's claims">
-            <source src="/assets/img/agents-swarm.mp4" type="video/mp4">
-          </video>
-        </div>
-      </div>
-      <div class="project-body reveal" style="--d:.08s">
-        <div class="project-title">
-          <h2 id="agents-title">felix-agents</h2>
-          <span class="status idea">In design</span>
-        </div>
-        <p>A swarm of AI workers with Felix as its data backend. Tasks flow out to many workers and results flow back. The viewer is a live picture of the swarm, with workers claiming tasks, sending and receiving work and returning results, and any run can be replayed.</p>
-        <h3>Felix features it will use</h3>
-        <ul class="uses"><li>A consumer group hands each task to one worker and gives it to another when a worker dies</li><li>Conditional cache writes keep workers from overwriting each other's findings and locks</li><li>Counters hold a run to its budget when workers race</li><li>One durable log records every step, with who wrote it, for replay</li><li>Permissions in Felix refuse a prompt-injected worker's writes outside its grants</li></ul>
-        <p class="note">Nothing runs yet. The clip is the viewer's <a href="https://github.com/GetFelix/felix-agents/blob/main/prototype/style-frame.html">style frame</a> playing a hand-written run. Workers reach Felix through an MCP server, so any MCP host can join a run. Scrubbing in the browser waits on range reads in felix-gateway's client, which are planned. The <a href="https://github.com/GetFelix/felix-agents/blob/main/docs/design.md">design</a> covers the data model and the Felix mapping, and the <a href="https://github.com/GetFelix/felix-agents/milestones">milestones</a> track the build.</p>
-        <div class="project-links">
-          <a href="https://github.com/GetFelix/felix-agents"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>GitHub</a>
-          <a href="https://github.com/GetFelix/felix-agents/blob/main/docs/design.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v16H6.5A2.5 2.5 0 0 0 4 21.5Z"/><path d="M8 7h8"/></svg>Design<span class="visually-hidden"> for felix-agents</span></a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section project alt" id="felixd" aria-labelledby="felixd-title">
+  <section class="section project lead" data-type="systems" data-tags="replay design" id="felixd" aria-labelledby="felixd-title">
     <div class="wrap">
       <div class="project-media reveal">
         <div class="pm framed">
@@ -365,11 +360,12 @@ cd felix-metro-compose-<!--release:felix-metro:version-->0.2.2<!--/release:felix
       </div>
       <div class="project-body reveal" style="--d:.08s">
         <div class="project-title">
-          <h2 id="felixd-title">felixd</h2>
+          <h3 id="felixd-title">felixd</h3>
           <span class="status idea">In design</span>
         </div>
+        <ul class="project-tags" aria-label="Tags"><li>Replays history</li></ul>
         <p>A node agent that runs programs across a cluster, and the first step toward a distributed operating system whose state is a log. Kill a machine and its programs continue on another one from the last input they handled, with no lost or repeated output. Pick any moment in the past and rebuild a program exactly as it was.</p>
-        <h3>Felix features it will use</h3>
+        <h4>Felix features it will use</h4>
         <ul class="uses"><li>Conditional cache writes with a TTL give each program one owner at a time, and pass it on when a machine stops renewing</li><li>Conditional publish at the stream's tail fences a stale owner, so a frozen machine that wakes up can't write</li><li>Resuming a subscription from an offset picks up a program's input exactly where it stopped</li><li>Quorum replication keeps each program's output and snapshots through a broker's loss</li><li>Time lookup and range reads rebuild a program at any offset or moment</li></ul>
         <p class="note">Nothing runs yet. Programs are WebAssembly modules with no clock, randomness or I/O of their own, so the same inputs always rebuild the same state. The <a href="https://github.com/GetFelix/felixd/blob/main/docs/design.md">design</a> covers failover, exactly-once output, replay and the longer path to an operating system, the <a href="https://github.com/GetFelix/felixd/milestones">milestones</a> track the build, and the plan is open for <a href="https://github.com/GetFelix/felixd/discussions">discussion</a>.</p>
         <div class="project-links">
@@ -379,6 +375,33 @@ cd felix-metro-compose-<!--release:felix-metro:version-->0.2.2<!--/release:felix
       </div>
     </div>
   </section>
+  <section class="section project alt" data-type="systems" data-tags="replay design" id="agents" aria-labelledby="agents-title">
+    <div class="wrap">
+      <div class="project-media reveal">
+        <div class="pm framed">
+          <video class="clip" muted loop playsinline preload="none" poster="/assets/img/agents-swarm.webp" width="1600" height="900" aria-label="Felix Agents style frame: fifty workers in a ring around the planner's task queue, tasks flowing out and results flowing back, beside the board, the run log and a timeline of every worker's claims">
+            <source src="/assets/img/agents-swarm.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+      <div class="project-body reveal" style="--d:.08s">
+        <div class="project-title">
+          <h3 id="agents-title">felix-agents</h3>
+          <span class="status idea">In design</span>
+        </div>
+        <ul class="project-tags" aria-label="Tags"><li>Replays history</li></ul>
+        <p>A swarm of AI workers with Felix as its data backend. Tasks flow out to many workers and results flow back. The viewer is a live picture of the swarm, with workers claiming tasks, sending and receiving work and returning results, and any run can be replayed.</p>
+        <h4>Felix features it will use</h4>
+        <ul class="uses"><li>A consumer group hands each task to one worker and gives it to another when a worker dies</li><li>Conditional cache writes keep workers from overwriting each other's findings and locks</li><li>Counters hold a run to its budget when workers race</li><li>One durable log records every step, with who wrote it, for replay</li><li>Permissions in Felix refuse a prompt-injected worker's writes outside its grants</li></ul>
+        <p class="note">Nothing runs yet. The clip is the viewer's <a href="https://github.com/GetFelix/felix-agents/blob/main/prototype/style-frame.html">style frame</a> playing a hand-written run. Workers reach Felix through an MCP server, so any MCP host can join a run. Scrubbing in the browser waits on range reads in felix-gateway's client, which are planned. The <a href="https://github.com/GetFelix/felix-agents/blob/main/docs/design.md">design</a> covers the data model and the Felix mapping, and the <a href="https://github.com/GetFelix/felix-agents/milestones">milestones</a> track the build.</p>
+        <div class="project-links">
+          <a href="https://github.com/GetFelix/felix-agents"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>GitHub</a>
+          <a href="https://github.com/GetFelix/felix-agents/blob/main/docs/design.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v16H6.5A2.5 2.5 0 0 0 4 21.5Z"/><path d="M8 7h8"/></svg>Design<span class="visually-hidden"> for felix-agents</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <p class="wrap filter-empty" hidden>No project has every tag you picked. <button class="link-btn" type="button" data-filter-reset>Show all projects</button></p>
 
 </main>
 
