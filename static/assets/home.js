@@ -13,15 +13,31 @@
       document.getElementById(t.getAttribute("aria-controls")).hidden = !on;
     });
   }
+  // The last language picked is remembered. Storage can be blocked, and the page works without it.
+  var TAB_KEY = "felix-home-tab";
+  function remember(tab) {
+    try {
+      localStorage.setItem(TAB_KEY, tab.id);
+    } catch (e) {}
+  }
+  try {
+    var saved = localStorage.getItem(TAB_KEY);
+    var savedTab = tabs.filter(function (t) {
+      return t.id === saved;
+    })[0];
+    if (savedTab) selectTab(savedTab);
+  } catch (e) {}
   tabs.forEach(function (tab, i) {
     tab.addEventListener("click", function () {
       selectTab(tab);
+      remember(tab);
     });
     tab.addEventListener("keydown", function (e) {
       var d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
       if (!d) return;
       var next = tabs[(i + d + tabs.length) % tabs.length];
       selectTab(next);
+      remember(next);
       next.focus();
       e.preventDefault();
     });
@@ -49,7 +65,7 @@
     btn.setAttribute("data-label", btn.getAttribute("aria-label") || "Copy");
     btn.addEventListener("click", function () {
       var sel = btn.getAttribute("data-copy");
-      var el = sel === "panel" ? document.querySelector(".window pre:not([hidden])") : btn.parentElement.querySelector("code");
+      var el = sel === "panel" ? document.querySelector(".window [role=tabpanel]:not([hidden]) pre") : btn.parentElement.querySelector("code");
       if (el) copyText(el.textContent.trim(), btn);
     });
   });
