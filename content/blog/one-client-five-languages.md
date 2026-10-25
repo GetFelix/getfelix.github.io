@@ -58,7 +58,7 @@ The odd bug in this work was on macOS. A release build of `libfelix.dylib` was r
 
 The cause was cargo's default release profile. On Apple targets rustc runs the system `strip` over every linked artifact, and on macOS 27 that `strip` left the shared library's LINKEDIT string pool 4-byte aligned, which dyld rejects. The fix is in [`Cargo.toml`](https://github.com/GetFelix/felix/blob/main/Cargo.toml): the `felix-capi` release profile sets `strip = "none"`. The symbols stay in the file, which a shared library exports anyway.
 
-A library that builds but can't load passes every compile-time check, so CI now loads the release build and calls into it on all six platform and architecture combinations.
+A library that builds but can't load passes every compile-time check, so CI loads the release build and calls into it on all six platform and architecture combinations.
 
 ## Try it
 
@@ -80,7 +80,8 @@ try
     {
         Addrs = ["127.0.0.1:5000"],
         TenantId = "t1",
-        Token = Environment.GetEnvironmentVariable("FELIX_TOKEN"),
+        Token = Environment.GetEnvironmentVariable("FELIX_TOKEN")
+            ?? throw new InvalidOperationException("set FELIX_TOKEN"),
     }, cts.Token);
 
     // Subscribe first so the publish below is not missed.
@@ -95,7 +96,7 @@ try
 }
 catch (FelixException e) when (e.IsRetryable)
 {
-    Console.Error.WriteLine($"try again: {e.Status}: {e.Message}");
+    Console.Error.WriteLine($"retryable: {e.Status}: {e.Message}");
 }
 catch (OperationCanceledException)
 {
