@@ -909,3 +909,31 @@
     padding: 0 6px;
   }
 }
+
+/* A fenced Markdown block renders as a bare <pre>; give it the .code look so a
+   post written in Markdown doesn't come out unstyled. */
+.post-body pre:not(.code) {
+  margin-left: 0;
+  margin-right: 0;
+  padding: 20px 22px;
+  border-radius: var(--radius-sm);
+  background: var(--code-bg);
+  color: var(--code-text);
+  border: 1px solid var(--line);
+  font-size: 14px;
+  line-height: 1.7;
+  tab-size: 4;
+  overflow-x: auto;
+  font-variant-ligatures: none;
+}
+.post-body pre:not(.code) code {
+  font-size: inherit;
+  background: none;
+  padding: 0;
+}
+@media (max-width: 760px) {
+  .post-body pre:not(.code) {
+    padding: 16px;
+    font-size: 13px;
+  }
+}
