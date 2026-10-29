@@ -1330,3 +1330,60 @@ p {
     font-size: 13px;
   }
 }
+
+/* Page curl: a folded corner that links to NineLives, the operating system built on Felix.
+   The anchor sits outside the header so the header stays identical on every page. */
+.curl {
+  --curl: 48px;
+  --curl-peek: 60px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 60;
+  width: var(--curl);
+  height: var(--curl);
+  transition: width 0.25s ease, height 0.25s ease;
+}
+.curl:hover,
+.curl:focus-visible {
+  width: var(--curl-peek);
+  height: var(--curl-peek);
+}
+.curl:focus-visible {
+  outline: 3px solid var(--accent-text);
+  outline-offset: 2px;
+}
+.curl-under,
+.curl-flap {
+  position: absolute;
+  inset: 0;
+}
+/* What the page covers: NineLives' dark with its amber eyes. */
+.curl-under {
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+  background:
+    radial-gradient(circle at 27% 24%, #f5a623 0 2.4px, transparent 3px),
+    radial-gradient(circle at 46% 24%, #f5a623 0 2.4px, transparent 3px),
+    linear-gradient(135deg, #14181f, #07090c);
+}
+/* The back of the folded page, lying over the corner. */
+.curl-flap {
+  clip-path: polygon(100% 0, 0 100%, 100% 100%);
+  background: linear-gradient(135deg, var(--bg-sunken), var(--bg-raised) 70%);
+  filter: drop-shadow(-2px 2px 2px rgba(0, 0, 0, 0.28));
+}
+@media (max-width: 1260px) {
+  .site-header .wrap {
+    padding-left: 66px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .curl {
+    transition: none;
+  }
+  .curl:hover,
+  .curl:focus-visible {
+    width: var(--curl);
+    height: var(--curl);
+  }
+}
