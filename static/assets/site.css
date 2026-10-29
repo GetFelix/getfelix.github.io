@@ -1331,125 +1331,29 @@ p {
   }
 }
 
-/* Page curl: a folded corner that links to NineLives, the operating system built on Felix.
-   Absolute, so it scrolls away; the anchor is clipped to the drawn shape so the rest of the corner stays clickable.
-   The anchor sits outside the header so the header stays identical on every page. */
-.curl {
-  --curl: 48px;
-  --curl-peek: 60px;
-  clip-path: polygon(0 0, 100% 0, 70% 70%, 0 100%);
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 60;
-  width: var(--curl);
-  height: var(--curl);
-  transition: width 0.25s ease, height 0.25s ease;
+/* The peeking cat's art: NineLives' cat, pale blue with amber eyes in a dark
+   counter. The rest of it is peek.css, shared with ninelives.getfelix.dev. */
+:root {
+  --peek-line: hsl(200, 60%, 46%);
+  --peek-ledge: var(--line-strong);
+  --peek-focus: var(--accent-text);
+  --peek-tip-bg: var(--bg-raised);
+  --peek-tip-text: var(--text);
+  --peek-tip-line: var(--line-strong);
+  --peek-tip-font: var(--sans);
 }
-.curl:hover,
-.curl:focus-visible {
-  width: var(--curl-peek);
-  height: var(--curl-peek);
+.peek-cat .h {
+  fill: url(#peek-ink);
+  stroke: var(--peek-line);
+  stroke-width: 1.2;
+  stroke-linejoin: round;
 }
-.curl:focus-visible {
-  outline: 3px solid var(--accent-text);
-  outline-offset: 2px;
-  clip-path: none;
+.peek-cat .c {
+  fill: #0b1a24;
 }
-.curl-under,
-.curl-flap {
-  position: absolute;
-  inset: 0;
+.peek-cat .e {
+  fill: url(#peek-glow);
 }
-/* What the page covers: NineLives' dark with its amber cat eyes. */
-.curl-under {
-  clip-path: polygon(0 0, 100% 0, 0 100%);
-  background: linear-gradient(135deg, #14181f, #07090c);
-}
-.curl-eyes {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-.curl-eye {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: curl-blink 9s infinite;
-}
-/* Irregular on purpose: one blink, a gap, then a quick double. */
-@keyframes curl-blink {
-  0%, 36%, 39%, 79%, 81.5%, 84%, 86.5%, 100% { transform: scaleY(1); }
-  37.5%, 80.2%, 85.2% { transform: scaleY(0.08); }
-}
-/* The back of the folded page, lying over the corner. */
-.curl-flap {
-  clip-path: polygon(100% 0, 0 100%, 70% 70%);
-  background: linear-gradient(135deg, var(--bg-sunken), var(--bg-raised) 70%);
-  filter: drop-shadow(-1px 1px 1px rgba(0, 0, 0, 0.28));
-}
-@media (max-width: 1260px) {
-  .site-header .wrap {
-    padding-left: 66px;
-  }
-}
-@media (max-width: 600px) {
-  .curl {
-    --curl: 36px;
-    --curl-peek: 44px;
-  }
-  .site-header .wrap {
-    padding-left: 54px;
-  }
-}
-.curl-wrap {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 61;
-}
-.curl-tip {
-  position: absolute;
-  top: 64px;
-  left: 8px;
-  width: max-content;
-  max-width: min(260px, calc(100vw - 16px));
-  padding: 7px 10px;
-  border-radius: 8px;
-  border: 1px solid var(--line-strong);
-  background: var(--bg-raised);
-  color: var(--text);
-  font-size: 13px;
-  line-height: 1.35;
-  box-shadow: var(--shadow-md);
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: opacity 0.15s ease;
-}
-.curl-wrap:hover .curl-tip,
-.curl-wrap:focus-within .curl-tip {
-  opacity: 1;
-  visibility: visible;
-}
-@media (max-width: 600px) {
-  .curl-tip {
-    top: 52px;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .curl-eye {
-    animation: none;
-  }
-  .curl-tip {
-    transition: none;
-  }
-  .curl {
-    transition: none;
-  }
-  .curl:hover,
-  .curl:focus-visible {
-    width: var(--curl);
-    height: var(--curl);
-  }
+.peek-cat .p {
+  fill: #06121a;
 }
