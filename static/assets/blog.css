@@ -53,7 +53,7 @@
   list-style: none;
 }
 .post-list > li + li {
-  border-top: 1px solid var(--line);
+  border-top: 1px dashed var(--line-strong);
 }
 .post-card {
   display: grid;
@@ -232,8 +232,9 @@
   padding: 10px;
   overflow: hidden;
   border-radius: var(--radius-sm);
-  background: var(--bg-raised);
+  background: var(--card-bg);
   border: 1px solid color-mix(in srgb, var(--accent) 24%, var(--line));
+  box-shadow: var(--shadow-sm);
 }
 .post-thumb::after {
   content: "";
@@ -295,6 +296,7 @@
   overflow: hidden;
   padding: 64px 0 40px;
   border-bottom: 1px solid var(--line);
+  border-image: var(--rule) 1;
 }
 .post-head::before {
   content: "";
@@ -635,7 +637,7 @@
 .try-card {
   padding: 26px 28px;
   border-radius: var(--radius);
-  background: radial-gradient(ellipse 80% 120% at 0% 0%, var(--accent-soft), transparent 70%), var(--bg-raised);
+  background: radial-gradient(ellipse 80% 120% at 0% 0%, var(--accent-soft), transparent 70%), var(--card-bg);
   border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line));
   box-shadow: var(--shadow-md);
 }

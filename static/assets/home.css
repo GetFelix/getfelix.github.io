@@ -17,6 +17,17 @@
   -webkit-mask-image: radial-gradient(ellipse 70% 75% at 50% 42%, #000 30%, transparent 78%);
   mask-image: radial-gradient(ellipse 70% 75% at 50% 42%, #000 30%, transparent 78%);
 }
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: -10% 0 0;
+  z-index: -3;
+  background:
+    radial-gradient(ellipse 42% 48% at 50% 30%, var(--accent-glow), transparent 70%),
+    radial-gradient(ellipse 30% 40% at 85% 85%, var(--accent-soft), transparent 70%);
+  opacity: 0.55;
+  pointer-events: none;
+}
 .hero::after {
   content: "";
   position: absolute;
@@ -152,6 +163,7 @@
   background: var(--bg-sunken);
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
+  border-image: var(--rule) 1;
 }
 .why::before {
   content: "";
@@ -423,7 +435,7 @@
   display: flex;
   flex-direction: column;
   border-radius: var(--radius);
-  background: var(--bg-raised);
+  background: var(--card-bg);
   border: 1px solid var(--line);
   box-shadow: var(--shadow-md);
   overflow: hidden;
@@ -747,7 +759,7 @@
 /* Get started */
 .install {
   border-radius: var(--radius);
-  background: var(--bg-raised);
+  background: var(--card-bg);
   border: 1px solid var(--line);
   box-shadow: var(--shadow-md);
   overflow: hidden;
@@ -875,42 +887,102 @@
   }
 }
 
-/* Full logo in the hero. The badge is black on white in both themes, so it
-   sits on a teal glow rather than being inverted. */
+/* Hero: the full logo beside the headline, stacked above it on narrow screens.
+   The badge is black on white in both themes, so it sits on a teal glow rather
+   than being inverted. */
 .hero {
-  padding-top: 64px;
+  padding: 72px 0 104px;
+  text-align: left;
 }
-.hero .release-pill {
-  margin-bottom: 30px;
+.hero::before {
+  background:
+    radial-gradient(ellipse 34% 52% at 76% 46%, var(--accent-glow), transparent 70%),
+    radial-gradient(ellipse 40% 50% at 10% 10%, var(--accent-soft), transparent 70%);
+}
+.hero-bg {
+  -webkit-mask-image: radial-gradient(ellipse 70% 80% at 60% 45%, #000 30%, transparent 78%);
+  mask-image: radial-gradient(ellipse 70% 80% at 60% 45%, #000 30%, transparent 78%);
+}
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  grid-template-rows: 1fr auto auto auto auto 1fr;
+  grid-template-areas: ". mark" "tag mark" "h1 mark" "lede mark" "actions mark" ". mark";
+  column-gap: 64px;
 }
 .hero .hero-mark {
-  width: 196px;
-  height: 188px;
-  margin: 0 auto 6px;
+  grid-area: mark;
+  align-self: center;
+  justify-self: center;
+  width: 280px;
+  height: 268px;
+  margin: 0;
 }
 .hero-mark::before {
-  inset: -60px;
+  inset: -90px;
+}
+.hero-mark::after {
+  content: "";
+  position: absolute;
+  inset: -54px;
+  z-index: -1;
+  border-radius: 50%;
+  border: 1px dashed var(--line-strong);
+  pointer-events: none;
 }
 .hero-mark .orbit {
-  inset: -20px;
-  width: calc(100% + 40px);
-  height: calc(100% + 40px);
+  inset: -24px;
+  width: calc(100% + 48px);
+  height: calc(100% + 48px);
 }
 .hero-mark .orbit.inner {
-  inset: -9px;
-  width: calc(100% + 18px);
-  height: calc(100% + 18px);
+  inset: -11px;
+  width: calc(100% + 22px);
+  height: calc(100% + 22px);
 }
 .hero-mark img {
   filter: drop-shadow(0 0 1px hsla(192, 90%, 45%, 0.5)) drop-shadow(0 0 28px var(--accent-glow)) drop-shadow(0 20px 36px rgba(0, 20, 30, 0.28));
 }
+.hero-tag {
+  grid-area: tag;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 18px;
+  margin-bottom: 26px;
+}
+.hero-tag .eyebrow {
+  margin: 0;
+}
+.hero .release-pill {
+  margin: 0;
+  padding: 6px 14px 6px 12px;
+}
+.release-pill .dot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 3.2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+  50% {
+    box-shadow: 0 0 0 7px transparent;
+  }
+}
 .hero h1.hero-title {
-  max-width: 21ch;
-  margin: 40px auto 0;
-  font-size: clamp(38px, 5.4vw, 64px);
+  grid-area: h1;
+  max-width: 15ch;
+  margin: 0;
+  font-size: clamp(44px, 5.6vw, 70px);
   font-weight: 750;
   letter-spacing: -0.035em;
-  line-height: 1.04;
+  line-height: 1.03;
   text-wrap: balance;
   padding-bottom: 0.08em;
 }
@@ -921,24 +993,43 @@
   color: transparent;
 }
 .hero .lede {
-  max-width: 54ch;
-  margin-top: 20px;
-  font-size: clamp(17px, 1.9vw, 20px);
-  text-wrap: balance;
+  grid-area: lede;
+  max-width: 44ch;
+  margin: 22px 0 0;
+  font-size: clamp(17px, 1.7vw, 20px);
+  text-wrap: pretty;
 }
-@media (max-width: 760px) {
+.hero .hero-actions {
+  grid-area: actions;
+  justify-content: flex-start;
+}
+@media (max-width: 860px) {
   .hero {
-    padding-top: 48px;
+    padding: 44px 0 80px;
+    text-align: center;
   }
-  .hero .release-pill {
-    margin-bottom: 26px;
+  .hero::before {
+    background: radial-gradient(ellipse 60% 34% at 50% 18%, var(--accent-glow), transparent 70%);
+  }
+  .hero-bg {
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, #000 30%, transparent 78%);
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, #000 30%, transparent 78%);
+  }
+  .hero-grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    grid-template-areas: "mark" "tag" "h1" "lede" "actions";
   }
   .hero .hero-mark {
     width: 156px;
     height: 149px;
+    margin: 22px auto 48px;
   }
   .hero-mark::before {
-    inset: -46px;
+    inset: -50px;
+  }
+  .hero-mark::after {
+    inset: -30px;
   }
   .hero-mark .orbit {
     inset: -16px;
@@ -950,11 +1041,29 @@
     width: calc(100% + 14px);
     height: calc(100% + 14px);
   }
+  .hero-tag {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 22px;
+  }
+  .hero .release-pill {
+    gap: 8px;
+    padding: 6px 12px 6px 10px;
+    font-size: 13px;
+  }
+  .hero .release-pill .tag {
+    font-size: 12px;
+    padding: 2px 7px;
+  }
   .hero h1.hero-title {
-    margin-top: 30px;
+    margin: 0 auto;
   }
   .hero .lede {
-    margin-top: 16px;
+    margin: 18px auto 0;
+  }
+  .hero .hero-actions {
+    justify-content: center;
   }
 }
 
@@ -1561,7 +1670,7 @@
   flex-direction: column;
   padding: 24px;
   border-radius: var(--radius);
-  background: var(--bg-raised);
+  background: var(--card-bg);
   border: 1px solid var(--line);
   box-shadow: var(--shadow-md);
 }
@@ -1618,14 +1727,6 @@
   }
   .step {
     margin-bottom: 36px;
-  }
-  .hero {
-    padding: 56px 0 80px;
-  }
-  .hero-mark {
-    width: 132px;
-    height: 132px;
-    margin-bottom: 30px;
   }
   .projects {
     grid-template-columns: 1fr;
@@ -1769,7 +1870,7 @@
   display: block;
   padding: 18px 20px;
   border-radius: var(--radius-sm);
-  background: var(--bg-raised);
+  background: var(--card-bg);
   border: 1px solid var(--line);
   box-shadow: var(--shadow-sm);
   color: inherit;

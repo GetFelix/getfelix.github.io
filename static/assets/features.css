@@ -11,7 +11,7 @@
   grid-column: span 2;
   padding: 28px;
   border-radius: var(--radius);
-  background: var(--bg-raised);
+  background: var(--card-bg);
   border: 1px solid var(--line);
   box-shadow: var(--shadow-md);
   overflow: hidden;
@@ -391,6 +391,7 @@
   background: var(--bg-sunken);
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
+  border-image: var(--rule) 1;
 }
 .kf-svg text {
   font-family: var(--mono);
@@ -486,7 +487,7 @@
   padding: 0;
   list-style: none;
   border-radius: var(--radius);
-  background: var(--bg-raised);
+  background: var(--card-bg);
   border: 1px solid var(--line);
   box-shadow: var(--shadow-md);
   overflow: hidden;

@@ -24,7 +24,7 @@
 <meta property="og:image:alt" content="The Felix logo, a cat in a round badge above the word Felix, beside the headline: One system for your events, state and work. Below it: An open-source, distributed platform for streams, caches, queues and counters, all on one replicated log. Written in Rust. getfelix.dev">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" as="image" type="image/webp" imagesrcset="/assets/img/felix-logo-320.webp 320w, /assets/img/felix-logo-640.webp 640w" imagesizes="(max-width: 760px) 156px, 196px">
+<link rel="preload" as="image" type="image/webp" imagesrcset="/assets/img/felix-logo-320.webp 320w, /assets/img/felix-logo-640.webp 640w" imagesizes="(max-width: 860px) 156px, 280px">
 <link rel="stylesheet" href="/assets/site.css?v=224b89a1">
 <link rel="stylesheet" href="/assets/peek.css?v=0">
 <link rel="stylesheet" href="/assets/home.css?v=ce65a757">
@@ -123,12 +123,7 @@
 
   <section class="hero" aria-labelledby="hero-title">
     <canvas class="hero-bg" aria-hidden="true"></canvas>
-    <div class="wrap">
-      <a class="release-pill" data-release="felix" href="https://github.com/GetFelix/felix/releases/tag/v0.6.2">
-        <span class="tag"><!--release:felix:version-->0.6.2<!--/release:felix:version--></span>
-        Released <!--release:felix:date-->25 October 2026<!--/release:felix:date-->
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      </a>
+    <div class="wrap hero-grid">
       <div class="hero-mark">
         <svg class="orbit" viewBox="0 0 100 100" aria-hidden="true">
           <circle cx="50" cy="50" r="49" fill="none" stroke="currentColor" stroke-width="0.3" stroke-dasharray="0.3 2.2" opacity="0.5"/>
@@ -138,9 +133,17 @@
           <circle cx="50" cy="50" r="49.3" fill="none" stroke="currentColor" stroke-width="0.25" stroke-dasharray="14 6" opacity="0.35"/>
         </svg>
         <picture>
-          <source type="image/webp" srcset="/assets/img/felix-logo-320.webp 320w, /assets/img/felix-logo-640.webp 640w" sizes="(max-width: 760px) 156px, 196px">
-          <img src="/assets/img/felix-logo-320.png" srcset="/assets/img/felix-logo-320.png 320w, /assets/img/felix-logo-640.png 640w" sizes="(max-width: 760px) 156px, 196px" alt="Felix" width="300" height="287" fetchpriority="high">
+          <source type="image/webp" srcset="/assets/img/felix-logo-320.webp 320w, /assets/img/felix-logo-640.webp 640w" sizes="(max-width: 860px) 156px, 280px">
+          <img src="/assets/img/felix-logo-320.png" srcset="/assets/img/felix-logo-320.png 320w, /assets/img/felix-logo-640.png 640w" sizes="(max-width: 860px) 156px, 280px" alt="Felix" width="300" height="287" fetchpriority="high">
         </picture>
+      </div>
+      <div class="hero-tag">
+        <p class="eyebrow">Open source, <span class="nowrap">AGPL-3.0</span> and <span class="nowrap">Apache-2.0</span></p>
+        <a class="release-pill" data-release="felix" href="https://github.com/GetFelix/felix/releases/tag/v0.6.2">
+          <span class="dot" aria-hidden="true"></span>
+          <span><span class="tag"><!--release:felix:tag-->v0.6.2<!--/release:felix:tag--></span> released <span class="nowrap"><!--release:felix:date-->25 October 2026<!--/release:felix:date--></span>, <span class="nowrap">pre-1.0</span></span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
       </div>
       <h1 class="hero-title" id="hero-title"><span class="accent">One system</span> for your events, state and&nbsp;work.</h1>
       <p class="lede">Felix is an open-source, distributed platform for streams, caches, queues and counters, all on one replicated log. Written in Rust.</p>
