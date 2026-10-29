@@ -42,9 +42,12 @@
   --on-accent: #ffffff;
   --code-bg: #0c1218;
   --code-text: #d8e2ec;
+  --bg-raised-end: #f7fafb;
   --shadow-sm: 0 1px 2px rgba(15, 30, 45, 0.06), 0 1px 1px rgba(15, 30, 45, 0.04);
-  --shadow-md: 0 1px 2px rgba(15, 30, 45, 0.05), 0 8px 24px -8px rgba(15, 30, 45, 0.14);
-  --shadow-lg: 0 2px 4px rgba(15, 30, 45, 0.04), 0 24px 48px -16px rgba(15, 30, 45, 0.22);
+  --shadow-md: 0 1px 2px rgba(15, 30, 45, 0.05), 0 4px 10px -6px rgba(15, 30, 45, 0.08), 0 18px 40px -22px rgba(12, 48, 66, 0.28);
+  --shadow-lg: 0 2px 4px rgba(15, 30, 45, 0.04), 0 12px 24px -12px rgba(15, 30, 45, 0.12), 0 36px 64px -30px rgba(12, 48, 66, 0.34);
+  --hairline: hsla(192, 95%, 35%, 0.5);
+  --grain: 0.04;
   --dot: rgba(15, 40, 60, 0.13);
   --dot-accent: hsla(192, 95%, 32%, 0.45);
   --ok: #13795b;
@@ -53,6 +56,10 @@
   --warn-soft: rgba(176, 116, 0, 0.12);
   --idea: #6b4bc4;
   --idea-soft: rgba(107, 75, 196, 0.1);
+  /* A card: a faint top-to-bottom surface with an accent hairline on its top edge. */
+  --card-bg: linear-gradient(90deg, transparent 12%, var(--hairline) 50%, transparent 88%) top / 100% 1px no-repeat,
+    linear-gradient(180deg, var(--bg-raised), var(--bg-raised-end));
+  --rule: linear-gradient(90deg, transparent, var(--line-strong) 18%, var(--line-strong) 82%, transparent);
 
   --radius: 16px;
   --radius-sm: 10px;
@@ -65,11 +72,12 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
-    --bg: #070a0e;
-    --bg-raised: #0d1218;
-    --bg-sunken: #0a0e13;
-    --line: rgba(200, 225, 245, 0.08);
-    --line-strong: rgba(200, 225, 245, 0.15);
+    --bg: #050a12;
+    --bg-raised: #0b1421;
+    --bg-raised-end: #08101b;
+    --bg-sunken: #060d17;
+    --line: rgba(160, 205, 245, 0.09);
+    --line-strong: rgba(160, 205, 245, 0.17);
     --text: #e9eff5;
     --muted: #9fadbd;
     --faint: #7c8a9b;
@@ -78,11 +86,13 @@
     --accent-soft: hsla(192, 90%, 50%, 0.1);
     --accent-glow: hsla(192, 90%, 45%, 0.35);
     --on-accent: #02161c;
-    --code-bg: #0a0f14;
+    --code-bg: #060c15;
     --code-text: #d8e2ec;
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-    --shadow-md: 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 32px -12px rgba(0, 0, 0, 0.7);
-    --shadow-lg: 0 2px 4px rgba(0, 0, 0, 0.3), 0 32px 64px -24px rgba(0, 0, 0, 0.85);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.45);
+    --shadow-md: inset 0 1px 0 rgba(170, 215, 255, 0.04), 0 1px 2px rgba(0, 0, 0, 0.45), 0 20px 44px -22px rgba(0, 0, 0, 0.85);
+    --shadow-lg: inset 0 1px 0 rgba(170, 215, 255, 0.05), 0 2px 4px rgba(0, 0, 0, 0.35), 0 36px 72px -28px rgba(0, 0, 0, 0.9);
+    --hairline: hsla(192, 90%, 58%, 0.45);
+    --grain: 0.07;
     --dot: rgba(160, 200, 230, 0.1);
     --dot-accent: hsla(192, 90%, 50%, 0.5);
     --ok: #4ccf9b;
@@ -95,11 +105,12 @@
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #070a0e;
-  --bg-raised: #0d1218;
-  --bg-sunken: #0a0e13;
-  --line: rgba(200, 225, 245, 0.08);
-  --line-strong: rgba(200, 225, 245, 0.15);
+  --bg: #050a12;
+  --bg-raised: #0b1421;
+  --bg-raised-end: #08101b;
+  --bg-sunken: #060d17;
+  --line: rgba(160, 205, 245, 0.09);
+  --line-strong: rgba(160, 205, 245, 0.17);
   --text: #e9eff5;
   --muted: #9fadbd;
   --faint: #7c8a9b;
@@ -108,11 +119,13 @@
   --accent-soft: hsla(192, 90%, 50%, 0.1);
   --accent-glow: hsla(192, 90%, 45%, 0.35);
   --on-accent: #02161c;
-  --code-bg: #0a0f14;
+  --code-bg: #060c15;
   --code-text: #d8e2ec;
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 32px -12px rgba(0, 0, 0, 0.7);
-  --shadow-lg: 0 2px 4px rgba(0, 0, 0, 0.3), 0 32px 64px -24px rgba(0, 0, 0, 0.85);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.45);
+  --shadow-md: inset 0 1px 0 rgba(170, 215, 255, 0.04), 0 1px 2px rgba(0, 0, 0, 0.45), 0 20px 44px -22px rgba(0, 0, 0, 0.85);
+  --shadow-lg: inset 0 1px 0 rgba(170, 215, 255, 0.05), 0 2px 4px rgba(0, 0, 0, 0.35), 0 36px 72px -28px rgba(0, 0, 0, 0.9);
+  --hairline: hsla(192, 90%, 58%, 0.45);
+  --grain: 0.07;
   --dot: rgba(160, 200, 230, 0.1);
   --dot-accent: hsla(192, 90%, 50%, 0.5);
   --ok: #4ccf9b;
@@ -145,6 +158,9 @@
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
   --shadow-md: 0 1px 2px rgba(0, 0, 0, 0.35), 0 12px 32px -12px rgba(0, 0, 0, 0.6);
   --shadow-lg: 0 2px 4px rgba(0, 0, 0, 0.25), 0 32px 64px -24px rgba(0, 0, 0, 0.75);
+  --bg-raised-end: #05303b;
+  --hairline: rgba(42, 161, 152, 0.5);
+  --grain: 0.06;
   --dot: rgba(147, 161, 161, 0.14);
   --dot-accent: rgba(42, 161, 152, 0.55);
   --ok: #859900;
@@ -177,6 +193,21 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+}
+/* Film grain over the whole page. Fixed, so it is one viewport-sized layer. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  pointer-events: none;
+  opacity: var(--grain);
+  background: url("img/grain.png") 0 0 / 128px;
+}
+@media print {
+  body::after {
+    display: none;
+  }
 }
 img {
   display: block;
@@ -586,7 +617,7 @@ p {
   flex: 1;
   padding: 16px;
   border-radius: var(--radius);
-  background: var(--bg-raised);
+  background: var(--card-bg);
   border: 1px solid var(--line);
   box-shadow: var(--shadow-md);
   overflow: hidden;
@@ -830,14 +861,17 @@ p {
   isolation: isolate;
   padding: 72px 0 72px;
   border-bottom: 1px solid var(--line);
+  border-image: var(--rule) 1;
 }
 .page-intro::before {
   content: "";
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: radial-gradient(ellipse 50% 75% at 80% 45%, var(--accent-glow), transparent 70%);
-  opacity: 0.4;
+  background:
+    radial-gradient(ellipse 50% 75% at 80% 45%, var(--accent-glow), transparent 70%),
+    radial-gradient(ellipse 35% 60% at 8% 0%, var(--accent-soft), transparent 70%);
+  opacity: 0.5;
   pointer-events: none;
 }
 .page-intro::after {
@@ -935,7 +969,7 @@ p {
   gap: 6px;
   padding: 26px 64px 26px 28px;
   border-radius: var(--radius);
-  background: var(--bg-raised);
+  background: var(--card-bg);
   border: 1px solid var(--line);
   box-shadow: var(--shadow-md);
   color: var(--text);
@@ -1022,7 +1056,7 @@ p {
   gap: 8px;
   padding: 28px;
   border-radius: var(--radius);
-  background: radial-gradient(ellipse 80% 120% at 0% 0%, var(--accent-soft), transparent 70%), var(--bg-raised);
+  background: radial-gradient(ellipse 80% 120% at 0% 0%, var(--accent-soft), transparent 70%), var(--card-bg);
   border: 1px solid var(--line);
   box-shadow: var(--shadow-md);
   color: var(--text);
@@ -1064,10 +1098,20 @@ p {
 
 /* Footer */
 .site-footer {
-  border-top: 1px solid var(--line);
+  position: relative;
   background: var(--bg-sunken);
   padding: 64px 0 48px;
   font-size: 15px;
+}
+/* A hairline that brightens toward the middle, in place of a flat top border. */
+.site-footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--line-strong) 20%, var(--hairline) 50%, var(--line-strong) 80%, transparent);
 }
 .footer-grid {
   display: grid;
@@ -1108,7 +1152,7 @@ p {
   flex-wrap: wrap;
   margin-top: 48px;
   padding-top: 24px;
-  border-top: 1px solid var(--line);
+  border-top: 1px dashed var(--line-strong);
   color: var(--faint);
   font-size: 14px;
 }

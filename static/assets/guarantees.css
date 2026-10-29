@@ -7,6 +7,7 @@
   background: var(--bg-sunken);
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
+  border-image: var(--rule) 1;
 }
 .cl-fig {
   margin: 0;
@@ -541,7 +542,7 @@
   overflow: hidden;
   border-radius: var(--radius-sm);
   border: 1px solid var(--line);
-  background: var(--bg-raised);
+  background: var(--card-bg);
   transition: border-color 0.3s ease, background-color 0.3s ease;
 }
 .cl-step button {
@@ -679,7 +680,7 @@
   overflow: hidden;
   padding: 24px 26px 26px;
   border-radius: var(--radius);
-  background: var(--bg-raised);
+  background: var(--card-bg);
   border: 1px solid var(--line);
   box-shadow: var(--shadow-md);
 }
@@ -775,7 +776,7 @@
 .gu-fact {
   padding: 22px 24px 24px;
   border-radius: var(--radius);
-  background: var(--bg-raised);
+  background: var(--card-bg);
   border: 1px solid var(--line);
 }
 .gu-fact h4 {

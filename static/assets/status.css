@@ -9,6 +9,7 @@
   background: var(--bg-sunken);
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
+  border-image: var(--rule) 1;
 }
 .st-key {
   display: flex;
@@ -73,7 +74,7 @@
 .st-card {
   padding: 22px 22px 24px;
   border-radius: var(--radius);
-  background: var(--bg-raised);
+  background: var(--card-bg);
   border: 1px solid var(--line);
 }
 .st-card h3 {
@@ -195,7 +196,7 @@
   overflow: hidden;
   padding: 26px 28px 28px;
   border-radius: var(--radius);
-  background: var(--bg-raised);
+  background: var(--card-bg);
   border: 1px solid var(--line);
   box-shadow: var(--shadow-md);
 }
