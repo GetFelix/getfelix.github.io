@@ -10,7 +10,7 @@ so adding a project means only adding markers:
 
   <!--release:REPO:version-->0.3.0<!--/release:REPO:version-->      the tag without its leading v
   <!--release:REPO:tag-->v0.3.0<!--/release:REPO:tag-->             the tag as published
-  <!--release:REPO:date-->10 October 2026<!--/release:REPO:date-->  the publish date
+  <!--release:REPO:date-->10.10.2026<!--/release:REPO:date-->       the publish date
   <a data-release="REPO" href="...">                                points at the release page
 
 REPO is a repository in the GetFelix organization. The JSON-LD softwareVersion
@@ -69,7 +69,7 @@ def values(repo, release):
     return {
         "tag": tag,
         "version": tag[1:] if tag.startswith("v") else tag,
-        "date": "%d %s" % (when.day, when.strftime("%B %Y")),
+        "date": when.strftime("%d.%m.%Y"),
         "url": "https://github.com/%s/%s/releases/tag/%s" % (ORG, repo, tag),
     }
 
