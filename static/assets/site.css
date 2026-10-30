@@ -179,6 +179,7 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  background: var(--bg);
   scroll-behavior: smooth;
   scroll-padding-top: 80px;
 }
@@ -192,7 +193,9 @@ body {
   font-feature-settings: "cv11", "ss01", "ss03";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
+  /* clip, not hidden: hidden makes body a scroll container, and iOS Safari
+     then stops treating the sticky header as the top bar. */
+  overflow-x: clip;
 }
 /* Film grain over the whole page. Fixed, so it is one viewport-sized layer. */
 body::after {
