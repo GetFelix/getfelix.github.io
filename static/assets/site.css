@@ -193,14 +193,17 @@ body {
   font-feature-settings: "cv11", "ss01", "ss03";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* clip, not hidden: hidden makes body a scroll container, and iOS Safari
-     then stops treating the sticky header as the top bar. */
+  /* clip, not hidden: hidden would make body a scroll container. */
   overflow-x: clip;
+  position: relative;
+  min-height: 100vh;
 }
-/* Film grain over the whole page. Fixed, so it is one viewport-sized layer. */
+/* Film grain over the whole page. Absolute on the body, not fixed: a fixed
+   full-viewport layer above the header stops iOS Safari tinting the status bar
+   from the header, and the page shows through behind the status bar. */
 body::after {
   content: "";
-  position: fixed;
+  position: absolute;
   inset: 0;
   z-index: 200;
   pointer-events: none;
