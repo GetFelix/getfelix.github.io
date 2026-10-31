@@ -948,7 +948,7 @@
   height: calc(100% + 22px);
 }
 .hero-mark img {
-  filter: drop-shadow(0 0 1px hsla(192, 90%, 45%, 0.5)) drop-shadow(0 0 28px var(--accent-glow)) drop-shadow(0 20px 36px rgba(0, 20, 30, 0.28));
+  filter: var(--logo-halo) drop-shadow(0 20px 36px rgba(0, 20, 30, 0.2));
 }
 .hero-tag {
   grid-area: tag;

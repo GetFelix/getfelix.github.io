@@ -27,22 +27,24 @@
 
 :root {
   color-scheme: light;
-  --bg: #e9ebea;
-  --bg-raised: #f1f3f2;
-  --bg-sunken: #e1e4e3;
+  --bg: #dde1e0;
+  --bg-raised: #e5e8e7;
+  --bg-sunken: #d5d9d8;
   --line: rgba(15, 30, 45, 0.09);
   --line-strong: rgba(15, 30, 45, 0.16);
-  --text: #0c1520;
-  --muted: #475668;
-  --faint: #526071;
+  --text: #1e2a36;
+  --muted: #445262;
+  --faint: #505d6c;
   --accent: hsl(192, 95%, 29%);
-  --accent-text: hsl(192, 95%, 27%);
+  --accent-text: #03647c;
   --accent-soft: hsla(192, 95%, 35%, 0.07);
   --accent-glow: hsla(192, 95%, 45%, 0.14);
-  --on-accent: #ffffff;
+  --on-accent: #f3f6f6;
   --code-bg: #0c1218;
   --code-text: #d8e2ec;
-  --bg-raised-end: #ecefee;
+  --header-bg: color-mix(in srgb, var(--bg-sunken) 88%, transparent);
+  --logo-halo: drop-shadow(0 0 1px hsla(192, 90%, 45%, 0.2)) drop-shadow(0 0 16px var(--accent-glow));
+  --bg-raised-end: #dfe3e2;
   --shadow-sm: 0 1px 2px rgba(15, 30, 45, 0.06), 0 1px 1px rgba(15, 30, 45, 0.04);
   --shadow-md: 0 1px 2px rgba(15, 30, 45, 0.05), 0 4px 10px -6px rgba(15, 30, 45, 0.08), 0 18px 40px -22px rgba(12, 48, 66, 0.28);
   --shadow-lg: 0 2px 4px rgba(15, 30, 45, 0.04), 0 12px 24px -12px rgba(15, 30, 45, 0.12), 0 36px 64px -30px rgba(12, 48, 66, 0.34);
@@ -50,11 +52,11 @@
   --grain: 0.04;
   --dot: rgba(15, 40, 60, 0.13);
   --dot-accent: hsla(192, 95%, 32%, 0.45);
-  --ok: #13795b;
+  --ok: #0f6b50;
   --ok-soft: rgba(19, 121, 91, 0.1);
-  --warn: #8a5a00;
+  --warn: #7a5000;
   --warn-soft: rgba(176, 116, 0, 0.12);
-  --idea: #6b4bc4;
+  --idea: #5f40b8;
   --idea-soft: rgba(107, 75, 196, 0.1);
   /* A card: a faint top-to-bottom surface with an accent hairline on its top edge. */
   --card-bg: linear-gradient(90deg, transparent 12%, var(--hairline) 50%, transparent 88%) top / 100% 1px no-repeat,
@@ -72,6 +74,8 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
+    --header-bg: color-mix(in srgb, var(--bg) 72%, transparent);
+    --logo-halo: drop-shadow(0 0 1px hsla(192, 90%, 45%, 0.5)) drop-shadow(0 0 28px var(--accent-glow));
     --bg: #050a12;
     --bg-raised: #0b1421;
     --bg-raised-end: #08101b;
@@ -104,6 +108,8 @@
   }
 }
 :root[data-theme="dark"] {
+  --header-bg: color-mix(in srgb, var(--bg) 72%, transparent);
+  --logo-halo: drop-shadow(0 0 1px hsla(192, 90%, 45%, 0.5)) drop-shadow(0 0 28px var(--accent-glow));
   color-scheme: dark;
   --bg: #050a12;
   --bg-raised: #0b1421;
@@ -139,6 +145,8 @@
 /* Solarized (dark), from Ethan Schoonover's palette. Placed after the dark
    rules so it wins over the system-dark media query at equal specificity. */
 :root[data-theme="solarized"] {
+  --header-bg: color-mix(in srgb, var(--bg) 72%, transparent);
+  --logo-halo: drop-shadow(0 0 1px hsla(192, 90%, 45%, 0.5)) drop-shadow(0 0 28px var(--accent-glow));
   color-scheme: dark;
   --bg: #002b36;
   --bg-raised: #073642;
@@ -291,7 +299,7 @@ p {
   position: sticky;
   top: 0;
   z-index: 50;
-  background: color-mix(in srgb, var(--bg) 72%, transparent);
+  background: var(--header-bg);
   backdrop-filter: saturate(160%) blur(14px);
   -webkit-backdrop-filter: saturate(160%) blur(14px);
   border-bottom: 1px solid transparent;
