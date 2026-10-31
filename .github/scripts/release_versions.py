@@ -11,6 +11,7 @@ so adding a project means only adding markers:
   <!--release:REPO:version-->0.3.0<!--/release:REPO:version-->      the tag without its leading v
   <!--release:REPO:tag-->v0.3.0<!--/release:REPO:tag-->             the tag as published
   <!--release:REPO:date-->10.10.2026<!--/release:REPO:date-->       the publish date
+  <!--release:REPO:pypi-->0.3.0rc1<!--/release:REPO:pypi-->         the version as PyPI spells it (PEP 440)
   <a data-release="REPO" href="...">                                points at the release page
 
 REPO is a repository in the GetFelix organization. The JSON-LD softwareVersion
@@ -44,7 +45,7 @@ PROJECTS = SITE / "projects.html"
 ORG = "GetFelix"
 
 MARKER = re.compile(
-    r"(<!--release:([\w.-]+):(version|tag|date)-->)(.*?)(<!--/release:\2:\3-->)", re.S
+    r"(<!--release:([\w.-]+):(version|tag|date|pypi)-->)(.*?)(<!--/release:\2:\3-->)", re.S
 )
 LINK = re.compile(r'(<a\b[^>]*\bdata-release="([\w.-]+)"[^>]*\bhref=")([^"]*)(")')
 LD = re.compile(r'(<script type="application/ld\+json">\n)(.*?)(\n</script>)', re.S)
@@ -63,12 +64,27 @@ def latest_release(repo):
     return max(releases, key=lambda r: r["publishedAt"]), releases
 
 
+# PEP 440 spellings of semver prerelease labels, as maturin writes them.
+PEP440_PRE = {"alpha": "a", "a": "a", "beta": "b", "b": "b", "rc": "rc", "preview": "rc", "pre": "rc"}
+
+
+def pypi_version(version):
+    """The PyPI version of a release, e.g. 0.7.0-preview.1 -> 0.7.0rc1."""
+    m = re.fullmatch(r"(\d+\.\d+\.\d+)(?:-([A-Za-z]+)\.?(\d+))?", version)
+    if not m or (m.group(2) and m.group(2).lower() not in PEP440_PRE):
+        sys.exit("no PyPI spelling for version %s" % version)
+    if not m.group(2):
+        return m.group(1)
+    return m.group(1) + PEP440_PRE[m.group(2).lower()] + m.group(3)
+
+
 def values(repo, release):
     tag = release["tagName"]
     when = datetime.datetime.fromisoformat(release["publishedAt"].replace("Z", "+00:00"))
     return {
         "tag": tag,
         "version": tag[1:] if tag.startswith("v") else tag,
+        "pypi": pypi_version(tag[1:] if tag.startswith("v") else tag),
         "date": when.strftime("%d.%m.%Y"),
         "url": "https://github.com/%s/%s/releases/tag/%s" % (ORG, repo, tag),
     }
