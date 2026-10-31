@@ -63,7 +63,7 @@
     "https://spdx.org/licenses/AGPL-3.0-only.html",
     "https://spdx.org/licenses/Apache-2.0.html"
   ],
-  "softwareVersion": "0.7.0-preview.1"
+  "softwareVersion": "0.6.2"
 }
 </script>
 <script defer src="/assets/site.js?v=50a0e9e4"></script>
@@ -139,9 +139,9 @@
       </div>
       <div class="hero-tag rise" style="--d:0">
         <p class="eyebrow">In development, in the open</p>
-        <a class="release-pill" data-release="felix" href="https://github.com/GetFelix/felix/releases/tag/v0.7.0-preview.1">
+        <a class="release-pill" data-release="felix" href="https://github.com/GetFelix/felix/releases/tag/v0.6.2">
           <span class="dot" aria-hidden="true"></span>
-          <span><span class="tag"><!--release:felix:tag-->v0.7.0-preview.1<!--/release:felix:tag--></span> released <span class="nowrap"><!--release:felix:date-->30.10.2026<!--/release:felix:date--></span></span>
+          <span><span class="tag"><!--release:felix:tag-->v0.6.2<!--/release:felix:tag--></span> released <span class="nowrap"><!--release:felix:date-->25.10.2026<!--/release:felix:date--></span></span>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
         </a>
       </div>
@@ -194,12 +194,12 @@
         <div class="install">
           <div class="install-row">
             <div class="install-name"><span class="ficon mono-ic" aria-hidden="true">oci</span><span>Broker and control plane<small>Container images</small></span></div>
-            <div class="cmd"><code>curl -fsSLO https://raw.githubusercontent.com/GetFelix/felix/main/compose.yaml &amp;&amp; docker compose up</code><button class="icon-btn" type="button" data-copy aria-label="Copy the quick start command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
+            <div class="cmd"><code>curl -fsSLO https://raw.githubusercontent.com/GetFelix/felix/<!--release:felix:tag-->v0.6.2<!--/release:felix:tag-->/compose.yaml &amp;&amp; docker compose up</code><button class="icon-btn" type="button" data-copy aria-label="Copy the quick start command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
             <a href="https://docs.getfelix.dev/getting-started/quickstart/">Docs <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span class="visually-hidden"> for the quickstart</span></a>
           </div>
           <div class="install-row">
             <div class="install-name"><span class="ficon mono-ic" aria-hidden="true">oci</span><span>Images only<small>ghcr.io</small></span></div>
-            <div class="cmd"><code>docker pull ghcr.io/getfelix/felix-broker:<!--release:felix:version-->0.7.0-preview.1<!--/release:felix:version--> &amp;&amp; docker pull ghcr.io/getfelix/felix-controlplane:<!--release:felix:version-->0.7.0-preview.1<!--/release:felix:version--></code><button class="icon-btn" type="button" data-copy aria-label="Copy the docker pull commands"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
+            <div class="cmd"><code>docker pull ghcr.io/getfelix/felix-broker:<!--release:felix:version-->0.6.2<!--/release:felix:version--> &amp;&amp; docker pull ghcr.io/getfelix/felix-controlplane:<!--release:felix:version-->0.6.2<!--/release:felix:version--></code><button class="icon-btn" type="button" data-copy aria-label="Copy the docker pull commands"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
             <a href="https://docs.getfelix.dev/deployment/docker-compose/">Docs <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span class="visually-hidden"> for the container images</span></a>
           </div>
         </div>
@@ -227,7 +227,7 @@
         <div id="panel-rust" role="tabpanel" aria-labelledby="tab-rust">
           <div class="panel-install">
             <span class="panel-src">Install<small>crates.io</small></span>
-            <div class="cmd"><code>cargo add felix-client@<!--release:felix:version-->0.7.0-preview.1<!--/release:felix:version--> anyhow tokio -F tokio/full</code><button class="icon-btn" type="button" data-copy aria-label="Copy the Rust command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
+            <div class="cmd"><code>cargo add felix-client@<!--release:felix:version-->0.6.2<!--/release:felix:version--> anyhow tokio -F tokio/full</code><button class="icon-btn" type="button" data-copy aria-label="Copy the Rust command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
           </div>
 <pre class="code" data-lang="Rust" tabindex="0" aria-label="Rust example"><code><span class="tok-k">use</span> std::net::<span class="tok-t">SocketAddr</span>;
 <span class="tok-k">use</span> std::sync::<span class="tok-t">Arc</span>;
@@ -263,7 +263,7 @@
         <div id="panel-py" role="tabpanel" aria-labelledby="tab-py" hidden>
           <div class="panel-install">
             <span class="panel-src">Install<small>PyPI</small></span>
-            <div class="cmd"><code>pip install felix-client==<!--release:felix:pypi-->0.7.0rc1<!--/release:felix:pypi--></code><button class="icon-btn" type="button" data-copy aria-label="Copy the Python command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
+            <div class="cmd"><code>pip install felix-client==<!--release:felix:pypi-->0.6.2<!--/release:felix:pypi--></code><button class="icon-btn" type="button" data-copy aria-label="Copy the Python command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
           </div>
 <pre class="code" data-lang="Python" tabindex="0" aria-label="Python example"><code><span class="tok-k">import</span> os
 
@@ -284,7 +284,7 @@
         <div id="panel-ts" role="tabpanel" aria-labelledby="tab-ts" hidden>
           <div class="panel-install">
             <span class="panel-src">Install<small>npm</small></span>
-            <div class="cmd"><code>npm install felix-client@<!--release:felix:version-->0.7.0-preview.1<!--/release:felix:version--></code><button class="icon-btn" type="button" data-copy aria-label="Copy the npm command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
+            <div class="cmd"><code>npm install felix-client@<!--release:felix:version-->0.6.2<!--/release:felix:version--></code><button class="icon-btn" type="button" data-copy aria-label="Copy the npm command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
           </div>
 <pre class="code" data-lang="TypeScript" tabindex="0" aria-label="TypeScript example"><code><span class="tok-k">import</span> { <span class="tok-t">Client</span> } <span class="tok-k">from</span> <span class="tok-s">"felix-client"</span>;
 
@@ -311,7 +311,7 @@
         <div id="panel-cs" role="tabpanel" aria-labelledby="tab-cs" hidden>
           <div class="panel-install">
             <span class="panel-src">Install<small>NuGet</small></span>
-            <div class="cmd"><code>dotnet add package Felix.Client --version <!--release:felix:version-->0.7.0-preview.1<!--/release:felix:version--></code><button class="icon-btn" type="button" data-copy aria-label="Copy the .NET command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
+            <div class="cmd"><code>dotnet add package Felix.Client --version <!--release:felix:version-->0.6.2<!--/release:felix:version--></code><button class="icon-btn" type="button" data-copy aria-label="Copy the .NET command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
           </div>
 <pre class="code" data-lang="C#" tabindex="0" aria-label="C# example"><code><span class="tok-k">using</span> <span class="tok-t">Felix</span>;
 

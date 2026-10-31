@@ -5,9 +5,8 @@ name: Release versions
 # the page; see .github/scripts/release_versions.py.
 #
 # Marker-only updates land on main without a person: the ruleset requires a PR
-# but no approval or checks, so the bot opens one and auto-merges it. A Felix release
-# that moves between prerelease and stable gets a PR for a person instead,
-# because the Get started install commands (--pre, @preview) need rewriting.
+# but no approval or checks, so the bot opens one and auto-merges it. Only stable
+# releases are followed; previews are never put on the page.
 
 on:
   schedule:
@@ -44,7 +43,7 @@ jobs:
       - name: Update the page
         id: update
         continue-on-error: true
-        run: python3 .github/scripts/release_versions.py --hold-felix-channel | tee "$RUNNER_TEMP/changes.txt"
+        run: python3 .github/scripts/release_versions.py | tee "$RUNNER_TEMP/changes.txt"
 
       - name: Land the update on main
         if: steps.update.outputs.changed == 'true'
@@ -81,27 +80,6 @@ jobs:
           fi
           gh workflow run pages.yml --ref main
 
-      - name: Open a PR for the Felix release channel change
-        if: steps.update.outputs.held != ''
-        env:
-          TAG: ${{ steps.update.outputs.held }}
-        run: |
-          branch="release-versions/felix-$TAG"
-          # A PR for this release is already open or was closed on purpose.
-          if git ls-remote --exit-code --heads origin "$branch" > /dev/null; then
-            echo "Branch $branch already exists."
-            exit 0
-          fi
-          git fetch -q origin main
-          git switch -C "$branch" origin/main
-          python3 .github/scripts/release_versions.py || echo "Some repos were left on their old release; the update step says why."
-          git commit -qam "Point the page at Felix $TAG"
-          git push origin "$branch"
-          gh pr create --base main --head "$branch" \
-            --title "Point the page at Felix $TAG" \
-            --body "Felix $TAG moves the page between a pre-release and a stable release, so this was left for a person.
-
-          Before merging, update the Get started section: its install commands and the sentence above them are written for one channel (\`--pre\`, \`@preview\`)."
 
       - name: Fail if the page could not be fully updated
         if: steps.update.outcome == 'failure'

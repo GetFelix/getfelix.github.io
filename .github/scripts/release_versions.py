@@ -1,7 +1,7 @@
 """Keep every version on index.html in step with GetFelix releases.
 
 Usage:
-  release_versions.py [--hold-felix-channel]   rewrite the markers from the newest releases
+  release_versions.py                          rewrite the markers from the newest releases
   release_versions.py --check                  fail if a version in the hero or a
                                                project card is outside a marker
 
@@ -16,17 +16,15 @@ so adding a project means only adding markers:
 
 REPO is a repository in the GetFelix organization. The JSON-LD softwareVersion
 follows the felix repo. For each repo the newest non-draft release by publish
-time wins, prereleases included and any tag containing "nightly" excluded.
+time wins. Prereleases and any tag containing "nightly" are left out: the page
+recommends stable releases only, and previews stay opt-in.
 
---hold-felix-channel leaves Felix alone when its newest release would move it
-between a prerelease and a stable release, because the Get started install
-commands are written for one or the other and need a person to change them.
 
 Before moving a repo whose markers sit inside a release download URL, the asset
 that URL would name must exist on the new release. If it does not, that repo is
 left alone, the other repos are still updated, and the run exits 1.
 
-When GITHUB_OUTPUT is set, writes changed=true|false and held=<felix tag or empty>.
+When GITHUB_OUTPUT is set, writes changed=true|false.
 """
 
 import datetime
@@ -58,9 +56,10 @@ def latest_release(repo):
          "--limit", "50", "--json", "tagName,publishedAt,isPrerelease"],
         check=True, capture_output=True, text=True,
     ).stdout
-    releases = [r for r in json.loads(out) if "nightly" not in r["tagName"]]
+    releases = [r for r in json.loads(out)
+                if "nightly" not in r["tagName"] and not r["isPrerelease"]]
     if not releases:
-        sys.exit("%s/%s has no release, but index.html marks it" % (ORG, repo))
+        sys.exit("%s/%s has no stable release, but index.html marks it" % (ORG, repo))
     return max(releases, key=lambda r: r["publishedAt"]), releases
 
 
@@ -98,13 +97,6 @@ def shown_versions(html):
     return shown
 
 
-def is_prerelease(version, releases):
-    for r in releases:
-        if r["tagName"] in (version, "v" + version):
-            return r["isPrerelease"]
-    return "-" in version
-
-
 def release_assets(repo, tag):
     out = subprocess.run(
         ["gh", "release", "view", tag, "-R", "%s/%s" % (ORG, repo), "--json", "assets",
@@ -129,7 +121,7 @@ def downloads(html, repo):
     return set(re.findall(pattern, plain))
 
 
-def update(hold_felix_channel):
+def update():
     html = PAGE.read_text(encoding="utf-8")
     projects_html = PROJECTS.read_text(encoding="utf-8")
     both = html + projects_html
@@ -138,21 +130,10 @@ def update(hold_felix_channel):
         sys.exit("no release markers in %s" % PAGE)
     shown = shown_versions(html)
 
-    wanted, held = {}, ""
+    wanted = {}
     for repo in repos:
-        release, releases = latest_release(repo)
-        v = values(repo, release)
-        if (
-            hold_felix_channel
-            and repo == "felix"
-            and repo in shown
-            and v["version"] != shown[repo]
-            and release["isPrerelease"] != is_prerelease(shown[repo], releases)
-        ):
-            print("felix: holding %s, it changes the release channel" % v["tag"])
-            held = v["tag"]
-            continue
-        wanted[repo] = v
+        release, _ = latest_release(repo)
+        wanted[repo] = values(repo, release)
 
     # A download URL that would point at an asset the release lacks keeps the
     # whole repo on its old release, so the version and the download never disagree.
@@ -218,7 +199,7 @@ def update(hold_felix_channel):
     out = os.environ.get("GITHUB_OUTPUT")
     if out:
         with open(out, "a", encoding="utf-8") as f:
-            f.write("changed=%s\nheld=%s\n" % ("true" if changes else "false", held))
+            f.write("changed=%s\n" % ("true" if changes else "false"))
 
     if missing:
         sys.exit("\n".join(missing))
@@ -261,8 +242,8 @@ def main():
     args = sys.argv[1:]
     if args == ["--check"]:
         check()
-    elif args in ([], ["--hold-felix-channel"]):
-        update(bool(args))
+    elif args == []:
+        update()
     else:
         sys.exit(__doc__)
 
