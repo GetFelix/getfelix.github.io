@@ -27,22 +27,22 @@
 
 :root {
   color-scheme: light;
-  --bg: #f6f8fa;
-  --bg-raised: #ffffff;
-  --bg-sunken: #eef2f5;
+  --bg: #e9e8df;
+  --bg-raised: #f2f1ea;
+  --bg-sunken: #dfded4;
   --line: rgba(15, 30, 45, 0.09);
   --line-strong: rgba(15, 30, 45, 0.16);
   --text: #0c1520;
   --muted: #475668;
-  --faint: #6a7889;
+  --faint: #5a6879;
   --accent: hsl(192, 95%, 29%);
   --accent-text: hsl(192, 95%, 27%);
-  --accent-soft: hsla(192, 95%, 35%, 0.1);
-  --accent-glow: hsla(192, 95%, 45%, 0.28);
+  --accent-soft: hsla(192, 95%, 35%, 0.07);
+  --accent-glow: hsla(192, 95%, 45%, 0.14);
   --on-accent: #ffffff;
   --code-bg: #0c1218;
   --code-text: #d8e2ec;
-  --bg-raised-end: #f7fafb;
+  --bg-raised-end: #edece4;
   --shadow-sm: 0 1px 2px rgba(15, 30, 45, 0.06), 0 1px 1px rgba(15, 30, 45, 0.04);
   --shadow-md: 0 1px 2px rgba(15, 30, 45, 0.05), 0 4px 10px -6px rgba(15, 30, 45, 0.08), 0 18px 40px -22px rgba(12, 48, 66, 0.28);
   --shadow-lg: 0 2px 4px rgba(15, 30, 45, 0.04), 0 12px 24px -12px rgba(15, 30, 45, 0.12), 0 36px 64px -30px rgba(12, 48, 66, 0.34);
