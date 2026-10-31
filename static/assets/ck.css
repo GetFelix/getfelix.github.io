@@ -2,12 +2,12 @@
 .ck {
   --cat: #141b23;
   --cat-edge: #141b23;
-  --fur: #ffffff;
+  --fur: #eef1f0;
   --ear: #5b6773;
   --bad: #b42318;
   --bad-soft: rgba(180, 35, 24, 0.1);
   --gold: #f0b429;
-  --paper: #fffdf5;
+  --paper: #efeadb;
   --mouse: #9aa6b2;
 }
 @media (prefers-color-scheme: dark) {
