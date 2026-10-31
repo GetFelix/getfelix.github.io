@@ -9,7 +9,7 @@ path = "blog/what-if-your-fleet-ran-on-one-log.html"
 topics = ["architecture", "compatibility"]
 
 [extra]
-read_minutes = 7
+read_minutes = 8
 card = "cards/what-if-your-fleet-ran-on-one-log.svg"
 +++
 
@@ -82,10 +82,6 @@ A sensor whose reading is stale a second later could publish at QoS 0 and skip t
 
 Each mount would name a cache for its retained messages, keyed by topic. A retained publish would write the record to the stream and then the entry to the cache, with a conditional put that only replaces an entry from an older offset. Two devices racing to retain on one topic would end up agreeing with the stream's order. A new subscription would register first and read the retained values second: the same state-then-changes contract as a cache watch.
 
-### Decisions back out
-
-The model is just another Felix client. It reads the telemetry stream and publishes its decisions to another stream, mounted at `cmd/`. A device subscribed to `cmd/42/#` would get the decisions meant for it. Those decisions are records too, with offsets and times like the readings that led to them, so "what had the model seen when it did that?" is a read by offset or by time.
-
 ### A device that goes to sleep
 
 Isolation would carry over to devices. Each MQTT session would be fed through its own bounded queue. A QoS 1 session whose queue filled would leave the shared feed and read the log from its own position at its own pace. A QoS 0 subscription would drop, as a slow Felix subscriber does.
@@ -96,6 +92,30 @@ Isolation would carry over to devices. Each MQTT session would be fed through it
     </figure>
 
 A persistent session would keep a position per shard instead of a queue of copies. While a device is offline nothing piles up in memory for it, since its messages are already in the log. When it reconnects it reads on from its bookmark. How far back it can catch up depends on how much history the site keeps. If retention or a trim has passed a session's bookmark, the session would resume at the oldest record left and the broker would count the gap, because neither MQTT version has a way to tell the device.
+
+## Closing the loop with a model
+
+The model is the part of this loop that is hardest to explain afterwards. When a valve closes at 02:14, someone will ask what the device saw, which model was running, and what the model said.
+
+Running the model again doesn't answer that. Inference on a GPU usually isn't bit-for-bit reproducible. Kernels add numbers in parallel, in an order that changes from run to run, and floating point addition depends on the order. Libraries pick kernels by hardware, driver and batch size, and sampling draws random numbers. The same reading can come back with a different answer when two scores are close.
+
+So the idea is to treat inference as an effect, like a call to any outside service: ask once, record the answer, and never compute it again. The loop would go like this:
+
+1. A device publishes a reading over MQTT, and it lands on the telemetry stream at an offset.
+2. A program reading that stream asks the model, with a request record that names the reading and the model version.
+3. The model's response is written to the log: which model, with which parameters, and what it said.
+4. The program turns the response into a decision and publishes it to a stream mounted at `cmd/`. A device subscribed to `cmd/42/#` would get the decisions meant for it.
+
+<figure class="fig ck">
+      <div class="stage"><svg class="ck-svg" viewBox="0 0 460 300" role="img" aria-labelledby="df3-t"><title id="df3-t">A sensor cat publishes a reading, which lands on the log at offset 101. A request at 102 goes up to a box labelled model, on a GPU, and the answer comes back down as a recorded response at 103. A decision at 104 goes up to a device cat, device 42. Under the row, a replay arrow runs from the reading to the decision, labelled: replay reads the recorded response and never calls the model.</title><g font-size="18"><g class="rough"><rect class="box" x="30" y="120" width="96" height="36" rx="3"/></g><text x="78" y="144" text-anchor="middle" font-size="15">reading</text><text x="78" y="176" class="mono m" text-anchor="middle" font-size="13">101</text><g class="rough"><rect class="box" x="134" y="120" width="96" height="36" rx="3"/></g><text x="182" y="144" text-anchor="middle" font-size="15">request</text><text x="182" y="176" class="mono m" text-anchor="middle" font-size="13">102</text><g class="rough"><rect class="boxa" x="238" y="120" width="96" height="36" rx="3"/></g><text x="286" y="144" text-anchor="middle" font-size="15">response</text><text x="286" y="176" class="mono m" text-anchor="middle" font-size="13">103</text><g class="rough"><rect class="box" x="342" y="120" width="96" height="36" rx="3"/></g><text x="390" y="144" text-anchor="middle" font-size="15">decision</text><text x="390" y="176" class="mono m" text-anchor="middle" font-size="13">104</text><text x="78" y="22" class="m" text-anchor="middle" font-size="14">sensor</text><g class="rough"><g transform="translate(57 30) scale(0.42)"><g transform="translate(0 -2)"><path class="cf" d="M20 52C19 38 24 29 31 24L27 6Q27 3 30 5L47 17Q50 16.5 53 17L70 5Q73 3 73 6L69 24C76 29 81 38 80 52C80 72 67 86 50 86C33 86 20 72 20 52Z"/><path class="ce" d="M32 21L30.5 11L41 18ZM68 21L69.5 11L59 18Z"/><path class="cw" d="M29 66C31 57 42 55 50 60C58 55 69 57 71 66C71 77 61 84 50 84C39 84 29 77 29 66Z"/><path class="cn" d="M45.5 60.5h9l-4.5 5z"/><path class="wh" d="M31 68L6 63M31 73L7 76M69 68L94 63M69 73L93 76"/><path class="hap" d="M31 47Q38 39 45 47M55 47Q62 39 69 47"/><path class="mo" d="M42 70Q50 79 58 70"/></g></g></g><path class="lna" d="M78 74V114"/><path class="lna" d="M73 108L78 115L83 108"/><text x="390" y="22" class="m" text-anchor="middle" font-size="14">device 42</text><g class="rough"><g transform="translate(369 30) scale(0.42)"><g transform="translate(0 -2)"><path class="cf" d="M20 52C19 38 24 29 31 24L27 6Q27 3 30 5L47 17Q50 16.5 53 17L70 5Q73 3 73 6L69 24C76 29 81 38 80 52C80 72 67 86 50 86C33 86 20 72 20 52Z"/><path class="ce" d="M32 21L30.5 11L41 18ZM68 21L69.5 11L59 18Z"/><path class="cw" d="M29 66C31 57 42 55 50 60C58 55 69 57 71 66C71 77 61 84 50 84C39 84 29 77 29 66Z"/><path class="cn" d="M45.5 60.5h9l-4.5 5z"/><path class="wh" d="M31 68L6 63M31 73L7 76M69 68L94 63M69 73L93 76"/><path class="hap" d="M31 47Q38 39 45 47M55 47Q62 39 69 47"/><path class="mo" d="M42 70Q50 79 58 70"/></g></g></g><path class="lna" d="M390 116V78"/><path class="lna" d="M385 84L390 77L395 84"/><g class="rough"><rect class="metal" x="180" y="26" width="108" height="42" rx="6"/></g><text x="234" y="46" text-anchor="middle" font-size="15">model</text><text x="234" y="62" class="m" text-anchor="middle" font-size="12">on a GPU</text><path class="ln" d="M182 116Q182 80 206 72"/><path class="ln" d="M199 70L207 72L202 79"/><path class="ln" d="M262 72Q286 80 286 114"/><path class="ln" d="M281 108L286 115L291 108"/><path class="lnok dash" d="M78 186Q234 262 386 188"/><path class="lnok" d="M376 186L387 187L382 197"/><text x="234" y="262" class="hand ok" text-anchor="middle" font-size="22">replay</text><text x="234" y="286" class="m" text-anchor="middle" font-size="14">reads the recorded response, never calls the model</text></g></svg></div>
+      <figcaption><b>Figure 3</b>The model is asked once. Its answer is a record, so a replay reads it instead of asking again.</figcaption>
+    </figure>
+
+Felix's part is what makes this cheap. Readings, responses and decisions would sit in one ordered, durable log, each with an offset and an append time, readable again by offset or by time. Recording the answer is one more publish.
+
+Because the response is on the log, any decision could be replayed later without calling the model: read the readings and the recorded responses back, and run the same steps over them. A new model could be shadowed over the same recorded history before it takes over. Send it the recorded requests, write its answers to a separate stream, and compare its decisions with the ones the fleet actually made.
+
+[What if every machine decision could be replayed?](https://ninelives.getfelix.dev/blog/what-if-every-decision-could-be-replayed/) on the NineLives blog explores this in depth.
 
 ## What it isn't
 
