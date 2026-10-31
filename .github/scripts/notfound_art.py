@@ -50,13 +50,14 @@ def hold(v):
 
 # ---------------------------------------------------------------- timeline
 WALK_IN = (0.0, 3.55)
-X0, X_STOP = -110, 226
+X0, X_STOP = -150, 226
 LAND_X = 394
 WALK_OUT = (10.6, T)
-X_END = 692
+X_END = 740
 HOP = (9.95, 10.35)
 
 L = 44  # leg length
+CYC_IN, CYC_OUT = 0.62, 0.52  # stride periods matched to the walking speeds, so paws don't slide
 
 
 def walk_keys(t0, t1, cycle, amp, phase, lift=0.84):
@@ -85,7 +86,7 @@ def walk_keys(t0, t1, cycle, amp, phase, lift=0.84):
 def legs():
     out = {}
     for leg, ph in (("fn", 0), ("hf", 0), ("ff", 2), ("hn", 2)):
-        k = walk_keys(*WALK_IN, 0.72, 23, ph) + walk_keys(*WALK_OUT, 0.6, 25, ph)
+        k = walk_keys(*WALK_IN, CYC_IN, 23, ph) + walk_keys(*WALK_OUT, CYC_OUT, 25, ph)
         out[leg] = k
     # The paw: two pats into the hole.
     pat = [(5.05, tf(), "io"), (5.3, tf(r=-62, sy=0.92), "out"), (5.48, tf(r=-30, sy=1.4), "in"),
@@ -120,7 +121,7 @@ def lean_comp(v, shoulder):
 def body_tracks():
     # Where the cat is along the log.
     track("nf-pos", [
-        (0, tf(x=X0), "lin"), (3.0, tf(x=X_STOP - 34), "out"), (WALK_IN[1], tf(x=X_STOP), "lin"),
+        (0, tf(x=X0), "lin"), (3.0, tf(x=X_STOP - 36), "out"), (WALK_IN[1], tf(x=X_STOP), "lin"),
         (HOP[0], tf(x=X_STOP), "lin"), (HOP[1], tf(x=LAND_X), "lin"),
         (WALK_OUT[0], tf(x=LAND_X), "lin"), (WALK_OUT[0] + 0.3, tf(x=LAND_X + 25), "lin"),
         (T, tf(x=X_END), "lin"),
@@ -151,7 +152,7 @@ def body_tracks():
                        (HOP[1] + 0.12, tf(), "lin")])
     # Bob while walking: up at each extreme, down through the crossings.
     bob = []
-    for t0, t1, cyc in ((WALK_IN[0], WALK_IN[1], 0.72), (WALK_OUT[0], WALK_OUT[1], 0.6)):
+    for t0, t1, cyc in ((WALK_IN[0], WALK_IN[1], CYC_IN), (WALK_OUT[0], WALK_OUT[1], CYC_OUT)):
         n = int((t1 - t0) / (cyc / 4) + 0.5)
         for i in range(n + 1):
             t = t0 + i * cyc / 4
@@ -204,26 +205,22 @@ def head_tracks():
     track("nf-m-wavy", [(0, "0", "step"), (7.95, "1", "step"), (10.4, "0", "step")], prop="opacity")
 
 
-def tail_tracks():
+def walk_sway(t0, t1, cyc):
+    """Tail keys for a walk: it swings against the body's bob, a quarter stride behind."""
     keys = []
-    t = 0.0
-    a = [-3, 4]
-    i = 0
-    while t < 3.4:
-        keys.append((round(t, 2), tf(r=a[i % 2]), "io"))
-        t += 0.72
-        i += 1
+    n = int((t1 - t0) / (cyc / 4) + 0.5)
+    for i in range(n + 1):
+        keys.append((round(t0 + i * cyc / 4 + cyc / 8, 3), tf(r=5 if i % 2 else -3), "io"))
+    return keys
+
+
+def tail_tracks():
+    keys = walk_sway(WALK_IN[0], WALK_IN[1] - 0.2, CYC_IN)
     keys += [(3.6, tf(r=-6), "io"), (4.0, tf(r=2), "io"), (4.7, tf(r=-16), "io"), (6.4, tf(r=-14), "out"),
              (6.55, tf(r=8), "io"), (6.9, tf(r=-4), "io"), (7.8, tf(r=-2), "io"),
              (8.25, tf(r=-22), "io"), (8.6, tf(r=-17), "io"), (8.95, tf(r=-22), "io"), (9.3, tf(r=-18), "io"),
              (HOP[0], tf(r=6), "io"), (HOP[1], tf(r=24), "io"), (HOP[1] + 0.3, tf(r=-8), "io")]
-    t = 10.9
-    i = 0
-    while t < T - 0.3:
-        keys.append((round(t, 2), tf(r=a[i % 2]), "io"))
-        t += 0.6
-        i += 1
-    keys.append((T, tf(r=-3), "io"))
+    keys += walk_sway(WALK_OUT[0] + 0.2, T - 0.1, CYC_OUT)
     track("nf-tail", keys)
 
 
@@ -405,8 +402,8 @@ def figure():
         'where 404 should be: there is only a dashed outline. It peers in and paws at it. Record 418 '
         'tumbles down past its nose and falls straight through the hole. The cat looks at you, puzzled, '
         'then hops the gap and walks on.</desc>'
-        f'{defs}<g mask="url(#nf-fade)" font-size="15">'
-        f'{tiles}{ghost}{drop}{whoosh}'
+        f'{defs}<g font-size="15"><g mask="url(#nf-fade)">{tiles}</g>{ghost}{drop}{whoosh}'
+        # The cat is not masked: it walks in and out past the stage's edge, which clips it.
         f'{cat()}{q}</g></svg>'
     )
 
