@@ -42,6 +42,7 @@
   --on-accent: #f3f6f6;
   --code-bg: #0c1218;
   --code-text: #d8e2ec;
+  --header-bg: color-mix(in srgb, var(--bg-sunken) 88%, transparent);
   --logo-halo: drop-shadow(0 0 1px hsla(192, 90%, 45%, 0.2)) drop-shadow(0 0 16px var(--accent-glow));
   --bg-raised-end: #dfe3e2;
   --shadow-sm: 0 1px 2px rgba(15, 30, 45, 0.06), 0 1px 1px rgba(15, 30, 45, 0.04);
@@ -73,6 +74,7 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
+    --header-bg: color-mix(in srgb, var(--bg) 72%, transparent);
     --logo-halo: drop-shadow(0 0 1px hsla(192, 90%, 45%, 0.5)) drop-shadow(0 0 28px var(--accent-glow));
     --bg: #050a12;
     --bg-raised: #0b1421;
@@ -106,6 +108,7 @@
   }
 }
 :root[data-theme="dark"] {
+  --header-bg: color-mix(in srgb, var(--bg) 72%, transparent);
   --logo-halo: drop-shadow(0 0 1px hsla(192, 90%, 45%, 0.5)) drop-shadow(0 0 28px var(--accent-glow));
   color-scheme: dark;
   --bg: #050a12;
@@ -142,6 +145,7 @@
 /* Solarized (dark), from Ethan Schoonover's palette. Placed after the dark
    rules so it wins over the system-dark media query at equal specificity. */
 :root[data-theme="solarized"] {
+  --header-bg: color-mix(in srgb, var(--bg) 72%, transparent);
   --logo-halo: drop-shadow(0 0 1px hsla(192, 90%, 45%, 0.5)) drop-shadow(0 0 28px var(--accent-glow));
   color-scheme: dark;
   --bg: #002b36;
@@ -295,7 +299,7 @@ p {
   position: sticky;
   top: 0;
   z-index: 50;
-  background: color-mix(in srgb, var(--bg) 72%, transparent);
+  background: var(--header-bg);
   backdrop-filter: saturate(160%) blur(14px);
   -webkit-backdrop-filter: saturate(160%) blur(14px);
   border-bottom: 1px solid transparent;
