@@ -27,9 +27,9 @@
 
 :root {
   color-scheme: light;
-  --bg: #e9e8df;
-  --bg-raised: #f2f1ea;
-  --bg-sunken: #dfded4;
+  --bg: #e9ebea;
+  --bg-raised: #f1f3f2;
+  --bg-sunken: #e1e4e3;
   --line: rgba(15, 30, 45, 0.09);
   --line-strong: rgba(15, 30, 45, 0.16);
   --text: #0c1520;
@@ -42,7 +42,7 @@
   --on-accent: #ffffff;
   --code-bg: #0c1218;
   --code-text: #d8e2ec;
-  --bg-raised-end: #edece4;
+  --bg-raised-end: #ecefee;
   --shadow-sm: 0 1px 2px rgba(15, 30, 45, 0.06), 0 1px 1px rgba(15, 30, 45, 0.04);
   --shadow-md: 0 1px 2px rgba(15, 30, 45, 0.05), 0 4px 10px -6px rgba(15, 30, 45, 0.08), 0 18px 40px -22px rgba(12, 48, 66, 0.28);
   --shadow-lg: 0 2px 4px rgba(15, 30, 45, 0.04), 0 12px 24px -12px rgba(15, 30, 45, 0.12), 0 36px 64px -30px rgba(12, 48, 66, 0.34);
