@@ -287,7 +287,7 @@ docker compose up -d</code></pre>
       <div class="project-body reveal" style="--d:.08s">
         <div class="project-title">
           <h3 id="gateway-title">felix-gateway</h3>
-          <span class="status ok"><!--release:felix-gateway:version-->0.7.0<!--/release:felix-gateway:version--></span>
+          <span class="status ok"><!--release:felix-gateway:version-->0.8.0<!--/release:felix-gateway:version--></span>
         </div>
         <ul class="project-tags" aria-label="Tags"><li>Access control</li></ul>
         <p>A WebSocket gateway between browsers and Felix, with sign-in narrowed to one room or match.</p>
@@ -295,7 +295,7 @@ docker compose up -d</code></pre>
         <ul class="uses"><li>Stream publish and subscribe from an offset or from live, with each event's offset</li><li>Cache reads, writes and watches, with a TTL per cache</li><li>Counter adds</li><li>Tokens narrowed to one scope, exchanged at the control plane and enforced by the broker</li><li>Sender stamping on streams, so a browser cannot speak for someone else</li></ul>
         <h4>Quick start</h4>
         <div class="quick-cmd">
-<pre><code>git clone --depth 1 --branch <!--release:felix-gateway:tag-->v0.7.0<!--/release:felix-gateway:tag--> https://github.com/GetFelix/felix-gateway
+<pre><code>git clone --depth 1 --branch <!--release:felix-gateway:tag-->v0.8.0<!--/release:felix-gateway:tag--> https://github.com/GetFelix/felix-gateway
 cd felix-gateway
 dev/up.sh
 export GATEWAY_FELIX_CA_FILE=dev/state/broker-cert.pem GATEWAY_SCOPE_FILE=dev/scope.toml
