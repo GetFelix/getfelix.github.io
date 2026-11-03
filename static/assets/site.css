@@ -339,13 +339,17 @@ p {
 .nav {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 4px;
+  flex: 1 1 0;
+  min-width: 0;
   margin-left: auto;
 }
 .nav a {
   color: var(--muted);
   font-size: 15px;
   font-weight: 500;
+  white-space: nowrap;
   padding: 8px 12px;
   border-radius: 8px;
   transition: color 0.15s ease, background-color 0.15s ease;
@@ -358,10 +362,32 @@ p {
 .nav-links {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
+  flex: 1 1 0;
+  min-width: 0;
   gap: 4px;
   margin: 0;
   padding: 0;
   list-style: none;
+}
+.nav-links > li {
+  flex: none;
+}
+/* The links take whatever room the brand and icons leave. site.js moves the
+   ones that do not fit into the More menu; until it has, clip instead of wrap
+   so nothing shifts. Without JS they wrap onto more rows. */
+.js .nav:not(.ready) .nav-links {
+  justify-content: flex-start;
+  overflow: hidden;
+}
+html:not(.js) .nav-links {
+  flex-wrap: wrap;
+}
+html:not(.js) .site-header .wrap {
+  height: auto;
+  min-height: 64px;
+  padding-top: 6px;
+  padding-bottom: 6px;
 }
 .nav-links a {
   display: inline-flex;
@@ -386,6 +412,62 @@ p {
   height: 12px;
   opacity: 0.7;
 }
+/* Overflow menu for the links that do not fit; built by site.js. */
+.nav-more {
+  position: relative;
+}
+.nav-more[hidden] {
+  display: none;
+}
+.nav-more-btn {
+  width: 38px;
+  height: 38px;
+}
+.nav-more.has-current .nav-more-btn {
+  color: var(--text);
+  box-shadow: inset 0 -2px 0 var(--accent);
+  border-radius: 8px;
+}
+.nav-more-btn[aria-expanded="true"] {
+  color: var(--text);
+  background: var(--accent-soft);
+}
+.nav-more-list {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 5;
+  display: none;
+  min-width: 260px;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background: var(--bg-raised);
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+}
+.nav-more.open .nav-more-list {
+  display: block;
+  animation: menu-in 0.18s ease-out;
+}
+.nav-more-list a {
+  display: grid;
+  gap: 1px;
+  padding: 8px 12px;
+  color: var(--text);
+}
+.nav-more-list a[aria-current="page"] {
+  color: var(--accent-text);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+.nav-more-list .nav-hint {
+  display: block;
+  font-size: 13px;
+  font-weight: 450;
+  color: var(--muted);
+}
+
 .nav .nav-toggle {
   display: none;
 }
@@ -1248,7 +1330,11 @@ p {
   }
   .js .nav {
     display: flex;
+    flex: none;
     gap: 2px;
+  }
+  .nav-more {
+    display: none;
   }
   .js .nav .nav-toggle {
     display: inline-grid;
