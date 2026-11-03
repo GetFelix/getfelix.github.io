@@ -149,26 +149,12 @@
   color: var(--muted);
   letter-spacing: -0.01em;
 }
-.hero .hero-for {
-  max-width: 44ch;
-  margin: 12px auto 0;
-  font-size: 16px;
-  line-height: 1.5;
-  color: var(--muted);
-}
-.hero-install {
-  max-width: 640px;
-  margin: 30px auto 0;
-}
-.hero-install .cmd {
-  text-align: left;
-}
 .hero-actions {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
   gap: 12px;
-  margin-top: 22px;
+  margin-top: 38px;
 }
 
 /* Why */

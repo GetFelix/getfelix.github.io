@@ -113,4 +113,133 @@
       setOpen(false, false);
     });
   }
+  // Overflow menu. The links take the room the brand and icons leave; the ones
+  // that do not fit move into a More menu, measured rather than set by
+  // breakpoint so it holds for any label length. At phone width the hamburger
+  // above takes over and every link goes back in the row.
+  var linkList = nav && nav.querySelector(".nav-links");
+  if (linkList && !nav.dataset.priority) {
+    nav.dataset.priority = "1";
+    var items = Array.prototype.slice.call(linkList.children);
+    var more = document.createElement("li");
+    more.className = "nav-more";
+    more.hidden = true;
+    more.innerHTML =
+      '<button class="icon-btn nav-more-btn" type="button" aria-expanded="false" aria-controls="nav-more-list" aria-label="More pages">' +
+      '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>' +
+      '</button><ul class="nav-more-list" id="nav-more-list"></ul>';
+    linkList.appendChild(more);
+    var moreBtn = more.querySelector("button");
+    var moreList = more.querySelector("ul");
+    var phone = window.matchMedia("(max-width: 760px)");
+
+    var setMore = function (open, refocus) {
+      more.classList.toggle("open", open);
+      moreBtn.setAttribute("aria-expanded", open ? "true" : "false");
+      if (refocus) {
+        if (open) {
+          var first = moreList.querySelector("a");
+          if (first) first.focus();
+        } else {
+          moreBtn.focus();
+        }
+      }
+    };
+
+    var layout = function () {
+      var active = document.activeElement;
+      var hadFocus = active && linkList.contains(active) && active !== moreBtn ? active : null;
+      var wasOpen = more.classList.contains("open");
+      // Put every link back, then measure what fits in one pass; the browser
+      // paints only the result.
+      items.forEach(function (li) {
+        linkList.insertBefore(li, more);
+      });
+      more.hidden = true;
+      var out = [];
+      if (!phone.matches) {
+        var gap = parseFloat(getComputedStyle(linkList).columnGap) || 0;
+        var room = linkList.clientWidth;
+        var widths = items.map(function (li) {
+          return li.offsetWidth;
+        });
+        var total = widths.reduce(function (a, w) {
+          return a + w;
+        }, 0) + gap * (items.length - 1);
+        if (total > room) {
+          more.hidden = false;
+          room -= more.offsetWidth + gap;
+          var used = 0;
+          var fit = 0;
+          while (fit < items.length && used + widths[fit] + (fit ? gap : 0) <= room) {
+            used += widths[fit] + (fit ? gap : 0);
+            fit++;
+          }
+          out = items.slice(fit);
+        }
+      }
+      out.forEach(function (li) {
+        moreList.appendChild(li);
+      });
+      more.hidden = out.length === 0;
+      more.classList.toggle("has-current", out.some(function (li) {
+        return li.querySelector('[aria-current="page"]');
+      }));
+      if (!out.length || phone.matches) setMore(false, false);
+      else if (wasOpen) setMore(true, false);
+      if (hadFocus && document.activeElement !== hadFocus) hadFocus.focus({ preventScroll: true });
+      nav.classList.add("ready");
+    };
+
+    moreBtn.addEventListener("click", function (e) {
+      setMore(!more.classList.contains("open"), e.detail === 0);
+    });
+    more.addEventListener("keydown", function (e) {
+      var open = more.classList.contains("open");
+      if (e.key === "Escape" && open) {
+        e.stopPropagation();
+        setMore(false, true);
+        return;
+      }
+      var links = Array.prototype.slice.call(moreList.querySelectorAll("a"));
+      var at = links.indexOf(document.activeElement);
+      var to = -1;
+      if (e.key === "ArrowDown") to = at < 0 ? 0 : (at + 1) % links.length;
+      else if (e.key === "ArrowUp") to = at < 0 ? links.length - 1 : (at - 1 + links.length) % links.length;
+      else if (e.key === "Home" && at >= 0) to = 0;
+      else if (e.key === "End" && at >= 0) to = links.length - 1;
+      if (to < 0) return;
+      e.preventDefault();
+      if (!open) setMore(true, false);
+      links[to].focus();
+    });
+    // Tabbing out closes it; a null relatedTarget (a tap) is not "left".
+    more.addEventListener("focusout", function (e) {
+      if (more.classList.contains("open") && e.relatedTarget && !more.contains(e.relatedTarget)) {
+        setMore(false, false);
+      }
+    });
+    document.addEventListener("pointerdown", function (e) {
+      if (more.classList.contains("open") && !more.contains(e.target)) setMore(false, false);
+    });
+    moreList.addEventListener("click", function () {
+      setMore(false, false);
+    });
+
+    var queued = false;
+    var relayout = function () {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(function () {
+        queued = false;
+        layout();
+      });
+    };
+    layout();
+    if ("ResizeObserver" in window) new ResizeObserver(relayout).observe(linkList);
+    else window.addEventListener("resize", relayout);
+    phone.addEventListener("change", relayout);
+    // Link widths change when the web font arrives.
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(relayout);
+  }
 })();
