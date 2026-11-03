@@ -11,6 +11,7 @@ The site for [Felix](https://github.com/GetFelix/felix). The blog is built with
 | `content/blog/` | One Markdown file per post, plus `_index.md` for the blog index. |
 | `cards/` | The illustration shown on each post's card in the list. |
 | `templates/` | The blog's page shell, header, footer, cards, feed and sitemap. |
+| `static/assets/img/felix-yarn.svg` | The full logo: the cat batting a ball of yarn, with the wordmark. The home page hero carries an animated inline copy of it (styles in `static/assets/home.css`); the PNG and WebP files beside it are exports for places that can't use SVG. The nav and favicon keep the head mark. |
 | `.github/scripts/notfound_art.py` | Writes the animated figure into `static/404.html`. Change the drawing or its timing there and rerun it; don't edit the generated markup by hand. |
 
 ## Preview
