@@ -377,6 +377,7 @@ p {
    ones that do not fit into the More menu; until it has, clip instead of wrap
    so nothing shifts. Without JS they wrap onto more rows. */
 .js .nav:not(.ready) .nav-links {
+  justify-content: flex-start;
   overflow: hidden;
 }
 html:not(.js) .nav-links {

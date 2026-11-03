@@ -147,6 +147,12 @@
     };
 
     var layout = function () {
+      // Phone width keeps every link in the row; nothing to measure.
+      if (phone.matches && !moreList.children.length) {
+        more.hidden = true;
+        nav.classList.add("ready");
+        return;
+      }
       var active = document.activeElement;
       var hadFocus = active && linkList.contains(active) && active !== moreBtn ? active : null;
       var wasOpen = more.classList.contains("open");
@@ -187,7 +193,10 @@
       }));
       if (!out.length || phone.matches) setMore(false, false);
       else if (wasOpen) setMore(true, false);
-      if (hadFocus && document.activeElement !== hadFocus) hadFocus.focus({ preventScroll: true });
+      if (hadFocus && document.activeElement !== hadFocus) {
+        // A link folded into the closed menu cannot hold focus; its button takes it.
+        (hadFocus.offsetParent ? hadFocus : moreBtn).focus({ preventScroll: true });
+      }
       nav.classList.add("ready");
     };
 
