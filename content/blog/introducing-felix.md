@@ -45,13 +45,13 @@ First the broker decodes the frame from the client's QUIC stream and checks the 
 
 Next the batch is persisted under the stream's fsync policy, and only then fanned out. Fanout builds one delivery envelope per batch and hands every subscriber a reference to it. The encoded frame is cached in the envelope, so the first subscriber to need it encodes it and everyone else gets a cheap copy of the same bytes. Ten subscribers or five hundred, the publish is encoded once.
 
-That last part is why fanout is what Felix is best at. On three 4-vCPU Azure brokers, with a real identity provider verifying every token, one stream on one broker delivered 256-byte messages to 500 subscribers at 1,004,273 messages a second with zero loss. The publisher's acknowledgement p50 went from 0.18 ms with one subscriber to 0.21 ms with five hundred. The conditions and the full table are on the [real-network performance page](https://docs.getfelix.dev/features/real-network-performance/#fanout).
+That last part is why fanout is what Felix is best at. On three 4-vCPU cloud VM brokers, one per availability zone, with a real identity provider verifying every token, one stream on one broker delivered 256-byte messages to 500 subscribers at 1,004,273 messages a second with zero loss. The publisher's acknowledgement p50 went from 0.18 ms with one subscriber to 0.21 ms with five hundred. The conditions and the full table are on the [real-network performance page](https://docs.getfelix.dev/features/real-network-performance/#fanout).
 
 ## A slow subscriber only slows itself {#slow-subscribers}
 
 Every subscriber has its own bounded queue on the broker. When one fills, the default policy, `DropNew`, drops the arriving record for that subscriber alone. The publisher never waits on it, and neither does anyone else. An operator can choose `Block` instead, which trades that isolation for never dropping.
 
-In the same Azure setup, 50 subscribers read one stream and 10 of them were slowed to 20 ms per delivery. The publisher's acknowledgement p50 stayed at 0.20 ms, the 40 healthy subscribers each received all 42,000 messages, and the slow ones dropped about 98% of theirs. The loss landed only where the reader fell behind.
+In the same setup, 50 subscribers read one stream and 10 of them were slowed to 20 ms per delivery. The publisher's acknowledgement p50 stayed at 0.20 ms, the 40 healthy subscribers each received all 42,000 messages, and the slow ones dropped about 98% of theirs. The loss landed only where the reader fell behind.
 
 Dropping is only safe if you can tell it happened. On a durable stream, every delivered event carries its log offset, so a jump in offsets is exactly a drop. The subscription ends at the first drop with the offset to resume from, and the cluster client resumes there from the log. I wrote up how that path works, and a bug in it, in [One slow subscriber shouldn't slow anyone else](/blog/one-slow-subscriber.html).
 

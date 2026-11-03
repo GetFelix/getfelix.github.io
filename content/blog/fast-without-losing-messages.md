@@ -13,7 +13,7 @@ card = "cards/fast-without-losing-messages.svg"
 
 A message broker has two jobs that pull against each other. It should answer quickly and move a lot of data, and it should never lose a message it was given. The easy way to look fast is to cut the second job short.
 
-Felix does both with a handful of ideas, none of them new, each put where it does the most good. This post walks through them, with the numbers from one broker on Azure and where each number comes from.
+Felix does both with a handful of ideas, none of them new, each put where it does the most good. This post walks through them, with the numbers from one cloud VM broker and where each number comes from.
 
 ## Two kinds of latency
 
@@ -86,7 +86,7 @@ On a three-broker cluster, forwarding added about 0.38 ms to an in-memory publis
 
 ## The numbers
 
-One broker on an Azure `Standard_L8as_v4` (8 vCPU, local NVMe in RAID0), over QUIC with TLS, with 64 publishers on four load generators. Throughput is the payload the broker accepted. These were measured on the final campaign build. The release build re-measured batched throughput within about 1% of them and latency within about 5%, except small fire-and-forget messages ([#1469](https://github.com/GetFelix/felix/issues/1469)).
+One broker on a cloud VM (8 vCPU, local NVMe drives striped as RAID0), over QUIC with TLS, with 64 publishers on four load generators. Throughput is the payload the broker accepted. The release build was re-measured and matched them, batched throughput within about 1% and latency within about 5%, except the small fire-and-forget cell, which came out lower.
 
 <div class="table-wrap">
       <table>

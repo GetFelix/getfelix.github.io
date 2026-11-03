@@ -19,6 +19,8 @@ Restarting is the best a cluster manager can do, because the cluster manager doe
 
 [felixd](https://github.com/GetFelix/felixd) starts from the other end. If every input a program receives is a record in a durable, ordered log, then the program's state at any moment is something you can rebuild. You don't need its memory. You need its inputs and a way to run it again.
 
+felixd is the node agent inside [NineLives](https://github.com/GetFelix/ninelives), a distributed operating system built on Felix. NineLives is still in design and is meant to ship felixd; felixd is the part you can run on its own, and the name this site uses for it.
+
 ## One log, every input
 
 In felixd a workload is a WebAssembly module whose only inputs and outputs are Felix streams. It has no clock, no random numbers, no files and no network. If it needs the time, the time arrives as a record. Given the same records, it reaches the same state every time.

@@ -139,7 +139,7 @@ The tag, the no-op check and retention each have a twin that breaks without them
 
 ## Trying it
 
-The model and every configuration are in [`docs/formal/`](https://github.com/GetFelix/felix/tree/main/docs/formal), and the [README](https://github.com/GetFelix/felix/blob/main/docs/formal/README.md) section "A trim is a record" walks through them. The design is in "Conditional head trim" in [`docs/replication-design.md`](https://github.com/GetFelix/felix/blob/main/docs/replication-design.md) and [`docs/durable-storage.md`](https://github.com/GetFelix/felix/blob/main/docs/durable-storage.md), and the decisions are in [#1662](https://github.com/GetFelix/felix/issues/1662). [#1663](https://github.com/GetFelix/felix/pull/1663) added the model.
+The model and every configuration are in [`docs/formal/`](https://github.com/GetFelix/felix/tree/main/docs/formal), and the [README](https://github.com/GetFelix/felix/blob/main/docs/formal/README.md) section "A trim is a record" walks through them. The design is in "Conditional head trim" in [`docs/replication-design.md`](https://github.com/GetFelix/felix/blob/main/docs/replication-design.md) and [`docs/durable-storage.md`](https://github.com/GetFelix/felix/blob/main/docs/durable-storage.md), and the decisions are in the [design issue](https://github.com/GetFelix/felix/issues/1662). The [pull request](https://github.com/GetFelix/felix/pull/1663) that added the trim also added the model.
 
 To watch TLC find the trace, from the repo root:
 

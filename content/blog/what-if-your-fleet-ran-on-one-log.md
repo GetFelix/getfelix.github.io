@@ -127,4 +127,4 @@ None of these pieces is new. MQTT brokers, Kafka and key-value stores have run f
 
 ## Join in
 
-The [design](https://github.com/GetFelix/felix/blob/main/docs/mqtt-design.md) is in the Felix repository, and the discussion is on [#1685](https://github.com/GetFelix/felix/issues/1685).
+The [design](https://github.com/GetFelix/felix/blob/main/docs/mqtt-design.md) is in the Felix repository, and the discussion is on the [tracking issue](https://github.com/GetFelix/felix/issues/1685).

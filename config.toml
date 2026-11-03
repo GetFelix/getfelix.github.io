@@ -32,11 +32,11 @@ blog_description = "Notes from building Felix: how it works, why it is built the
 # The pages that are plain files in static/. Their sitemap entries live here
 # because Zola does not see them.
 static_pages = [
-  { path = "/", lastmod = "2026-10-29" },
-  { path = "/features.html", lastmod = "2026-10-11" },
-  { path = "/guarantees.html", lastmod = "2026-10-11" },
-  { path = "/performance.html", lastmod = "2026-10-11" },
-  { path = "/projects.html", lastmod = "2026-10-17" },
-  { path = "/status.html", lastmod = "2026-10-11" },
-  { path = "/about.html", lastmod = "2026-10-16" },
+  { path = "/", lastmod = "2026-11-02" },
+  { path = "/features.html", lastmod = "2026-10-30" },
+  { path = "/guarantees.html", lastmod = "2026-10-30" },
+  { path = "/performance.html", lastmod = "2026-11-02" },
+  { path = "/projects.html", lastmod = "2026-11-02" },
+  { path = "/status.html", lastmod = "2026-11-02" },
+  { path = "/about.html", lastmod = "2026-11-02" },
 ]

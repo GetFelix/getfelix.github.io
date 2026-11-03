@@ -64,39 +64,39 @@ The lane hand-offs are bounded by count and wait when full, but that wait backs 
 
 ### Bounding bytes, not just entries
 
-For a long time the subscriber queue was bounded by entry count only. An entry is a whole published batch, which can be up to 16 MiB. A queue of 4096 entries could in principle hold 64 GiB for one stalled reader ([#1157](https://github.com/GetFelix/felix/issues/1157)).
+For a long time the subscriber queue was bounded by entry count only. An entry is a whole published batch, which can be up to 16 MiB. A queue of 4096 entries could in principle hold 64 GiB for one stalled reader.
 
-So the queue is now bounded by bytes as well ([#1159](https://github.com/GetFelix/felix/pull/1159)). Each subscriber has a semaphore sized in bytes, 128 MiB by default (`FELIX_SUB_QUEUE_MAX_BYTES`). Fanout takes permits for the batch's payload size with a non-blocking `try_acquire`, next to the queue slot. If either is full, the overflow policy applies, same as before.
+So the queue is now bounded by bytes as well. Each subscriber has a semaphore sized in bytes, 128 MiB by default (`FELIX_SUB_QUEUE_MAX_BYTES`). Fanout takes permits for the batch's payload size with a non-blocking `try_acquire`, next to the queue slot. If either is full, the overflow policy applies, same as before.
 
-Then I split that bound in two ([#1195](https://github.com/GetFelix/felix/issues/1195), [#1243](https://github.com/GetFelix/felix/pull/1243)). The queue bound covers what's waiting for the feeder. A second bound, `FELIX_SUB_EGRESS_MAX_BYTES`, covers what's in the writer lanes and the connection writer, 256 MiB per connection. Each subscription gets an equal share of that and waits only on its own share. A shared pool would let one stalled subscription take all of it and stall its neighbours on the connection.
+Then I split that bound in two. The queue bound covers what's waiting for the feeder. A second bound, `FELIX_SUB_EGRESS_MAX_BYTES`, covers what's in the writer lanes and the connection writer, 256 MiB per connection. Each subscription gets an equal share of that and waits only on its own share. A shared pool would let one stalled subscription take all of it and stall its neighbours on the connection.
 
-The same pull request bounded the replay ring each shard keeps for resumes, at 64 MiB, and each cache watch's queue, at 64 MiB ([#1201](https://github.com/GetFelix/felix/issues/1201)). A watch that would go over ends as lagged, and the client re-watches from where it stopped.
+The same change also bounded the replay ring each shard keeps for resumes, at 64 MiB, and each cache watch's queue, at 64 MiB. A watch that would go over ends as lagged, and the client re-watches from where it stopped.
 
 There's also an optional broker-wide total across all subscriber queues. It's off by default, because it gives up the property this post is about. Once slow subscribers fill a shared total, fast ones start dropping too.
 
 ## The regression
 
-Before a release, I compare it against the previous one. After #1243 merged, the single-publisher cells were slower than the release before it. This is one publisher on one connection, sending 256-byte messages one at a time, at fanout 1 and fanout 10.
+Before a release, I compare it against the previous one. After the byte-budget split merged, the single-publisher cells were slower than the release before it. This is one publisher on one connection, sending 256-byte messages one at a time, at fanout 1 and fanout 10.
 
 The gap was small. Against the previous release, fanout 1 was 2.4% slower and fanout 10 was 2.1% slower, at p=0.003 and p=0.03. On that runner it was around 6,000 messages a second, so 2% is about 130 messages a second. It held up on every rerun.
 
-The per-PR perf check hadn't caught it. That check compares a branch against its merge-base and flags a change only past 3%. #1243 was also judged on a different cell, 64 KiB batches at fanout 10, which got faster.
+The per-PR perf check hadn't caught it. That check compares a branch against its merge-base and flags a change only past 3%. The split was also judged on a different cell, 64 KiB batches at fanout 10, which got faster.
 
 ### How I found it
 
 Each step of the hunt was a throwaway draft pull request whose only job was to run the perf workflow. The workflow builds the baseline and the candidate and runs both on the same runner, 15 trials each, and compares them with Welch's t-test. Running both sides on one machine removes most of the noise you get on shared CI runners. This kind of difference is invisible in a comparison against numbers stored from last week.
 
-The bisect landed cleanly. The commit just before #1243 matched the previous release, at +0.6% and +0.7%. #1243 itself was at -2.2% and -0.8% ([#1289](https://github.com/GetFelix/felix/pull/1289), [#1290](https://github.com/GetFelix/felix/pull/1290)).
+The bisect landed cleanly. The commit just before the split matched the previous release, at +0.6% and +0.7%. The split itself was at -2.2% and -0.8%.
 
-\#1243 changed several things, so I tried them one at a time in the same kind of throwaway PR. A lock-free version of the release I was suspicious of moved nothing, +0.1% and -0.2% against main.
+The split changed several things, so I tried them one at a time in the same kind of throwaway PR. A lock-free version of the release I was suspicious of moved nothing, +0.1% and -0.2% against main.
 
 What did move it was where the feeder gave a batch's bytes back to the subscriber's queue bound.
 
 ## The fix
 
-In #1243, the feeder released the subscriber's bytes as soon as it took a batch off the queue. That was the point of the split: once the feeder has a batch, it counts against the egress share, not the queue. The release happened inside `carry`, before the frame was encoded or handed to a lane.
+In the split, the feeder released the subscriber's bytes as soon as it took a batch off the queue. That was the point of the split: once the feeder has a batch, it counts against the egress share, not the queue. The release happened inside `carry`, before the frame was encoded or handed to a lane.
 
-The fix keeps the hold until the frame is in the lanes ([#1309](https://github.com/GetFelix/felix/pull/1309)):
+The fix keeps the hold until the frame is in the lanes:
 
 <pre class="code" data-lang="Rust" tabindex="0"><code><span class="tok-c">// Given back at the end of this pass, once the frame is handed to the</span>
 <span class="tok-c">// lanes. Giving it back before encoding put the release on the</span>
@@ -114,7 +114,7 @@ If the feeder is about to wait out its flush delay for more events, it drops the
       <figcaption><b>Figure 4</b>The same release, moved. It used to sit between taking the batch and encoding it; now it runs at the end of the pass, once the frame is in the lanes.</figcaption>
     </figure>
 
-Against the previous release, the single-publisher cells came back to -0.4% and -0.0%, neither significant (p=0.45 and p=0.83). Tail latency was level too, with p99 at +0.0% and -1.4%. The 64 KiB fanout-10 cell was 10.8% faster than the previous release (p=0.0004). Most of that came with #1243's split itself. The fix kept it.
+Against the previous release, the single-publisher cells came back to -0.4% and -0.0%, neither significant (p=0.45 and p=0.83). Tail latency was level too, with p99 at +0.0% and -1.4%. The 64 KiB fanout-10 cell was 10.8% faster than the previous release (p=0.0004). Most of that came with the split itself. The fix kept it.
 
 ### Why a one-line move mattered
 
@@ -130,7 +130,7 @@ One caveat: a later experiment showed that Felix's build is sensitive to code la
 
 The subscriber's queue bound now covers a little more than it did. It holds a batch through the encode and the hand-off to the lane, and under a `block` lane policy, through any wait for lane room. That's one frame per subscription, held slightly longer.
 
-Releasing at the moment of the write was faster again. But that would put the batch back under the queue bound while it sits in the lanes, which is what #1195's split was meant to remove: a batch being written shouldn't look like the subscriber falling behind. I kept the split.
+Releasing at the moment of the write was faster again. But that would put the batch back under the queue bound while it sits in the lanes, which is what the split was meant to remove: a batch being written shouldn't look like the subscriber falling behind. I kept the split.
 
 ## What we learned
 
@@ -140,9 +140,9 @@ Small regressions hide well. A 2% loss sits under the per-PR threshold and looks
 
 Compare against the last release, not just the last commit. Each PR was checked against its merge-base, and each one looked fine. The release comparison is what showed that one of them had cost 2%.
 
-A pull request can be judged on the wrong cell. #1243 targeted large payloads and was checked there, where it got faster. The cost landed in the small-message path, which nobody was watching for that change.
+A pull request can be judged on the wrong cell. The split targeted large payloads and was checked there, where it got faster. The cost landed in the small-message path, which nobody was watching for that change.
 
-## What we'll do differently
+## What we do about it {#what-well-do-differently}
 
 Every release gets an A/B against the previous release before it's tagged. Same runner for both sides, 20 trials, on three runner classes, Welch's t-test per cell. A release has to match the previous one; a significant loss gets bisected and fixed, not written up.
 

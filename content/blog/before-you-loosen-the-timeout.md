@@ -33,7 +33,7 @@ The wait for a quorum read "no mark at this generation" as "I am not the leader"
       <figcaption><b>Figure 2</b>Same runner in a new lane. The referee read an empty hand as a quitter.</figcaption>
     </figure>
 
-The fix is `MarkTable::wait_while_leading`. It follows the generation this broker leads. If there is no mark yet, it waits for one, and it re-checks every 50 ms that the broker still leads the shard. Only losing leadership ends the wait with `NotLeading` ([#796](https://github.com/GetFelix/felix/issues/796)).
+The fix is `MarkTable::wait_while_leading`. It follows the generation this broker leads. If there is no mark yet, it waits for one, and it re-checks every 50 ms that the broker still leads the shard. Only losing leadership ends the wait with `NotLeading`.
 
 The test only failed under heavy CPU starvation. With 16 busy processes on 16 cores, 26 of 30 runs failed that way on main and none did with the fix. With 8 busy processes, 20 of 20 passed either way. A bound that was loose enough for 8 processes would have hidden a real refusal that production could hit on a bad day.
 
@@ -65,7 +65,7 @@ This was the A/B habit in full. I ran the test interleaved, A then B then A then
 
 The old commit never lost an event, and the knob that restores the old queue depth removed the drops on main. That pointed at the scheduler, and the broker counter `felix_sub_queue_dropped_total` showed drops on healthy subscribers.
 
-The cause was an executor loop. With a backlog queued, a publish executor takes the next job and fans it out to subscribers without ever suspending. The feeders it had just woken could not run until it stopped, so their queues overflowed even though they read fast enough. The fix is one line, a `yield_now()` after every job. A single-threaded test queues 32 publishes behind a subscriber queue of 4 and checks that the subscriber receives all 32. With the line commented out it received 4 ([#802](https://github.com/GetFelix/felix/issues/802)).
+The cause was an executor loop. With a backlog queued, a publish executor takes the next job and fans it out to subscribers without ever suspending. The feeders it had just woken could not run until it stopped, so their queues overflowed even though they read fast enough. The fix is one line, a `yield_now()` after every job. A single-threaded test queues 32 publishes behind a subscriber queue of 4 and checks that the subscriber receives all 32. With the line commented out it received 4.
 
 ## A lease that was checked too late
 
@@ -75,13 +75,13 @@ The guess in the issue was that the freeze outlasted the lease on the wall clock
 
 The clock-fault file is only re-read when the process reads the clock. The harness waits 250 ms and assumes the lease refresh loop reads the clock about that often. It did not. That loop picked its period once at startup, from a placeholder 10 s lease: 470 ms. The real 1 s lease, adopted on the first heartbeat, never changed it. So an idle leader could go more than 250 ms without a clock read.
 
-Safety was never at risk, because the commit-time check reads the clock directly. But the cached admission flag, the `felix_broker_lease_held` gauge and the notification that ends a deposed leader's readers could be 470 ms late instead of 47 ms. The refresh loop now recomputes its period from the current lease on every pass ([#1088](https://github.com/GetFelix/felix/issues/1088)).
+Safety was never at risk, because the commit-time check reads the clock directly. But the cached admission flag, the `felix_broker_lease_held` gauge and the notification that ends a deposed leader's readers could be 470 ms late instead of 47 ms. The refresh loop now recomputes its period from the current lease on every pass.
 
 ## One that really was the test
 
 Not every failure is a product bug. A consumer group test polled right after three acknowledged publishes and got only the first record. A poll that returned nothing or part of the data looked like a visibility race.
 
-It reproduced in 229 of 300 runs with six copies in parallel. The broker in that test acknowledges a `Leader` publish once it is queued, before the write, and `docs/semantics.md` already said so. Nothing in the group path was wrong. The test now asks for commit acknowledgements, and the docs say plainly that an enqueue ack does not make a record readable ([#1038](https://github.com/GetFelix/felix/issues/1038)).
+It reproduced in 229 of 300 runs with six copies in parallel. The broker in that test acknowledges a `Leader` publish once it is queued, before the write, and `docs/semantics.md` already said so. Nothing in the group path was wrong. The test now asks for commit acknowledgements, and the docs say plainly that an enqueue ack does not make a record readable.
 
 I count that one in favour of the habit. I did not loosen anything, and I could say why the test was wrong.
 
