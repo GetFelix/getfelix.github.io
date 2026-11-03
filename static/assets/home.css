@@ -945,7 +945,23 @@
    writes "Felix". Every element's resting style is the final frame and the
    animations only fill backwards, so reduced motion (site.css drops all CSS
    animations) shows the finished logo. The arm bends through SMIL path
-   keyframes in the markup; a script beside it pauses those. */
+   keyframes in the markup, as are the ball's swing and spin, so they share one
+   clock; a script beside it pauses those. */
+/* The badge is a button that replays the animation. */
+.logo-replay {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+.logo-replay:focus-visible {
+  border-radius: 50%;
+}
 .yarn-logo {
   --yl-ink: #0f1419;
   --yl-paper: #fff;
@@ -959,19 +975,18 @@
   overflow: visible;
   filter: var(--logo-halo) drop-shadow(0 20px 36px rgba(0, 20, 30, 0.2));
 }
-.yarn-logo.yarn-red {
-  --yl-yarn: #d9482f;
-  --yl-yarn-deep: #9e2c1b;
-}
 /* The badge stays a light disc in every theme, so the cat keeps its black
-   coat; only the paper dims a little against a dark page. */
+   coat. On dark pages the paper dims a little and the brighter dark accent is
+   pulled toward ink so the yarn still reads on the light disc. */
 :root[data-theme="dark"] .yarn-logo,
 :root[data-theme="solarized"] .yarn-logo {
   --yl-paper: #e9eef1;
+  --yl-yarn: color-mix(in srgb, var(--accent) 72%, var(--yl-ink));
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .yarn-logo {
     --yl-paper: #e9eef1;
+    --yl-yarn: color-mix(in srgb, var(--accent) 72%, var(--yl-ink));
   }
 }
 .yarn-logo .yl-paper {
@@ -995,8 +1010,16 @@
   stroke-width: 7;
   stroke-linecap: round;
 }
+/* The cyan lead runs just ahead of the ink and fades once the word is
+   written, so no cyan fringe is left around the letters. */
 .yarn-logo .yl-lead {
   fill: var(--yl-yarn);
+  opacity: 0;
+  animation: yl-fade 0.3s var(--yl-end) backwards;
+}
+/* The ring opens around the F only as the F's tail is written. */
+.yarn-logo .yl-cut {
+  animation: yl-uncut 0.15s var(--d) backwards;
 }
 .yarn-logo .yl-word {
   fill: var(--yl-word);
@@ -1009,63 +1032,24 @@
 .yarn-logo mask .yl-draw {
   animation-timing-function: cubic-bezier(0.45, 0, 0.35, 1);
 }
-.yarn-logo .yl-swing,
-.yarn-logo .yl-ball {
-  transform-box: view-box;
+.yarn-logo.yl-reset,
+.yarn-logo.yl-reset * {
+  animation: none !important;
 }
-/* The ball hangs from the paw on a short strand: it swings about the claw
-   and spins a little, so the strand never comes loose. */
-.yarn-logo .yl-swing {
-  transform-origin: 473.9px 307.8px;
-  animation: yl-swing 1.4s 0.72s backwards;
+@keyframes yl-fade {
+  from {
+    opacity: 1;
+  }
 }
-.yarn-logo .yl-ball {
-  transform-origin: 352.7px 219.8px;
-  animation: yl-spin 1.4s 0.72s backwards;
+@keyframes yl-uncut {
+  from {
+    fill: #fff;
+    stroke: #fff;
+  }
 }
 @keyframes yl-draw {
   from {
     stroke-dashoffset: 1.01;
-  }
-}
-@keyframes yl-swing {
-  0% {
-    transform: none;
-    animation-timing-function: cubic-bezier(0.15, 0.7, 0.3, 1);
-  }
-  22% {
-    transform: rotate(7deg);
-    animation-timing-function: ease-in-out;
-  }
-  48% {
-    transform: rotate(-3.5deg);
-    animation-timing-function: ease-in-out;
-  }
-  72% {
-    transform: rotate(1.2deg);
-    animation-timing-function: ease-in-out;
-  }
-  88% {
-    transform: rotate(-0.4deg);
-    animation-timing-function: ease-in-out;
-  }
-}
-@keyframes yl-spin {
-  0% {
-    transform: none;
-    animation-timing-function: cubic-bezier(0.15, 0.7, 0.3, 1);
-  }
-  25% {
-    transform: rotate(-14deg);
-    animation-timing-function: ease-in-out;
-  }
-  55% {
-    transform: rotate(4deg);
-    animation-timing-function: ease-in-out;
-  }
-  80% {
-    transform: rotate(-1deg);
-    animation-timing-function: ease-in-out;
   }
 }
 /* end hero logo */
