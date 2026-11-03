@@ -19,7 +19,7 @@ Restarting is the best a cluster manager can do, because the cluster manager doe
 
 [felixd](https://github.com/GetFelix/felixd) starts from the other end. If every input a program receives is a record in a durable, ordered log, then the program's state at any moment is something you can rebuild. You don't need its memory. You need its inputs and a way to run it again.
 
-felixd is the node agent inside [NineLives](https://github.com/GetFelix/ninelives), a distributed operating system built on Felix. NineLives is the image that ships felixd; felixd is the part you can run on its own, and the name this site uses for it.
+felixd is the node agent inside [NineLives](https://github.com/GetFelix/ninelives), a distributed operating system built on Felix. NineLives is still in design and is meant to ship felixd; felixd is the part you can run on its own, and the name this site uses for it.
 
 ## One log, every input
 

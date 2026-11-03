@@ -70,7 +70,7 @@ So the queue is now bounded by bytes as well. Each subscriber has a semaphore si
 
 Then I split that bound in two. The queue bound covers what's waiting for the feeder. A second bound, `FELIX_SUB_EGRESS_MAX_BYTES`, covers what's in the writer lanes and the connection writer, 256 MiB per connection. Each subscription gets an equal share of that and waits only on its own share. A shared pool would let one stalled subscription take all of it and stall its neighbours on the connection.
 
-The same pull request bounded the replay ring each shard keeps for resumes, at 64 MiB, and each cache watch's queue, at 64 MiB. A watch that would go over ends as lagged, and the client re-watches from where it stopped.
+The same change also bounded the replay ring each shard keeps for resumes, at 64 MiB, and each cache watch's queue, at 64 MiB. A watch that would go over ends as lagged, and the client re-watches from where it stopped.
 
 There's also an optional broker-wide total across all subscriber queues. It's off by default, because it gives up the property this post is about. Once slow subscribers fill a shared total, fast ones start dropping too.
 

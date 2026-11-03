@@ -19,7 +19,7 @@
   {%- endfor %}
   {%- set topics = get_taxonomy(kind="topics") %}
   <url>
-    <loc>{{ get_url(path="topics/") }}</loc>
+    <loc>{{ config.base_url }}/topics/</loc>
   </url>
   {%- for term in topics.items %}
   <url>

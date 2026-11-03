@@ -78,7 +78,7 @@ Replication requests name the incarnation in a small `Incarnated` envelope. A fo
 
 Incarnations change what the control plane stores, so they ship as a fleet feature. Brokers report the features they implement, and an operator finalizes one when the whole fleet supports it. Finalizing is one-way. The control plane refuses it while any serving broker lacks the feature, and refuses an older broker's registration after it.
 
-The Raft side has its own gate. Each member runs at a metadata level, and the group runs at its lowest member's level. An earlier preview build is at level 8. Stream incarnations need level 10, and cache incarnations need 14. An upgraded member refuses to finalize `stream_incarnations` with a 409 until every member is at 10.
+The Raft side has its own gate. Each member runs at a metadata level, and the group runs at its lowest member's level. A build from before the fix is at level 8. Stream incarnations need level 10, and cache incarnations need 14. An upgraded member refuses to finalize `stream_incarnations` with a 409 until every member is at 10.
 
 The review of that change found the hole in that gate. A member on that earlier build doesn't know `stream_incarnations`. It reads its finalize as an ordinary level-2 fleet feature finalize, and proposes it. So the finalize can commit while that member is still in the group.
 
@@ -134,7 +134,7 @@ A name is not an identity. The directory said `orders`, and so did the new strea
 
 Every replicated state machine change is also an upgrade problem. The first version of the feature was correct on a group of identical members. It was wrong on a group halfway through a roll, which is the only kind of group that ever applies the switch-on. The gate on the finalize looked like protection, but an old member doesn't know the gate exists.
 
-Check claims about release history against the tags. The first version of the rollout fix assumed that only builds that never shipped could hit the divergence. Looking at the tag showed the earlier preview at level 8, which was exactly the release that could. `git show <tag>:<path>` answers that kind of question in one line. Memory, or a confident sentence in a PR description, doesn't.
+Check claims about release history against the tags. The first version of the rollout fix assumed that only builds that never shipped could hit the divergence. Looking at the tag showed a build from before the fix at level 8, which was exactly the release that could. `git show <tag>:<path>` answers that kind of question in one line. Memory, or a confident sentence in a PR description, doesn't.
 
 ## What we do about it {#what-well-do-differently}
 
