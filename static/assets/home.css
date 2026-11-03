@@ -965,6 +965,8 @@
 .yarn-logo {
   --yl-ink: #0f1419;
   --yl-paper: #fff;
+  /* Opacity of the badge's disc: 1 is solid, lower lets the page show through. */
+  --yl-disc: 0.7;
   --yl-yarn: var(--accent);
   --yl-yarn-deep: color-mix(in srgb, var(--accent) 62%, var(--yl-ink));
   --yl-word: var(--yl-ink);
@@ -990,6 +992,12 @@
   }
 }
 .yarn-logo .yl-paper {
+  fill: var(--yl-paper);
+  fill-opacity: var(--yl-disc);
+}
+/* The cat's silhouette stays solid on the see-through disc, so its white
+   details and the gaps between its parts never show the page. */
+.yarn-logo .yl-fill {
   fill: var(--yl-paper);
 }
 .yarn-logo .yl-ring {
