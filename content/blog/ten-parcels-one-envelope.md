@@ -96,13 +96,13 @@ The nice surprise is that 4,096 was also the fastest thing we measured on Linux 
 
 ## On real hardware
 
-Loopback is one thing, so we also tried it on Azure VMs with Mellanox (mlx5) NICs. Raising the NIC MTU from 1,500 to 3,900 needed no code change. quinn discovered the larger path, and the 4,096 default bound already covered it. I checked the path first with full-size, don't-fragment pings from every load generator.
+Loopback is one thing, so we also tried it on cloud VMs with Mellanox (mlx5) NICs. Raising the NIC MTU from 1,500 to 3,900 needed no code change. quinn discovered the larger path, and the 4,096 default bound already covered it. I checked the path first with full-size, don't-fragment pings from every load generator.
 
 With four listeners, throughput went from 2,156 MB/s to 3,995 MB/s, about +85%. Per broker core it went from 300 to 537 MB/s, about +79%. With one listener it roughly doubled, from 831 to 1,724 MB/s ([#721](https://github.com/GetFelix/felix/issues/721)).
 
 My per-byte model had predicted +20-35%. The real gain was much bigger because most of the cost was per packet, not per byte. QUIC decrypts, parses and ACKs in user space for every packet, and the kernel's receive path is per packet too. At 3,900 there were 2.67 times fewer packets, and the kernel receive cost per gigabyte fell about 45%.
 
-Two caveats. Azure supports an MTU above 1,500 only inside a VNet or same-region peering, so this was VNet-internal traffic. Anything crossing the internet is still at 1,500. And the gain is specific to UDP and QUIC. TCP hands the kernel a byte stream, and TCP segmentation offload and GRO cut and coalesce it in large units even at 1,500 ([kernel docs, Segmentation Offloads](https://docs.kernel.org/networking/segmentation-offloads.html)). A QUIC stack doesn't get that for free, so the MTU matters much more.
+Two caveats. Some cloud networks allow jumbo frames only inside a private network, so this was private-network traffic. Anything crossing the internet is still at 1,500. And the gain is specific to UDP and QUIC. TCP hands the kernel a byte stream, and TCP segmentation offload and GRO cut and coalesce it in large units even at 1,500 ([kernel docs, Segmentation Offloads](https://docs.kernel.org/networking/segmentation-offloads.html)). A QUIC stack doesn't get that for free, so the MTU matters much more.
 
 ## What it costs or where it stops
 

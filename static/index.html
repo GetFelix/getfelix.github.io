@@ -147,6 +147,10 @@
       </div>
       <h1 class="hero-title rise" style="--d:1" id="hero-title"><span class="accent">One system</span> for your events, state and&nbsp;work.</h1>
       <p class="lede rise" style="--d:2">Felix is an open-source, distributed platform for streams, caches, queues and counters, all on one replicated log. Written in Rust.</p>
+      <p class="hero-for rise" style="--d:2">For teams that run a stream broker, a cache and a queue as separate systems today.</p>
+      <div class="hero-install rise" style="--d:3">
+        <div class="cmd"><code>curl -fsSLO https://raw.githubusercontent.com/GetFelix/felix/<!--release:felix:tag-->v0.6.2<!--/release:felix:tag-->/compose.yaml &amp;&amp; docker compose up</code><button class="icon-btn" type="button" data-copy aria-label="Copy the quick start command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
+      </div>
       <div class="hero-actions rise" style="--d:3">
         <a class="btn btn-primary" href="#get-started">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
@@ -575,7 +579,7 @@ cleanup:
             <div class="tz-stats" role="img" aria-labelledby="tz-p-t"><span class="visually-hidden" id="tz-p-t">Measured on one broker: 4.4 GB/s acked with nothing lost, 1.4 GB/s fsynced to disk, and 0.31 milliseconds at p50 to acknowledge one fsynced publish.</span><div class="tz-stat" aria-hidden="true"><span class="tz-num">4.4<small>GB/s</small></span><span class="tz-cap">acked, nothing lost</span></div><div class="tz-stat" aria-hidden="true"><span class="tz-num">1.4<small>GB/s</small></span><span class="tz-cap">durable, fsynced</span></div><div class="tz-stat wide" aria-hidden="true"><span class="tz-num">0.31<small>ms p50</small></span><span class="tz-cap">one fsynced publish, acked</span><span class="tz-bar"><i></i></span></div></div>
           </div>
           <h3>Measured on one broker</h3>
-          <p>Felix 0.6.0 on one 8 vCPU Azure VM with local NVMe: gigabytes a second, and an fsynced publish acknowledged in about a third of a millisecond when the broker is not saturated.</p>
+          <p>Felix 0.6.0 on one 8 vCPU cloud VM with local NVMe drives: gigabytes a second, and an fsynced publish acknowledged in about a third of a millisecond when the broker is not saturated.</p>
           <a class="text-link" href="/performance.html">Throughput and latency<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
         </article>
       </div>
@@ -689,9 +693,9 @@ docker compose up -d</code></pre>
           <div class="card-media framed">
             <picture>
               <source srcset="/assets/img/arena-frame.webp" type="image/webp">
-              <img src="/assets/img/arena-frame.jpg" alt="Felix Arena style frame: a walled arena seen from above, with Coral and Violet hover-craft trading shots" width="1600" height="900" loading="lazy" decoding="async">
+              <img src="/assets/img/arena-frame.jpg" alt="Felix Arena mockup: a walled arena seen from above, with Coral and Violet hover-craft trading shots" width="1600" height="900" loading="lazy" decoding="async">
             </picture>
-            <span class="media-caption">Style frame</span>
+            <span class="media-caption">Mockup</span>
           </div>
           <div class="badge-mark">
             <picture>
@@ -705,7 +709,7 @@ docker compose up -d</code></pre>
               <h3><a href="https://github.com/GetFelix/felix-arena">felix-arena</a></h3>
               <span class="status ok"><!--release:felix-arena:version-->0.1.7<!--/release:felix-arena:version--></span>
             </div>
-            <p>A browser team deathmatch in 3D, played through Felix with the simulation deciding every hit. A kill cam replayed from the match's log is next.</p>
+            <p>A browser team deathmatch in 3D, played through Felix with the simulation deciding every hit. When you are destroyed, the kill cam replays the last seconds from the match's log in Felix.</p>
             <div class="card-links">
               <a href="https://github.com/GetFelix/felix-arena"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>GitHub</a>
               <a href="https://docs.getfelix.dev/built-on-felix/arena/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v16H6.5A2.5 2.5 0 0 0 4 21.5Z"/><path d="M8 7h8"/></svg>Docs<span class="visually-hidden"> for felix-arena</span></a>

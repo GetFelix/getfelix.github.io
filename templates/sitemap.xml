@@ -17,4 +17,13 @@
     <lastmod>{% if page.updated %}{{ page.updated }}{% else %}{{ page.date | date(format="%Y-%m-%d") }}{% endif %}</lastmod>
   </url>
   {%- endfor %}
+  {%- set topics = get_taxonomy(kind="topics") %}
+  <url>
+    <loc>{{ get_url(path="topics/") }}</loc>
+  </url>
+  {%- for term in topics.items %}
+  <url>
+    <loc>{{ term.permalink | safe }}</loc>
+  </url>
+  {%- endfor %}
 </urlset>
