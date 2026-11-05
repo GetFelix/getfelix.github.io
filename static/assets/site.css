@@ -1501,3 +1501,11 @@ html:not(.js) .site-header .wrap {
 .peek-cat .p {
   fill: #06121a;
 }
+
+.footer-about .footer-motto {
+  margin-top: 10px;
+  min-height: 1.6em;
+  color: var(--accent-text);
+  font-size: 14px;
+  font-style: italic;
+}

@@ -2161,3 +2161,49 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* "Why a cat?" band under the intro. */
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+.cat-card {
+  padding: 24px;
+  border-radius: var(--radius);
+  background: var(--card-bg);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-md);
+}
+.cat-mark {
+  display: block;
+  margin-bottom: 14px;
+}
+.cat-mark img {
+  display: inline-block;
+}
+.cat-card .ficon {
+  width: 36px;
+  height: 36px;
+  margin-bottom: 14px;
+}
+.cat-card .ficon svg {
+  width: 18px;
+  height: 18px;
+}
+.cat-card h3 {
+  font-size: 19px;
+  font-weight: 650;
+  letter-spacing: -0.018em;
+}
+.cat-card p {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 15.5px;
+  line-height: 1.6;
+}
+@media (max-width: 760px) {
+  .cat-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

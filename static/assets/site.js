@@ -251,4 +251,30 @@
     // Link widths change when the web font arrives.
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(relayout);
   }
+
+  // Footer line. The first one is in the HTML for no-JS readers and crawlers.
+  // On load pick another at random, never the one shown last. The element
+  // keeps its height, so nothing moves.
+  var mottos = [
+    "Lucky by name. Resilient by design.",
+    "Lands on its feet when a broker falls.",
+    "Nine lives, one log.",
+    "Follows the leader, paw for paw.",
+    "One slow reader never stalls the rest.",
+    "Built so you don\u2019t have to be lucky."
+  ];
+  var motto = document.querySelector(".footer-motto");
+  if (motto) {
+    var last = -1;
+    try {
+      last = parseInt(sessionStorage.getItem("motto"), 10);
+    } catch (e) {}
+    var pick = Math.floor(Math.random() * (mottos.length - (last >= 0 && last < mottos.length ? 1 : 0)));
+    if (pick >= last && last >= 0 && last < mottos.length) pick += 1;
+    if (isNaN(pick)) pick = 0;
+    motto.textContent = mottos[pick];
+    try {
+      sessionStorage.setItem("motto", String(pick));
+    } catch (e) {}
+  }
 })();
