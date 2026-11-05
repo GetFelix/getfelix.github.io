@@ -251,4 +251,18 @@
     // Link widths change when the web font arrives.
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(relayout);
   }
+
+  // Footer line. The first one is in the HTML for no-JS readers and crawlers;
+  // pick one at random on load. The element keeps its height, so nothing moves.
+  var mottos = [
+    "Felix is Latin for lucky. Built so you don\u2019t have to be.",
+    "A falling cat rights itself in midair. A Felix cluster rights itself when a broker falls.",
+    "A cat\u2019s back paws land in its front paws\u2019 prints. Felix replicas follow the leader\u2019s log, record for record.",
+    "Legend gives a cat nine lives. Felix gives every node a log to come back from.",
+    "A cat\u2019s whiskers tell it what fits. Felix gives every subscriber a bounded queue, so one slow reader never stalls the rest.",
+    "A cat can leap several times its own length. Felix moves a shard to another broker while clients keep publishing.",
+    "Cats spend hours a day grooming. Felix trims old segments on a schedule."
+  ];
+  var motto = document.querySelector(".footer-motto");
+  if (motto) motto.textContent = mottos[Math.floor(Math.random() * mottos.length)];
 })();
