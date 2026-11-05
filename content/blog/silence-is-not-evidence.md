@@ -53,7 +53,7 @@ That step answered `Pending`, which means "not yet, try again next pass". A pend
       <figcaption><b>Figure 2</b>Named leader at 70 a moment before its routes caught up, broker-1 stood against the old leader at 71 on its own copy. Its own copy then stopped counting toward the leader at 70.</figcaption>
     </figure>
 
-The failover canary at 2100 streams found the next one ([#1933](https://github.com/GetFelix/felix/issues/1933)). With broker-2 down, the control plane named broker-1 leader of `wl-0069` at generation 70, and broker-1 started serving. Eighty-five milliseconds later, broker-1 stood for election at 71 against broker-2.
+A failover run across 2,100 streams found the next one ([#1933](https://github.com/GetFelix/felix/issues/1933)). With broker-2 down, the control plane named broker-1 leader of one shard at generation 70, and broker-1 started serving. Eighty-five milliseconds later, broker-1 stood for election at 71 against broker-2.
 
 A broker that is named leader takes its ballot before its routes are published. A candidate round on broker-1 was already running against broker-2, and it read routes that still named broker-2 at 69. It saw its copy's ballot at 70, stood one past it at 71, and withdrew three seconds later.
 
