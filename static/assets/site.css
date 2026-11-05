@@ -1503,7 +1503,9 @@ html:not(.js) .site-header .wrap {
 }
 
 .footer-about .footer-motto {
-  margin-top: 8px;
-  min-height: 6.4em;
-  color: var(--text);
+  margin-top: 10px;
+  min-height: 1.6em;
+  color: var(--accent-text);
+  font-size: 14px;
+  font-style: italic;
 }
