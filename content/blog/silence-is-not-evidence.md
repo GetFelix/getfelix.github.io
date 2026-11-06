@@ -1,7 +1,7 @@
 +++
 title = "Silence is not evidence"
 description = "Felix's failover tests kept finding shards that waited forever for an answer nobody was going to send. Each fix gives the wait an end a node can actually observe."
-date = 2026-11-05T10:00:00
+date = 2026-11-05T15:10:05-08:00
 slug = "silence-is-not-evidence"
 path = "blog/silence-is-not-evidence.html"
 
