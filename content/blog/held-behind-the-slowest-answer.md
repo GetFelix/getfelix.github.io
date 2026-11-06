@@ -1,7 +1,7 @@
 +++
 title = "Held behind the slowest answer"
 description = "One shard stuck on a quorum held back the answers of every shard sharing its publish stream, because the broker answered pipelined publishes in request order. Now plain publishes are answered as they finish, behind a negotiated feature bit, and idempotent ones keep their order."
-date = 2026-11-05T14:00:00
+date = 2026-11-05T08:08:31-08:00
 slug = "held-behind-the-slowest-answer"
 path = "blog/held-behind-the-slowest-answer.html"
 [taxonomies]
