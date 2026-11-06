@@ -32,7 +32,7 @@ A **ballot** is a copy's promise, kept on disk, to follow only one leader at a g
 
 A **fence** is how a new leader takes over. It asks its replica set for ballots at its generation and serves only once a majority has given one. A copy that gave its ballot stops taking writes from the old leader.
 
-With replica election on, followers can replace a dead leader without the control plane. A follower **stands**: it takes a ballot one generation up for itself and fences. If the standing doesn't open within a few seconds, it withdraws. Its ballot stays behind, because a ballot is never taken back. [Failover without the control plane](https://docs.getfelix.dev/deployment/failover-without-control-plane/) walks through all of this step by step.
+With replica election on, followers can replace a dead leader without the control plane. A follower **stands**: it takes a ballot one generation up for itself and fences. If the standing doesn't open within a few seconds, it withdraws. Its ballot stays behind, because a ballot is never taken back. [Failover without the control plane](https://docs.getfelix.dev/next/deployment/failover-without-control-plane/) walks through all of this step by step.
 
 ## What we found
 
@@ -116,4 +116,4 @@ Where we did have to act on silence, we limited what a wrong guess can cost. The
 
 ## Trying it
 
-[Failover without the control plane](https://docs.getfelix.dev/deployment/failover-without-control-plane/) explains elections, what you see when one happens, and [how to turn them on](https://docs.getfelix.dev/deployment/failover-without-control-plane/#turning-it-on). The leader and placement rules are in [`docs/replication-design.md`](https://github.com/GetFelix/felix/blob/main/docs/replication-design.md#electing-without-the-control-plane), and the [Docker Compose guide](https://docs.getfelix.dev/deployment/docker-compose/) gets a control plane and broker running with `docker compose up -d` (or `podman compose`). The issues linked above have the logs, the traces and the tests that fail without each fix.
+[Failover without the control plane](https://docs.getfelix.dev/next/deployment/failover-without-control-plane/) explains elections, what you see when one happens, and [how to turn them on](https://docs.getfelix.dev/next/deployment/failover-without-control-plane/#turning-it-on). The leader and placement rules are in [`docs/replication-design.md`](https://github.com/GetFelix/felix/blob/main/docs/replication-design.md#electing-without-the-control-plane), and the [Docker Compose guide](https://docs.getfelix.dev/deployment/docker-compose/) gets a control plane and broker running with `docker compose up -d` (or `podman compose`). The issues linked above have the logs, the traces and the tests that fail without each fix.
