@@ -1,7 +1,7 @@
 +++
 title = "The report that named everyone"
 description = "A Felix shard acknowledged a write, and two failovers later a leader that never held it opened for business. This is how the TLA+ model found the run, why a leader acknowledging by its followers needs a floor under its report too, and the two follow-up fixes the floor exposed."
-date = 2026-11-05T14:00:00
+date = 2026-11-05T00:07:59-08:00
 slug = "the-report-that-named-everyone"
 path = "blog/the-report-that-named-everyone.html"
 
