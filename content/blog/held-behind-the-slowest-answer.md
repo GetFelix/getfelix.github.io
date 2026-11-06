@@ -84,4 +84,4 @@ The other lesson is to fix the wait where it happens. Splitting shards onto thei
 
 ## Trying it
 
-The rules for pipelined publishes, the order promise and answers on completion are in the [protocol reference](https://github.com/GetFelix/felix/blob/main/docs/protocol.md#answers-on-completion). How the Rust client spreads publishes over streams, and what a stalled shard does to them, is in [Publishing](https://docs.getfelix.dev/clients/rust/publishing/). The [wire protocol page](https://docs.getfelix.dev/architecture/wire-protocol/) explains capability negotiation.
+The rules for pipelined publishes, the order promise and answers on completion are in the [protocol reference](https://github.com/GetFelix/felix/blob/main/docs/protocol.md#answers-on-completion). How the Rust client spreads publishes over streams, and what a stalled shard does to them, is in [Publishing](https://docs.getfelix.dev/next/clients/rust/publishing/). The [wire protocol page](https://docs.getfelix.dev/architecture/wire-protocol/) explains capability negotiation.
