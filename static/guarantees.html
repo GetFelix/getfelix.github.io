@@ -194,7 +194,7 @@
             </ul>
           </article>
         </div>
-        <p class="gu-foot"><span class="tag-partial">Partial</span> The control plane decides every failover, so while it is down a dead leader is not replaced. <a class="text-link" href="https://docs.getfelix.dev/architecture/semantics/">Read the full contract<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></p>
+        <p class="gu-foot"><span class="tag-partial">Partial</span> With replica election turned on, a shard's replicas elect a new leader while the control plane is down. That covers <code>Quorum</code> streams and caches; consumer groups still wait for the control plane. The election works like the prepare and promise round of <a class="text-link" href="https://lamport.azurewebsites.net/pubs/paxos-simple.pdf">Paxos</a>: a replica promises on disk to follow only one leader per generation, and a new leader serves only after a majority has promised. <a class="text-link" href="https://docs.getfelix.dev/architecture/semantics/">Read the full contract<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></p>
       </div>
     </div>
   </section>
