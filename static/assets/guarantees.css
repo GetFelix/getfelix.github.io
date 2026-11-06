@@ -1421,6 +1421,14 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
 }
+.ev-wide {
+  grid-column: span 1;
+}
+@media (min-width: 961px) {
+  .ev-wide {
+    grid-column: span 2;
+  }
+}
 .ev {
   display: flex;
   flex-direction: column;
