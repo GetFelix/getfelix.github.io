@@ -81,7 +81,7 @@ Old peers do not get the new rule for free. A peer that predates the attestation
 
 ## How it was checked
 
-The rule has its own TLA+ model in . It models seats and the copies that change under them: unclean crashes, wipes and restores, plus elections, failovers, renames, skipped generations and set changes. TLC explores every interleaving within the limits a config sets, and the invariants it checks include that no generation has two leaders and that every leader holds every acknowledged record at or below its generation.
+The rule has its own TLA+ model in `docs/formal/FelixShardUnified.tla`. It models seats and the copies that change under them: unclean crashes, wipes and restores, plus elections, failovers, renames, skipped generations and set changes. TLC explores every interleaving within the limits a config sets, and the invariants it checks include that no generation has two leaders and that every leader holds every acknowledged record at or below its generation.
 
 A model that only passes proves little, so most of the configs are built to fail. Each one switches off one part of the rule and TLC must find the defect that part prevented. Counting a wiped copy's old ballots produces a second leader at one generation. Counting a copy that was only registered, not caught up, produces a leader missing an acknowledged record. So do skipping coverage, dropping an unopened set without evidence from its own leader, and vouching a copy to the start of a generation rather than to the leader's acknowledged mark. Another config runs the old predicate in outline and shows the stalls above.
 
@@ -95,4 +95,4 @@ Nothing changes in what a client is told. The fence decides who may lead. It doe
 
 ## Trying it
 
-[](https://github.com/GetFelix/felix/blob/main/docs/replication-design.md) describes fencing a promotion, and the [testing page](https://docs.getfelix.dev/architecture/testing/#tla-models) explains how the TLA+ models run in CI. The model itself is [](https://github.com/GetFelix/felix/blob/main/docs/formal/FelixShardUnified.tla), and its README lists which config is meant to pass and which is meant to fail. [The follower that forgot](/blog/the-follower-that-forgot.html) covers how a copy that loses its directory gets back in.
+[`docs/replication-design.md`](https://github.com/GetFelix/felix/blob/main/docs/replication-design.md) describes fencing a promotion, and the [testing page](https://docs.getfelix.dev/architecture/testing/#tla-models) explains how the TLA+ models run in CI. The model itself is [`docs/formal/FelixShardUnified.tla`](https://github.com/GetFelix/felix/blob/main/docs/formal/FelixShardUnified.tla), and its README lists which config is meant to pass and which is meant to fail. [The follower that forgot](/blog/the-follower-that-forgot.html) covers how a copy that loses its directory gets back in.
