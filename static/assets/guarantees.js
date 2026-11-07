@@ -1,3 +1,90 @@
+// Sharding. Plays the routing figure and the growth figure only while each is
+// on screen, the tab is visible and the reader hasn't paused it. Without JS,
+// or with reduced motion, the markup's final frame stays.
+function playLoop(fig, beats, cycle) {
+  const pause = fig.querySelector(".sh-pause");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)");
+  const names = [...new Set(beats.map((b) => b[1]))];
+  let t = 0;
+  let last = 0;
+  let raf = 0;
+  let visible = false;
+  let held = false;
+
+  function restart() {
+    fig.classList.add("jump");
+    fig.classList.remove(...names);
+    for (const [at, name] of beats) if (at <= t) fig.classList.add(name);
+    fig.getBoundingClientRect();
+    fig.classList.remove("jump");
+  }
+  function tick(now) {
+    const prev = t;
+    t += Math.min(now - last, 100);
+    last = now;
+    if (t >= cycle) {
+      t -= cycle;
+      restart();
+    } else {
+      for (const [at, name] of beats) if (at > prev && at <= t) fig.classList.add(name);
+    }
+    raf = requestAnimationFrame(tick);
+  }
+  function sync() {
+    const run = visible && !held && !document.hidden && !reduce.matches;
+    fig.classList.toggle("play", run);
+    if (run && !raf) {
+      last = performance.now();
+      raf = requestAnimationFrame(tick);
+    } else if (!run && raf) {
+      cancelAnimationFrame(raf);
+      raf = 0;
+    }
+  }
+  function setMode() {
+    pause.hidden = reduce.matches;
+    fig.classList.toggle("live", !reduce.matches);
+    if (reduce.matches) {
+      fig.classList.remove(...names);
+    } else {
+      t = 0;
+      restart();
+    }
+    sync();
+  }
+  pause.addEventListener("click", () => {
+    held = !held;
+    pause.setAttribute("aria-pressed", String(held));
+    pause.querySelector("span").textContent = held ? "Play" : "Pause";
+    sync();
+  });
+  reduce.addEventListener("change", setMode);
+  document.addEventListener("visibilitychange", sync);
+  new IntersectionObserver((entries) => {
+    visible = entries[0].isIntersecting;
+    sync();
+  }, { threshold: 0.25 }).observe(fig);
+  setMode();
+}
+
+(() => {
+  if (!("IntersectionObserver" in window)) return;
+  // Nine records, one every 1.5 s; each lands 1.3 s after it is sent.
+  const routing = document.querySelector(".sh-fig");
+  if (routing) {
+    const beats = [];
+    for (let i = 1; i <= 9; i += 1) {
+      const at = 600 + (i - 1) * 1500;
+      beats.push([at, "r" + i], [at + 1300, "h" + i]);
+    }
+    beats.push([16500, "fade"]);
+    playLoop(routing, beats, 17400);
+  }
+  // Four shards for 3 s, then five; the keys that move change over.
+  const growth = document.querySelector(".gr-fig");
+  if (growth) playLoop(growth, [[3000, "grown"]], 9000);
+})();
+
 // Clustering. One 24 s loop of beats; each beat adds a class to the figure and
 // the CSS draws that state. The clock only runs while the figure is on screen,
 // the tab is visible and the reader hasn't paused it. With reduced motion the
