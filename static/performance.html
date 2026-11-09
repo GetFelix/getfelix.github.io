@@ -268,9 +268,9 @@
           <span class="stat-src">Cluster throughput</span>
         </a>
         <a class="stat reveal" style="--d:.12s" href="https://docs.getfelix.dev/features/v060-performance/#forwarding">
-          <p class="stat-value">4.4×<span class="unit">with ClusterClient</span></p>
+          <p class="stat-value">4.4×<span class="unit">with Client</span></p>
           <h3>Straight to the right broker</h3>
-          <p class="stat-note"><code>ClusterClient</code> sends each publish to its shard's owner. Through any broker, two in three publishes take an extra hop: durable 256 B batches run 4.4 times slower and in-memory ones 2.4 times, and one in-memory publish in flight acks in 0.83 ms instead of 0.45 ms.</p>
+          <p class="stat-note"><code>Client</code> sends each publish to its shard's owner. Through any broker, two in three publishes take an extra hop: durable 256 B batches run 4.4 times slower and in-memory ones 2.4 times, and one in-memory publish in flight acks in 0.83 ms instead of 0.45 ms.</p>
           <span class="stat-src">Forwarding</span>
         </a>
         <!-- TODO: RF=3 durable latency after finalizing (lease-free run) -->
@@ -279,7 +279,7 @@
       <figure class="perf-chart perf-img reveal" style="--d:.1s">
         <figcaption>
           <h3>Straight to the owner against through any broker</h3>
-          <p>Payload with batches of 64, 64 in flight per publisher. A forwarded publish is decrypted and re-encrypted at every hop, and a durable one holds its shard until the quorum commits. <code>ClusterClient</code> avoids both. <a href="https://docs.getfelix.dev/features/v060-performance/#forwarding">Forwarding</a> has the numbers.</p>
+          <p>Payload with batches of 64, 64 in flight per publisher. A forwarded publish is decrypted and re-encrypted at every hop, and a durable one holds its shard until the quorum commits. <code>Client</code> avoids both. <a href="https://docs.getfelix.dev/features/v060-performance/#forwarding">Forwarding</a> has the numbers.</p>
         </figcaption>
         <img src="/assets/img/perf/rf3-forwarding.svg" width="648" height="288" loading="lazy" alt="Payload with batch 64, straight to each shard's owner against through any broker: in-memory 256 B 2.0 GB/s against 864 MB/s, in-memory 4 KiB 4.6 against 2.9 GB/s, durable 256 B 475 against 107 MB/s, durable 4 KiB 656 against 512 MB/s.">
       </figure>
