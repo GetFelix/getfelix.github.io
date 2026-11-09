@@ -120,4 +120,3 @@ document.querySelectorAll(".tile").forEach(function (tile) {
   reset();
   new IntersectionObserver((entries) => (entries[0].isIntersecting ? start() : stop())).observe(viz);
 })();
-
