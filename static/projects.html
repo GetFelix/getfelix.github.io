@@ -127,7 +127,7 @@
       <div class="project-body reveal" style="--d:.08s">
         <div class="project-title">
           <h3 id="arena-title">felix-arena</h3>
-          <span class="status ok"><!--release:felix-arena:version-->0.1.7<!--/release:felix-arena:version--></span>
+          <span class="status ok"><!--release:felix-arena:version-->0.2.0<!--/release:felix-arena:version--></span>
         </div>
         <ul class="project-tags" aria-label="Tags"><li>Multiplayer</li><li>3D</li><li>Replays history</li></ul>
         <p>A browser team deathmatch in 3D, played through Felix with the simulation deciding every hit. When you are destroyed, the kill cam replays the last seconds from the match's log in Felix.</p>
@@ -135,8 +135,8 @@
         <ul class="uses"><li>One durable stream holds the match, a record per simulation tick, replicated with <code>Quorum</code></li><li>Atomic commits write each tick together with its keyframe pointer</li><li>An in-memory stream carries player inputs</li><li>TTL caches track who is connected and each arena's status</li><li>A counter holds the simulator's epoch</li></ul>
         <h4>Quick start</h4>
         <div class="quick-cmd">
-<pre><code>curl -fsSL https://github.com/GetFelix/felix-arena/releases/download/<!--release:felix-arena:tag-->v0.1.7<!--/release:felix-arena:tag-->/felix-arena-web-<!--release:felix-arena:tag-->v0.1.7<!--/release:felix-arena:tag-->.tar.gz | tar xz
-cd felix-arena-web-<!--release:felix-arena:tag-->v0.1.7<!--/release:felix-arena:tag-->
+<pre><code>curl -fsSL https://github.com/GetFelix/felix-arena/releases/download/<!--release:felix-arena:tag-->v0.2.0<!--/release:felix-arena:tag-->/felix-arena-web-<!--release:felix-arena:tag-->v0.2.0<!--/release:felix-arena:tag-->.tar.gz | tar xz
+cd felix-arena-web-<!--release:felix-arena:tag-->v0.2.0<!--/release:felix-arena:tag-->
 python3 -m http.server 5173</code></pre>
           <button class="icon-btn" type="button" data-copy aria-label="Copy the felix-arena quick start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
         </div>
@@ -233,7 +233,7 @@ cd felix-metro-compose-<!--release:felix-metro:version-->0.2.3<!--/release:felix
       <div class="project-body reveal" style="--d:.08s">
         <div class="project-title">
           <h3 id="canvas-title">felix-canvas</h3>
-          <span class="status ok"><!--release:felix-canvas:version-->0.3.2<!--/release:felix-canvas:version--></span>
+          <span class="status ok"><!--release:felix-canvas:version-->0.4.0<!--/release:felix-canvas:version--></span>
         </div>
         <ul class="project-tags" aria-label="Tags"><li>Multiplayer</li><li>Replays history</li><li>Access control</li></ul>
         <p>A multiplayer drawing canvas with live cursors, rich text, history you can scrub, and per-room sign-in.</p>
@@ -241,8 +241,8 @@ cd felix-metro-compose-<!--release:felix-metro:version-->0.2.3<!--/release:felix
         <ul class="uses"><li>A durable stream per room holds every edit; the board is a fold of it</li><li>An in-memory stream carries cursors and selections</li><li>A cache holds snapshots, and another holds who is in the room, with a TTL</li><li>Counters hand out per-session sequence numbers</li><li>Replicated with <code>Quorum</code> consistency when you run more than one replica</li></ul>
         <h4>Quick start</h4>
         <div class="quick-cmd">
-<pre><code>curl -fsSL https://github.com/GetFelix/felix-canvas/releases/download/<!--release:felix-canvas:tag-->v0.3.2<!--/release:felix-canvas:tag-->/felix-canvas-compose-<!--release:felix-canvas:version-->0.3.2<!--/release:felix-canvas:version-->.tar.gz | tar xz
-cd felix-canvas-compose-<!--release:felix-canvas:version-->0.3.2<!--/release:felix-canvas:version-->
+<pre><code>curl -fsSL https://github.com/GetFelix/felix-canvas/releases/download/<!--release:felix-canvas:tag-->v0.4.0<!--/release:felix-canvas:tag-->/felix-canvas-compose-<!--release:felix-canvas:version-->0.4.0<!--/release:felix-canvas:version-->.tar.gz | tar xz
+cd felix-canvas-compose-<!--release:felix-canvas:version-->0.4.0<!--/release:felix-canvas:version-->
 sed -i.bak \
   -e "s|^FELIX_BOOTSTRAP_TOKEN=.*|FELIX_BOOTSTRAP_TOKEN=$(openssl rand -base64 32)|" \
   -e "s|^FELIX_RAFT_PEER_TOKEN=.*|FELIX_RAFT_PEER_TOKEN=$(openssl rand -base64 32)|" .env
@@ -287,7 +287,7 @@ docker compose up -d</code></pre>
       <div class="project-body reveal" style="--d:.08s">
         <div class="project-title">
           <h3 id="gateway-title">felix-gateway</h3>
-          <span class="status ok"><!--release:felix-gateway:version-->0.8.0<!--/release:felix-gateway:version--></span>
+          <span class="status ok"><!--release:felix-gateway:version-->0.9.0<!--/release:felix-gateway:version--></span>
         </div>
         <ul class="project-tags" aria-label="Tags"><li>Access control</li></ul>
         <p>A WebSocket gateway between browsers and Felix, with sign-in narrowed to one room or match.</p>
@@ -295,7 +295,7 @@ docker compose up -d</code></pre>
         <ul class="uses"><li>Stream publish and subscribe from an offset or from live, with each event's offset</li><li>Cache reads, writes and watches, with a TTL per cache</li><li>Counter adds</li><li>Tokens narrowed to one scope, exchanged at the control plane and enforced by the broker</li><li>Sender stamping on streams, so a browser cannot speak for someone else</li></ul>
         <h4>Quick start</h4>
         <div class="quick-cmd">
-<pre><code>git clone --depth 1 --branch <!--release:felix-gateway:tag-->v0.8.0<!--/release:felix-gateway:tag--> https://github.com/GetFelix/felix-gateway
+<pre><code>git clone --depth 1 --branch <!--release:felix-gateway:tag-->v0.9.0<!--/release:felix-gateway:tag--> https://github.com/GetFelix/felix-gateway
 cd felix-gateway
 dev/up.sh
 export GATEWAY_FELIX_CA_FILE=dev/state/broker-cert.pem GATEWAY_SCOPE_FILE=dev/scope.toml
@@ -324,7 +324,7 @@ cargo run -p felix-gateway</code></pre>
       <div class="project-body reveal" style="--d:.08s">
         <div class="project-title">
           <h3 id="webhook-relay-title">felix-webhook-relay</h3>
-          <span class="status ok"><!--release:felix-webhook-relay:version-->0.2.0<!--/release:felix-webhook-relay:version--></span>
+          <span class="status ok"><!--release:felix-webhook-relay:version-->0.3.0<!--/release:felix-webhook-relay:version--></span>
         </div>
         <ul class="project-tags" aria-label="Tags"><li>Replays history</li><li>Access control</li></ul>
         <p>A webhook relay that stores each webhook durably, delivers it with retries, and replays any endpoint after an outage.</p>
@@ -332,8 +332,8 @@ cargo run -p felix-gateway</code></pre>
         <ul class="uses"><li>A durable stream per source, with one shard so every endpoint sees one total order</li><li>A consumer group per endpoint, each an independent cursor over the same log</li><li>The idempotent producer, so a lost answer never stores a webhook twice</li><li>A cache for best-effort deduplication of a sender's retries</li><li>A Felix namespace per relay tenant, enforced by the broker</li></ul>
         <h4>Quick start</h4>
         <div class="quick-cmd">
-<pre><code>curl -fsSL https://github.com/GetFelix/felix-webhook-relay/releases/download/<!--release:felix-webhook-relay:tag-->v0.2.0<!--/release:felix-webhook-relay:tag-->/felix-webhook-relay-compose-<!--release:felix-webhook-relay:version-->0.2.0<!--/release:felix-webhook-relay:version-->.tar.gz | tar xz
-cd felix-webhook-relay-compose-<!--release:felix-webhook-relay:version-->0.2.0<!--/release:felix-webhook-relay:version-->
+<pre><code>curl -fsSL https://github.com/GetFelix/felix-webhook-relay/releases/download/<!--release:felix-webhook-relay:tag-->v0.3.0<!--/release:felix-webhook-relay:tag-->/felix-webhook-relay-compose-<!--release:felix-webhook-relay:version-->0.3.0<!--/release:felix-webhook-relay:version-->.tar.gz | tar xz
+cd felix-webhook-relay-compose-<!--release:felix-webhook-relay:version-->0.3.0<!--/release:felix-webhook-relay:version-->
 sed -i.bak \
   -e "s|^FELIX_BOOTSTRAP_TOKEN=.*|FELIX_BOOTSTRAP_TOKEN=$(openssl rand -base64 32)|" \
   -e "s|^FELIX_RAFT_PEER_TOKEN=.*|FELIX_RAFT_PEER_TOKEN=$(openssl rand -base64 32)|" \
