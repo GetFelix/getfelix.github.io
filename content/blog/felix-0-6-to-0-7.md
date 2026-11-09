@@ -1,7 +1,7 @@
 +++
 title = "What changed between Felix 0.6 and 0.7, and why"
 description = "What changed between Felix 0.6 and 0.7: shards that elect a leader while the control plane is down, replica sets that change without losing a write, record headers, an MQTT front door, how we tested it, and how to upgrade."
-date = 2026-11-07
+date = 2026-11-09
 slug = "felix-0-6-to-0-7"
 path = "blog/felix-0-6-to-0-7.html"
 [taxonomies]
@@ -10,8 +10,6 @@ topics = ["replication", "testing", "compatibility"]
 read_minutes = 12
 card = "cards/felix-0-6-to-0-7.svg"
 +++
-
-<!-- TODO(release day): set date to the 0.7.0 tag date. -->
 
 Much of Felix 0.6 was about making sure an acknowledged record stays acknowledged. 0.7 is about what happens when the thing that usually decides is not there: a leader that died while the control plane was down, or a replica set halfway through a change.
 
@@ -77,13 +75,13 @@ Two more in the same family. A publish no longer waits out a dead follower's req
 
 ## Thread four: what apps asked for {#apps}
 
-**Record keys and headers.** A record can now carry a key and named byte headers, and a subscriber gets them back on live delivery, on replay and after a restart. They are negotiated like every new wire feature, so a client that does not ask exchanges the same bytes as before. In a cluster, once the fleet finalizes `record_headers`, replication carries them, so a promoted copy delivers the same headers the old leader did. The Kafka listener can store Kafka keys and headers in them. The Rust client sends them in 0.7. Consumer groups do not deliver them yet.
+**Record keys and headers.** A record can now carry a key and named byte headers, and a subscriber gets them back on live delivery, on replay and after a restart. They are negotiated like every new wire feature, so a client that does not ask exchanges the same bytes as before. In a cluster, once the fleet finalizes `record_headers`, replication carries them, so a promoted copy delivers the same headers the old leader did. The Kafka listener can store Kafka keys and headers in them. Every client can send them. Consumer groups do not deliver them yet.
 
 **An MQTT listener.** In [What if your device fleet ran on one log?](/blog/what-if-your-fleet-ran-on-one-log.html) we wrote that Felix does not speak MQTT and asked what it would look like if it did. Now part of it does. With `FELIX_MQTT_LISTEN` set, a broker takes MQTT 3.1.1 and 5.0 connections, plain or over WebSockets, and a device can publish at QoS 0 and 1 to a durable stream mounted at a topic prefix. A broker that does not own the shard forwards the publish to the owner under the connection's producer id, so a retry after the owner dies is not written twice. A `PUBACK` means the message is in the stream. The topic becomes the record's key and the MQTT fields become headers. In a cluster, MQTT publishes are refused until the fleet finalizes `record_headers`. Devices cannot subscribe through it in 0.7.
 
 **Lease tokens.** felixd, our experiment in running workloads on Felix, runs a workload on whichever node holds its lease, and many nodes share one identity. A conditional cache write that wins a lease can now return a short-lived token for what that lease covers, such as the workload's output stream, so a node cannot write the output without holding the lease. Rust client only for now.
 
-**Head trim.** A writer that keeps snapshots can drop the history below one, but only if the stream's tail is where it expects. That condition keeps a writer that lost its lease from trimming. [The trim that hid the fence](/blog/the-trim-that-hid-the-fence.html) is how the TLA+ model found a trim that hid a newer writer's fence from a stale one, while we were still designing it. Every client sends it, and so does `felixctl stream trim`. A cluster trims only once it finalizes `head_trim`.
+**Head trim.** A writer that keeps snapshots can drop the history below one, but only if the stream's tail is where it expects. That condition keeps a writer that lost its lease from trimming. [The trim that hid the fence](/blog/the-trim-that-hid-the-fence.html) is how the TLA+ model found a trim that hid a newer writer's fence from a stale one, while we were still designing it. Every client can send it, and so can `felixctl stream trim`. A cluster trims only once it finalizes `head_trim`.
 
 ## Thread five: clients and operators {#tools}
 
@@ -92,6 +90,12 @@ Two more in the same family. A publish no longer waits out a dead follower's req
 **felixctl is the one operator command line.** Moves, placement, backup points and fleet features used to live under `felix-controlplane admin`, and that is gone. `felixctl` does all of it, from a context instead of per-command URL and token flags, and `felixctl features finalize` now asks before a one-way change.
 
 **Smaller things.** `felixctl data inspect records` decodes the records around an offset in a data directory, offline and read-only. Each GitHub release carries prebuilt `libfelix` libraries for Linux, macOS and Windows on x64 and arm64. A Grafana dashboard and Prometheus alert rules ship in `deploy/observability/`.
+
+## What it costs {#performance}
+
+We compared 0.7 with 0.6.2 on the same CI hardware. One broker is within noise in every cell tested, and the single-message publish latency is unchanged, about 100 us at p50 and 130 us at p99 for 256 B. Three brokers with replication factor 3 and majority acks, publishing steadily, run 11 to 13% faster at 1 KiB and 4% faster at 64 KiB, with a lower median latency in every cell.
+
+The case 0.7 aimed at is publishing while shards are created in bulk and promoted. There the same cluster takes 2.5 times the throughput of 0.6.2 at 1 KiB and 1.8 times at 64 KiB, and p99 falls from 71 to 321 ms down to 22 to 42 ms.
 
 ## What we learned {#learned}
 
