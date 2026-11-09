@@ -323,6 +323,7 @@
         <span class="eyebrow">Get started</span>
         <h2 id="start-title">Run Felix, then publish and subscribe</h2>
         <p>One command starts a broker and a control plane. Then pick a language, install its client and send a record.</p>
+        <p>Prefer a guided walk? The <a class="text-link" href="https://docs.getfelix.dev/tutorials/overview/">tutorials</a> start with a <a class="text-link" href="https://docs.getfelix.dev/tutorials/first-stream/">first stream</a>, then build an <a class="text-link" href="https://docs.getfelix.dev/tutorials/build-an-app/">app</a>, a <a class="text-link" href="https://docs.getfelix.dev/tutorials/work-queue/">work queue</a> and <a class="text-link" href="https://docs.getfelix.dev/tutorials/cache-leases-watches/">cache leases and watches</a>.</p>
       </div>
 
       <div class="step reveal">
@@ -371,7 +372,7 @@
 <span class="tok-k">use</span> std::time::<span class="tok-t">Duration</span>;
 
 <span class="tok-k">use</span> anyhow::{<span class="tok-t">Context</span>, <span class="tok-t">Result</span>};
-<span class="tok-k">use</span> felix_client::{<span class="tok-t">AckMode</span>, <span class="tok-t">ClientConfig</span>, <span class="tok-t">ClusterClient</span>, quic_client_config};
+<span class="tok-k">use</span> felix_client::{<span class="tok-t">AckMode</span>, <span class="tok-t">ClientConfig</span>, <span class="tok-t">Client</span>, quic_client_config};
 
 <span class="tok-m">#[tokio::main]</span>
 <span class="tok-k">async</span> <span class="tok-k">fn</span> <span class="tok-f">main</span>() -&gt; <span class="tok-t">Result</span>&lt;()&gt; {
@@ -380,7 +381,7 @@
     config.auth_token = <span class="tok-f">Some</span>(std::env::<span class="tok-f">var</span>(<span class="tok-s">"FELIX_TOKEN"</span>).<span class="tok-f">context</span>(<span class="tok-s">"set FELIX_TOKEN"</span>)?);
 
     <span class="tok-k">let</span> seeds: <span class="tok-t">Vec</span>&lt;<span class="tok-t">SocketAddr</span>&gt; = vec![<span class="tok-s">"127.0.0.1:5000"</span>.<span class="tok-f">parse</span>()?];
-    <span class="tok-k">let</span> client = <span class="tok-t">Arc</span>::<span class="tok-f">new</span>(<span class="tok-t">ClusterClient</span>::<span class="tok-f">connect</span>(&amp;seeds, <span class="tok-s">"localhost"</span>, config).<span class="tok-k">await</span>?);
+    <span class="tok-k">let</span> client = <span class="tok-t">Arc</span>::<span class="tok-f">new</span>(<span class="tok-t">Client</span>::<span class="tok-f">connect</span>(&amp;seeds, <span class="tok-s">"localhost"</span>, config).<span class="tok-k">await</span>?);
 
     <span class="tok-c">// Subscribe before publishing: a subscription starts at the stream's tail.</span>
     <span class="tok-k">let</span> <span class="tok-k">mut</span> subscription = client.<span class="tok-f">subscribe</span>(<span class="tok-s">"dev"</span>, <span class="tok-s">"default"</span>, <span class="tok-s">"orders"</span>).<span class="tok-k">await</span>?;
