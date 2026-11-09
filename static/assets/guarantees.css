@@ -1,4 +1,424 @@
-/* guarantees.html: clustering and testing. Loaded after site.css. */
+/* guarantees.html: sharding, clustering and testing. Loaded after site.css. */
+
+/* Sharding: records hashed onto shards, and what growing would move. The
+   markup is the final frame; guarantees.js adds .live and plays the beats. */
+.sharding {
+  position: relative;
+}
+.sharding .split {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  gap: 56px;
+  align-items: center;
+}
+.sharding .split .section-head {
+  margin-bottom: 0;
+}
+@media (max-width: 960px) {
+  .sharding .split {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 36px;
+  }
+}
+.sh-fig,
+.gr-fig {
+  margin: 0;
+}
+.gr-row {
+  margin-top: 88px;
+}
+.section-head .gr-title {
+  font-size: clamp(24px, 3vw, 30px);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+.section-head code {
+  font-family: var(--mono);
+  font-size: 0.86em;
+  color: var(--accent-text);
+}
+.sh-foot {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 16px;
+}
+.sh-fig figcaption,
+.gr-fig figcaption {
+  max-width: 60ch;
+  color: var(--muted);
+  font-size: 15px;
+}
+.gr-fig figcaption {
+  margin-top: 16px;
+}
+.sh-pause {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: var(--bg-raised);
+  color: var(--muted);
+  font: 500 13px var(--mono);
+  cursor: pointer;
+}
+.sh-pause[hidden] {
+  display: none;
+}
+.sh-pause:hover {
+  color: var(--text);
+}
+.sh-pause svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.sh-pause .i-play,
+.sh-pause[aria-pressed="true"] .i-pause {
+  display: none;
+}
+.sh-pause[aria-pressed="true"] .i-play {
+  display: block;
+}
+
+.sh-svg text {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  fill: var(--muted);
+}
+.sh-svg .sh-h,
+.sh-svg .sh-lt {
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  fill: var(--faint);
+}
+.sh-svg .sh-kbg {
+  fill: var(--bg-raised);
+  stroke: var(--line-strong);
+}
+.sh-svg .sh-kt {
+  fill: var(--text);
+}
+.sh-svg .kn .sh-kt {
+  fill: var(--faint);
+  font-style: italic;
+}
+.sh-svg .sh-kn,
+.sh-svg .sh-c text {
+  font-size: 11px;
+  font-weight: 600;
+  fill: var(--bg);
+}
+.sh-svg .kn .sh-kn,
+.sh-svg .sh-c.kn text {
+  fill: var(--faint);
+}
+/* One colour per key; the record number says the same thing in text. */
+.sh-svg .ka { --k: var(--accent); }
+.sh-svg .kb { --k: var(--idea); }
+.sh-svg .kc { --k: var(--ok); }
+.sh-svg .kd { --k: var(--muted); }
+.sh-svg .sh-kb,
+.sh-svg .sh-c rect {
+  fill: var(--k);
+}
+.sh-svg .kn .sh-kb,
+.sh-svg .sh-c.kn rect {
+  fill: none;
+  stroke: var(--faint);
+  stroke-dasharray: 3 2.5;
+}
+.sh-svg .sh-wire {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  opacity: 0.45;
+}
+.sh-svg .sh-hbg {
+  fill: color-mix(in srgb, var(--accent) 6%, var(--bg-raised));
+  stroke: var(--accent);
+  stroke-width: 1.5;
+}
+.sh-svg .sh-hon {
+  fill: var(--accent-soft);
+  stroke: var(--accent);
+  stroke-width: 5;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.sh-svg .sh-ht {
+  font-size: 13px;
+  fill: var(--accent-text);
+}
+.sh-svg .sh-hf {
+  font-size: 11px;
+  fill: var(--faint);
+}
+.sh-svg .sh-o {
+  fill: var(--text);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.sh-svg .sh-lbg {
+  fill: var(--bg-raised);
+  stroke: var(--line-strong);
+}
+.sh-svg .sh-slot {
+  fill: none;
+  stroke: var(--line-strong);
+  stroke-dasharray: 2.5 2.5;
+}
+.sh-svg .sh-f {
+  opacity: 0;
+}
+.sh-svg .sh-f .dot-h {
+  fill: var(--k, var(--faint));
+  opacity: 0.25;
+}
+.sh-svg .sh-f .dot-c {
+  fill: var(--k, var(--faint));
+}
+.sh-svg .sh-c,
+.sh-svg .sh-k {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: opacity 0.3s ease, transform 0.45s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+.stage .sh-tall {
+  display: none;
+}
+@media (max-width: 520px) {
+  .sh-fig .sh-svg:not(.sh-tall) {
+    display: none;
+  }
+  .sh-fig .sh-tall {
+    display: block;
+  }
+  .sh-tall .sh-kt {
+    font-size: 11px;
+  }
+}
+
+/* Live. A record waits dimmed, flies through the hash to its shard (rN), and
+   lands (hN). At the end of a loop the shards empty (fade). */
+.sh-fig.live .sh-k {
+  opacity: 0.4;
+}
+.sh-fig.live .sh-c {
+  opacity: 0;
+  transform: scale(0.3);
+}
+.r1 .sh-k.n1, .r2 .sh-k.n2, .r3 .sh-k.n3,
+.r4 .sh-k.n4, .r5 .sh-k.n5, .r6 .sh-k.n6,
+.r7 .sh-k.n7, .r8 .sh-k.n8, .r9 .sh-k.n9,
+.h1 .sh-c.n1, .h2 .sh-c.n2, .h3 .sh-c.n3,
+.h4 .sh-c.n4, .h5 .sh-c.n5, .h6 .sh-c.n6,
+.h7 .sh-c.n7, .h8 .sh-c.n8, .h9 .sh-c.n9 {
+  opacity: 1;
+  transform: none;
+}
+.r1:not(.h1) .sh-o.n1, .r2:not(.h2) .sh-o.n2, .r3:not(.h3) .sh-o.n3,
+.r4:not(.h4) .sh-o.n4, .r5:not(.h5) .sh-o.n5, .r6:not(.h6) .sh-o.n6,
+.r7:not(.h7) .sh-o.n7, .r8:not(.h8) .sh-o.n8, .r9:not(.h9) .sh-o.n9 {
+  opacity: 1;
+  transition-delay: 0.45s;
+}
+.r1:not(.h1) .sh-f.n1, .r2:not(.h2) .sh-f.n2, .r3:not(.h3) .sh-f.n3,
+.r4:not(.h4) .sh-f.n4, .r5:not(.h5) .sh-f.n5, .r6:not(.h6) .sh-f.n6,
+.r7:not(.h7) .sh-f.n7, .r8:not(.h8) .sh-f.n8, .r9:not(.h9) .sh-f.n9 {
+  animation: sh-go 1.3s cubic-bezier(0.45, 0, 0.3, 1) both;
+}
+.r1:not(.h1) .sh-hon, .r2:not(.h2) .sh-hon, .r3:not(.h3) .sh-hon,
+.r4:not(.h4) .sh-hon, .r5:not(.h5) .sh-hon, .r6:not(.h6) .sh-hon,
+.r7:not(.h7) .sh-hon, .r8:not(.h8) .sh-hon, .r9:not(.h9) .sh-hon {
+  opacity: 0.35;
+  transition-delay: 0.4s;
+}
+.sh-fig.live.fade .sh-c {
+  opacity: 0;
+  transition-duration: 0.6s;
+}
+.sh-fig.live.fade .sh-k {
+  opacity: 0.4;
+}
+@keyframes sh-go {
+  0% {
+    opacity: 0;
+    transform: translate(var(--x0), var(--y0));
+  }
+  8% {
+    opacity: 1;
+  }
+  40%,
+  52% {
+    transform: translate(var(--xh), var(--yh));
+  }
+  92% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--x1), var(--y1));
+  }
+}
+.sh-fig.jump * {
+  transition: none !important;
+}
+.sh-fig.live:not(.play) * {
+  animation-play-state: paused !important;
+}
+
+/* Growing 4 to 5 shards. Final frame: each moved key shows its old shard
+   struck and its new one. Live, until .grown, it shows the stream before it grew. */
+.gr-stage {
+  padding: 18px;
+}
+.gr-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 32px;
+  margin-bottom: 14px;
+}
+.gr-shards {
+  font: 500 13px var(--mono);
+  color: var(--faint);
+}
+.gr-shards b {
+  color: var(--text);
+  font-weight: 600;
+}
+.gr-shards .gr-to b {
+  color: var(--accent-text);
+}
+.gr-cols {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.gr-h {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0 0 10px;
+  font: 500 12.5px var(--mono);
+}
+.gr-name {
+  color: var(--text);
+  font-weight: 600;
+}
+.gr-count {
+  color: var(--faint);
+}
+.gr-count b {
+  color: var(--accent-text);
+}
+.gr-col + .gr-col .gr-count b {
+  color: var(--warn);
+}
+.gr-keys {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.gr-keys li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  min-width: 0;
+  height: 26px;
+  padding: 0 7px;
+  border-radius: 7px;
+  background: var(--bg-sunken);
+  border: 1px solid var(--line);
+  font: 500 11.5px var(--mono);
+  color: var(--muted);
+  transition: background-color 0.4s ease, border-color 0.4s ease;
+  transition-delay: calc(var(--i, 0) * 0.04s);
+}
+.gr-k {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.gr-s {
+  display: inline-flex;
+  gap: 5px;
+  flex-shrink: 0;
+  font-style: normal;
+}
+.gr-s i {
+  font-style: normal;
+  color: var(--text);
+  transition: opacity 0.4s ease, color 0.4s ease;
+  transition-delay: calc(var(--i, 0) * 0.04s);
+}
+.gr-keys li.mv {
+  background: var(--accent-soft);
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+.gr-keys li.mv .o {
+  color: var(--faint);
+  text-decoration: line-through;
+}
+.gr-keys li.mv .n {
+  color: var(--accent-text);
+  font-weight: 700;
+}
+.gr-shards .gr-to,
+.gr-count {
+  transition: opacity 0.4s ease;
+}
+.gr-fig.live:not(.grown) .gr-to,
+.gr-fig.live:not(.grown) .gr-count,
+.gr-fig.live:not(.grown) li.mv .n {
+  opacity: 0;
+  transition-delay: 0s;
+}
+.gr-fig.live:not(.grown) li.mv {
+  background: var(--bg-sunken);
+  border-color: var(--line);
+  transition-delay: 0s;
+}
+.gr-fig.live:not(.grown) li.mv .o {
+  color: var(--text);
+  text-decoration-color: transparent;
+}
+.gr-fig.live:not(.grown) .gr-s i {
+  transition-delay: 0s;
+}
+@media (max-width: 960px) {
+  .gr-row {
+    margin-top: 64px;
+  }
+}
+@media (max-width: 760px) {
+  .gr-cols {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+}
+@media (max-width: 380px) {
+  .gr-keys li {
+    padding: 0 5px;
+    font-size: 11px;
+  }
+}
 
 /* Clustering. The markup carries the end of the first step, so without JS the
    figure shows a write acknowledged by 2 of 3. guarantees.js plays the steps by
