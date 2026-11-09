@@ -58,7 +58,7 @@ It wasn't. Switching the unified fence on or off made no difference, and the ste
       <figcaption><b>Figure 3</b>The fence was not the cost. Work for shards that could not take writes yet held the slots that shards taking writes needed.</figcaption>
     </figure>
 
-The bisect landed on [#1953](https://github.com/GetFelix/felix/pull/1953), which publishes a new shard's route while a bulk create is still opening, so a shard opened early becomes reachable early. That is right for the shards a broker doesn't lead. For the ones it does lead and has not opened, the route started replication work: a first pass that waits on the followers' copies, and a fence. With hundreds of shards in a bulk create, those passes filled the 16 slots the driver runs at once, and shards that could already take writes waited behind them. Before the change the same work ran after the pass, mostly outside the burst. The PR measured the burst at 1.35 times the previous release at the commit before it and 0.36 times after.
+The bisect landed on [#1953](https://github.com/GetFelix/felix/pull/1953), which publishes a new shard's route while a bulk create is still opening, so a shard opened early becomes reachable early. That is right for the shards a broker doesn't lead. For the ones it does lead and has not opened, the route started replication work: a first pass that waits on the followers' copies, and a fence. With hundreds of shards in a bulk create, those passes filled the 16 slots the driver runs at once, and shards that could already take writes waited behind them. Before the change the same work ran after the pass, mostly outside the burst. The bisect measured the burst at 1.35 times the previous release at the commit before it and 0.36 times after.
 
 [#2132](https://github.com/GetFelix/felix/pull/2132) routes a shard this broker leads early only once it serves. Shards led elsewhere are still routed at once, and the fence rules are untouched. The test for it fails with the filter removed and passes with it. With the fix, the same A/B puts the RF 3 promotion burst at 2.38 times the previous release at 1 KiB and 1.86 times at 64 KiB.
 
@@ -70,7 +70,7 @@ A steady-state p99 change can be real and still invisible on a slow runner. CI r
 
 Once the fast runners showed a shift, a bisect across the release line found the commit, [#1801](https://github.com/GetFelix/felix/pull/1801), which changed how the replication driver schedules its passes. Step-by-step timing of the slow acknowledgements then put the time in follower fsyncs. Two plausible theories, both about the new scheduling, were refuted by measurement before anything was changed.
 
-Why the fsyncs got slower is still open, and it is tracked in [#2148](https://github.com/GetFelix/felix/issues/2148). The lesson does not depend on the answer. An A/B can only see an effect larger than its runner's noise, "inconclusive" is not the same as "fine", and a theory that sounds right is a reason to measure, not a reason to change code.
+Why the fsyncs got slower is tracked in [#2148](https://github.com/GetFelix/felix/issues/2148). The lesson does not depend on the answer. An A/B can only see an effect larger than its runner's noise, "inconclusive" is not the same as "fine", and a theory that sounds right is a reason to measure, not a reason to change code.
 
 ## Where this leaves us
 
