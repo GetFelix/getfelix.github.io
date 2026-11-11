@@ -1070,22 +1070,10 @@
   margin-bottom: 26px;
 }
 .hero-tag .eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
   margin: 0;
   font-size: 14px;
   letter-spacing: 0.01em;
   text-transform: none;
-}
-.hero-tag .eyebrow::before {
-  content: "";
-  width: 18px;
-  height: 7px;
-  border-radius: 2px;
-  background: var(--accent);
-  transform: skewX(-24deg);
-  box-shadow: 0 0 12px var(--accent-glow);
 }
 .hero .release-pill {
   margin: 0;
