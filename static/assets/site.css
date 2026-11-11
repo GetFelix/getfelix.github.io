@@ -595,7 +595,9 @@ html:not(.js) .site-header .wrap {
   text-align: center;
 }
 .eyebrow {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
   font-family: var(--mono);
   font-size: 13px;
   font-weight: 500;
@@ -603,6 +605,20 @@ html:not(.js) .site-header .wrap {
   text-transform: uppercase;
   color: var(--accent-text);
   margin-bottom: 14px;
+}
+.eyebrow::before {
+  content: "";
+  flex: none;
+  width: 18px;
+  height: 7px;
+  border-radius: 2px;
+  background: var(--accent);
+  transform: skewX(-24deg);
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+/* Page intros carry the Felix mark instead. */
+.eyebrow:has(picture)::before {
+  display: none;
 }
 .section h2 {
   text-wrap: balance;
