@@ -21,7 +21,7 @@ Each piece exists because a real failure demanded it. Together they are about 26
 
 If you write your own consensus, you own its correctness. Not the part you got right, all of it. Every ordering of crashes, restarts, partitions and wiped disks is yours to reason about, and so is every interaction between two rules you added months apart.
 
-We have felt this. Most of the defects we found while hardening failover lived in the replication protocol, in the fences, the vouching, the leases and the elections. A fence that was too strict stalled a healthy majority. One that was too loose could have let an old leader keep writing. The fixes were correct, and each one was another special case. [Two questions, one fence](/blog/two-questions-one-fence.html) is what it looks like to pull one of those apart: the rule got simpler only after we stopped patching it and asked what it was for.
+We have felt this. Most of the defects we found while hardening failover lived in the replication protocol, in the fences, the vouching, the leases and the elections. A fence that was too strict stalled a healthy majority. The fixes were correct, and each one was another special case. [Two questions, one fence](/blog/two-questions-one-fence.html) is what it looks like to pull one of those apart: the rule got simpler only after we stopped patching it and asked what it was for.
 
 That is the pattern worth worrying about. Hand-built consensus does not fail all at once. It grows, one justified exception at a time, until nobody can hold the whole rule in their head.
 
