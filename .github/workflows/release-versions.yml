@@ -81,6 +81,20 @@ jobs:
           gh workflow run pages.yml --ref main
 
 
+      # The version PR can merge after the wait above gives up (it waits on
+      # checks), and later runs then find nothing to change. Deploy whenever
+      # main is ahead of the last successful Pages deploy.
+      - name: Deploy if main is ahead of the site
+        if: steps.update.outputs.changed != 'true'
+        run: |
+          head=$(gh api repos/${{ github.repository }}/commits/main --jq .sha)
+          deployed=$(gh run list -w pages.yml -b main -s success -L 1 --json headSha --jq '.[0].headSha // ""')
+          busy=$(gh run list -w pages.yml -b main -L 1 --json status --jq '.[0].status // ""')
+          if [ "$head" != "$deployed" ] && [ "$busy" = completed ]; then
+            echo "main $head is not deployed (last deploy $deployed); deploying"
+            gh workflow run pages.yml --ref main
+          fi
+
       - name: Fail if the page could not be fully updated
         if: steps.update.outcome == 'failure'
         run: |
