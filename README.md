@@ -1,5 +1,17 @@
 # getfelix.dev
 
+<p align="center">
+  <a href="https://github.com/GetFelix/getfelix.github.io/actions/workflows/pages.yml">
+    <img src="https://github.com/GetFelix/getfelix.github.io/actions/workflows/pages.yml/badge.svg?branch=main&event=push" alt="Pages deploy" />
+  </a>
+  <a href="https://github.com/GetFelix/getfelix.github.io/blob/main/LICENSE">
+    <img src="https://img.shields.io/badge/license-MIT-blue" alt="License: MIT" />
+  </a>
+  <a href="https://getfelix.dev">
+    <img src="https://img.shields.io/badge/Website-8A2BE2" alt="Website" />
+  </a>
+</p>
+
 The site for [Felix](https://github.com/GetFelix/felix). The blog is built with
 [Zola](https://www.getzola.org/); every other page is a plain HTML file.
 
