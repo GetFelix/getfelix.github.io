@@ -50,12 +50,12 @@ for name, html in pages.items():
                     problems.append("%s: %s names missing id %s" % (name, attr, ref))
 
 # The nav lists the blog's index, so the index, its further pages and the topic
-# pages mark it as current. Posts, the 404 and the about page mark nothing.
+# pages mark it as current. Posts, the 404, the about page and the security page mark nothing.
 def in_blog_listing(name):
     return name == "blog/index.html" or name.startswith(("blog/page/", "topics/"))
 
 
-NOT_IN_NAV = {"404.html", "about.html"}
+NOT_IN_NAV = {"404.html", "about.html", "security.html"}
 NOT_IN_NAV |= {n for n in pages if n.startswith("blog/") and not in_blog_listing(n)}
 
 # Pages kept out of search and so out of the footer and the sitemap: the 404
