@@ -1,0 +1,31 @@
+/* Security page */
+
+.sec-body {
+  max-width: 680px;
+}
+.sec-body h2 {
+  margin: 40px 0 12px;
+  font-size: 24px;
+}
+.sec-body h2:first-child {
+  margin-top: 0;
+}
+.sec-body p,
+.sec-body li {
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.65;
+}
+.sec-body p {
+  margin: 0 0 16px;
+}
+.sec-body ul {
+  margin: 0 0 16px;
+  padding-left: 22px;
+}
+.sec-body li {
+  margin-bottom: 8px;
+}
+.sec-body li strong {
+  color: var(--text);
+}

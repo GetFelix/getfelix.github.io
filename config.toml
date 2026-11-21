@@ -38,5 +38,6 @@ static_pages = [
   { path = "/performance.html", lastmod = "2026-11-02" },
   { path = "/projects.html", lastmod = "2026-11-02" },
   { path = "/status.html", lastmod = "2026-11-02" },
+  { path = "/security.html", lastmod = "2026-11-21" },
   { path = "/about.html", lastmod = "2026-11-02" },
 ]
