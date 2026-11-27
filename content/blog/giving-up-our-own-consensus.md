@@ -13,7 +13,7 @@ read_minutes = 9
 card = "cards/giving-up-our-own-consensus.svg"
 +++
 
-We [asked](/blog/what-if-every-shard-were-a-raft-group.html) what it would take for every Felix shard to be a Raft group, and wrote down what Raft had to prove before it replaced anything. This post is what happened next. Raft is the default shard engine: with no setting, every durable shard runs as its own [openraft](https://github.com/databendlabs/openraft) group, a standalone broker included, as a group of one. The protocol we built ourselves, which our docs call the hybrid, is frozen and on its way out of the tree.
+We [asked](/blog/what-if-every-shard-were-a-raft-group.html) what it would take for every Felix shard to be a Raft group, and wrote down what Raft had to prove before it replaced anything. This post is what happened next. Raft is the default shard engine: with no setting, every durable shard runs as its own [openraft](https://github.com/databendlabs/openraft) group, a standalone broker included, as a group of one. The protocol we built ourselves, which our docs call the hybrid, is being removed from the tree.
 
 The interesting part is not the switch. It is what the old protocol kept getting wrong, and what we still own now that Raft does the agreeing.
 
@@ -64,7 +64,7 @@ The fix was to let a Raft log on a relaxed broker count an entry once it is writ
 
 Look at what that fix is, though. It is a Felix rule about when a write counts, sitting next to Raft's. [Acknowledged, then forgotten](/blog/acknowledged-then-forgotten.html) is about exactly this kind of rule going wrong in the hybrid. So it has its own TLA+ model, and it stays one of the places we look first when something is off.
 
-The other gaps were smaller and just as unglamorous. Raft spent 1.12 to 1.31 times the hybrid's CPU per message on the three-replica throughput cells. One pull request gathered the fixes: fewer task hops and wake-ups per write, a log thread that parks when quiet, groups on their own threads, a follower's written report carried on its append answer instead of a separate message ([#2960](https://github.com/GetFelix/felix/pull/2960)). After that work, against the release it replaced, Raft used 14% fewer instructions per message at 1,000 messages a second, 28% fewer flat out, and the same within the noise at 100 a second ([#2936](https://github.com/GetFelix/felix/issues/2936)). In one matrix run, Kafka produce held 54k messages a second on Raft against 207k on the hybrid, because each record of an idempotent producer became its own proposal and waited for the one before it ([#2704](https://github.com/GetFelix/felix/issues/2704)).
+The other gaps were smaller and just as unglamorous. Raft spent 1.12 to 1.31 times the hybrid's CPU per message on the three-replica throughput cells. One pull request gathered the fixes: fewer task hops and wake-ups per write, a log thread that parks when quiet, groups on their own threads, a follower's written report carried on its append answer instead of a separate message ([#2960](https://github.com/GetFelix/felix/pull/2960)). After that work, against the release it replaced, Raft used 14% fewer instructions per message at 1,000 messages a second, 28% fewer flat out, and the same within the noise at 100 a second ([#2936](https://github.com/GetFelix/felix/issues/2936)).
 
 Then there is having thousands of groups on one broker. A vote is fsynced, and every group has its own vote file. On a development machine, 40 groups formed at the same moment had not finished electing after 180 seconds: each round of vote saves outlasted the election timeout, so the timeouts fired again and added more saves, and one member reached term 23 ([#2317](https://github.com/GetFelix/felix/issues/2317)). A broker bounds how many of its groups are in an election at once, 64 by default, and lowers the bound when elections are losing. Groups that took writes go first. Idle groups still heartbeat, less often than busy ones. Letting idle groups sleep is a design of its own, with its own failure modes, and we left it out.
 
@@ -99,7 +99,7 @@ Everything users relied on had to be rebuilt on the new engine too: conditional 
 
 **Borrowing consensus does not mean borrowing correctness for the whole system.** Raft is correct about Raft. Storage identity, restores, re-forming and the rules you add for speed are still yours, and they are where the next bugs will be. Put the models and the tests there.
 
-**The cost of the swap is in the glue.** Every performance gap we traced was in how Felix called the library: when it fsynced, how many tasks it woke, how it split a request into proposals. None needed a change to Raft.
+**The cost of the swap is in the glue.** Every performance gap we traced was in how Felix called the library: when it fsynced and how many tasks it woke. None needed a change to Raft.
 
 **Write the bar down before the numbers.** The gate existed before the first measurement, so a gap was a bug to fix, not a judgment call. Without it, a 14% drop would have been easy to explain away. With it, the drop was a list of work.
 
