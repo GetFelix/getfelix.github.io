@@ -189,7 +189,7 @@ Here's the list we use now. Every item on it is here because we got it wrong at 
 
 **Verify deployments by checksum.** During this session, one generator's install script reported success while `curl` had failed on a stale path. The VM was still running the old binary. Exit codes didn't catch it. Checksums did.
 
-**Don't run the binary on a live host to check a flag.** `felix-broker --help` starts a second broker. It contaminated a run once, and nearly did again.
+**Don't run the binary on a live host to check a flag.** The broker took no `--help` flag then, so `felix-broker --help` started a second broker. It contaminated a run once, and nearly did again.
 
 ## Trying it
 
