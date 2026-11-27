@@ -89,7 +89,7 @@ Most of the Raft-era fixes we have merged are in these edges: placement that top
 
 The models moved the same way. The Raft specs are not about Raft's election. They are about identity, the lease, re-forming, restores, placement and the written commit. By line count they are larger than the hybrid's were. We think that is the right place for the effort: the models check the parts nobody else checks for us.
 
-Everything users relied on had to be rebuilt on the new engine too: conditional publish, head trim, atomic commits, Kafka produce with idempotent sequences, MQTT, caches and counters, cache watches. Most behave exactly as before. A few show the seams. A refused conditional publish consumes one offset on Raft, a gap readers skip, because the leader decides the condition at the index the entry lands at. In-memory streams have no log, so they never become a group and got a serving path of their own ([#3065](https://github.com/GetFelix/felix/issues/3065)). And a cluster made on the old engine does not convert. It starts again on empty directories.
+Everything users relied on had to be rebuilt on the new engine too: conditional publish, head trim, atomic commits, Kafka produce with idempotent sequences, MQTT, caches and counters, cache watches. Most behave exactly as before. Two things changed shape. In-memory streams have no log, so they never become a group and got a serving path of their own ([#3065](https://github.com/GetFelix/felix/issues/3065)). And a cluster made on the old engine does not convert. It starts again on empty directories.
 
 ## What we learned
 
