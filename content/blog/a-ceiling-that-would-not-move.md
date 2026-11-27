@@ -1,7 +1,7 @@
 +++
 title = "A ceiling that wouldn't move, and a benchmark that lied about it"
 description = "One Felix broker plateaued near 900 MB/s whatever we changed. Three bugs in the load generator made two hypotheses look tested when they weren't. Here is what we found, what shipped, and how we check an instrument now."
-date = 2026-12-01
+date = 2026-11-27
 slug = "a-ceiling-that-would-not-move"
 path = "blog/a-ceiling-that-would-not-move.html"
 [taxonomies]
